@@ -1,15 +1,20 @@
 import socket
-import sys
 import os
 import json
+import sys
+from pathlib import Path
 import ffmpeg
-import re
+import re         
 
+
+# ファイル操作（アップロード用ファイル選択・オプション指定・保存）を担当するクラス
 class FileHandler:
+
     def __init__(self, dpath='recieve'):
         self.dpath = dpath
         os.makedirs(self.dpath, exist_ok=True)
 
+    # ファイルパスを入力・検証する関数
     def input_file_path(self):
         valid_extensions = ('.mp4', '.avi')
         while True:
@@ -20,6 +25,7 @@ class FileHandler:
             else:
                 print("無効なファイル拡張子です。もう一度試してください。")
 
+    # オペレーション番号を入力・検証する関数
     def input_operation(self):
         while True:
             print("1: 動画の圧縮, 2: 動画の解像度の変更, 3: 動画のアスペクト比の変更, 4: 動画を音声に変換, 5: 指定した時間範囲でGIFの作成")
@@ -33,65 +39,76 @@ class FileHandler:
             except ValueError:
                 print("無効な入力です。数字を入力してください。")
 
+    # 各オペレーションごとに詳細情報を入力する関数
     def input_operation_details(self, operation, json_file, file_path):
         if operation == 2:
-            resolutions = {"1": "1920:1080", "2": "1280:720", "3": "720:480"}
-            while True:
-                print("1: フルHD(1920:1080), 2: HD(1280:720), 3: SD(720:480)")
-                resolution = input("希望する解像度の番号を入力してください: ")
-                if resolution in resolutions:
-                    json_file['resolution'] = resolutions[resolution]
-                    break
-                else:
-                    print("無効な選択です。もう一度入力してください。")
-
+            json_file['resolution'] = self.input_resolution()
         elif operation == 3:
-            aspect_ratios = {"1": "16/9", "2": "4/3", "3": "1/1"}
-            while True:
-                print("1: (16:9), 2: (4:3), 3: (1:1)")
-                aspect_ratio = input("希望するアスペクト比の番号を入力してください: ")
-                if aspect_ratio in aspect_ratios:
-                    json_file['aspect_ratio'] = aspect_ratios[aspect_ratio]
-                    break
-                else:
-                    print("無効な選択です。もう一度入力してください。")
-
+            json_file['aspect_ratio'] = self.input_aspect_ratio()
         elif operation == 5:
-            video_duration = self.get_video_duration(file_path)
-            HH = video_duration // 3600
-            MM = (video_duration % 3600) // 60
-            SS = video_duration % 60
-            while True:
-                print(f"動画の長さは{int(HH):02}:{int(MM):02}:{int(SS):02}です。")
-                start_time = input("開始時間を入力してください（例: 00:00:10）: ")
-                if re.match(r'^\d{2}:\d{2}:\d{2}$', start_time):
-                    st_HH, st_MM, st_SS = map(int, start_time.split(":"))
-                    start_time_sec = st_HH * 3600 + st_MM * 60 + st_SS
-                    if start_time_sec < video_duration:
-                        json_file['start_time'] = start_time_sec
-                        break
-                    else:
-                        print("開始時間は動画の長さより短くしてください。")
-                else:
-                    print("無効な時間形式です。もう一度入力してください。")
-
-            while True:
-                duration = input("再生時間を秒単位で入力してください（例: 10）: ")
-                if duration.isdigit():
-                    duration = float(duration)
-                    if 0 < duration <= (video_duration - json_file['start_time']):
-                        json_file['duration'] = duration
-                        break
-                    else:
-                        print("無効な再生時間です。もう一度入力してください。")
-                else:
-                    print("無効な入力です。数字を入力してください。")
+            start_time, duration = self.input_gif_time_range(file_path)
+            json_file['start_time'] = start_time
+            json_file['duration'] = duration
         return json_file
 
+    # 解像度の選択を受け付ける関数
+    def input_resolution(self):
+        resolutions = {"1": "1920:1080", "2": "1280:720", "3": "720:480"}
+        while True:
+            print("1: フルHD(1920:1080), 2: HD(1280:720), 3: SD(720:480)")
+            resolution = input("希望する解像度の番号を入力してください: ")
+            if resolution in resolutions:
+                return resolutions[resolution]
+            else:
+                print("無効な選択です。もう一度入力してください。")
+
+    # アスペクト比の選択を受け付ける関数
+    def input_aspect_ratio(self):
+        aspect_ratios = {"1": "16/9", "2": "4/3", "3": "1/1"}
+        while True:
+            print("1: (16:9), 2: (4:3), 3: (1:1)")
+            aspect_ratio = input("希望するアスペクト比の番号を入力してください: ")
+            if aspect_ratio in aspect_ratios:
+                return aspect_ratios[aspect_ratio]
+            else:
+                print("無効な選択です。もう一度入力してください。")
+
+    # GIF作成用の開始時間・再生時間を入力する関数
+    def input_gif_time_range(self, file_path):
+        video_duration = self.get_video_duration(file_path)
+        HH = video_duration // 3600
+        MM = (video_duration % 3600) // 60
+        SS = video_duration % 60
+        while True:
+            print(f"動画の長さは{int(HH):02}:{int(MM):02}:{int(SS):02}です。")
+            start_time = input("開始時間を入力してください（例: 00:00:10）: ")
+            if re.match(r'^\d{2}:\d{2}:\d{2}$', start_time):
+                st_HH, st_MM, st_SS = map(int, start_time.split(":"))
+                start_time_sec = st_HH * 3600 + st_MM * 60 + st_SS
+                if start_time_sec < video_duration:
+                    break
+                else:
+                    print("開始時間は動画の長さより短くしてください。")
+            else:
+                print("無効な時間形式です。もう一度入力してください。")
+
+        while True:
+            duration = input("再生時間を秒単位で入力してください（例: 10）: ")
+            if duration.isdigit():
+                duration = float(duration)
+                if 0 < duration <= (video_duration - start_time_sec):
+                    return start_time_sec, duration
+                else:
+                    print("無効な再生時間です。もう一度入力してください。")
+            else:
+                print("無効な入力です。数字を入力してください。")
+
+    # 動画ファイルの長さ（秒）を取得する関数
     def get_video_duration(self, file_path):
         probe = ffmpeg.probe(file_path)
         return float(probe['format']['duration'])
 
+    # 受信したファイルを保存する関数
     def save_received_file(self, file_name, connection, file_size, chunk_size=1400):
         output_file_path = os.path.join(self.dpath, file_name)
         with open(output_file_path, 'wb+') as f:
@@ -102,7 +119,9 @@ class FileHandler:
         print("ダウンロードに成功しました: ", output_file_path)
 
 
+# TCP通信でサーバに接続してファイルを送信・受信するクライアントクラス
 class TCPClient:
+
     def __init__(self, server_address, server_port, handler: FileHandler):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_address = server_address
@@ -110,6 +129,7 @@ class TCPClient:
         self.chunk_size = 1400
         self.handler = handler
 
+    # クライアントを起動してサーバ接続を行う関数
     def start(self):
         try:
             self.sock.connect((self.server_address, self.server_port))
@@ -121,6 +141,7 @@ class TCPClient:
             print('closing socket')
             self.sock.close()
 
+    # ファイルをアップロードするメイン関数
     def upload_file(self):
         try:
             file_path = self.handler.input_file_path()
@@ -138,14 +159,11 @@ class TCPClient:
                 json_file = self.handler.input_operation_details(operation, json_file, file_path)
 
                 json_bytes = json.dumps(json_file).encode('utf-8')
-                header = self.build_header(len(json_bytes), len(media_type_bytes), file_size)
+                header = self.prepare_upload_header(len(json_bytes), len(media_type_bytes), file_size)
                 self.sock.sendall(header)
                 self.sock.sendall(json_bytes + media_type_bytes)
 
-                data = f.read(self.chunk_size)
-                while data:
-                    self.sock.send(data)
-                    data = f.read(self.chunk_size)
+                self.send_file_data(f)
 
                 response = self.sock.recv(16)
                 if int.from_bytes(response, 'big') != 0x00:
@@ -160,23 +178,41 @@ class TCPClient:
             print(f"エラーが発生しました: {e}")
             sys.exit(1)
 
-    def receive_file(self):
-        header = self.sock.recv(8)
-        json_length = int.from_bytes(header[0:2], 'big')
-        media_type_length = int.from_bytes(header[2:3], 'big')
-        file_size = int.from_bytes(header[3:8], 'big')
+    # ファイルデータをチャンク単位で送信する関数
+    def send_file_data(self, file_obj):
+        data = file_obj.read(self.chunk_size)
+        while data:
+            self.sock.send(data)
+            data = file_obj.read(self.chunk_size)
 
-        body = self.sock.recv(json_length + media_type_length)
-        json_file = json.loads(body[:json_length].decode('utf-8'))
+    # ファイルダウンロードを開始する関数
+    def receive_file(self):
+        header = self.receive_response_header()
+        self.handle_response_body(header)
+
+    # サーバからレスポンスヘッダーを受信する関数
+    def receive_response_header(self):
+        header = self.sock.recv(8)
+        return {
+            'json_length': int.from_bytes(header[0:2], 'big'),
+            'media_type_length': int.from_bytes(header[2:3], 'big'),
+            'file_size': int.from_bytes(header[3:8], 'big')
+        }
+
+    # サーバからレスポンスボディを受信しファイルを保存する関数
+    def handle_response_body(self, header_info):
+        body = self.sock.recv(header_info['json_length'] + header_info['media_type_length'])
+        json_file = json.loads(body[:header_info['json_length']].decode('utf-8'))
 
         if json_file['error']:
             print("サーバー側でエラーが発生しました:", json_file['error_message'])
             sys.exit(1)
 
         file_name = json_file['file_name']
-        self.handler.save_received_file(file_name, self.sock, file_size, self.chunk_size)
+        self.handler.save_received_file(file_name, self.sock, header_info['file_size'], self.chunk_size)
 
-    def build_header(self, json_length, media_type_length, payload_length):
+    # アップロード用ヘッダーを作成する関数
+    def prepare_upload_header(self, json_length, media_type_length, payload_length):
         return json_length.to_bytes(2, 'big') + media_type_length.to_bytes(1, 'big') + payload_length.to_bytes(5, 'big')
 
 
