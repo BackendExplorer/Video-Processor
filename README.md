@@ -25,14 +25,13 @@
 
 <h3>3. アスペクト比変更</h3>
 
-<table>
+<table style="border: 1px solid #ccc; border-collapse: collapse;">
   <tr>
-    <td align="center" style="border: 1px solid #ccc; padding: 10px;">
+    <td align="center" style="border-right: 1px solid #ccc; padding: 10px;">
       <b>Before</b><br>
       <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px">
     </td>
-    <td style="width: 20px;"></td> <!-- スペース -->
-    <td align="center" style="border: 1px solid #ccc; padding: 10px;">
+    <td align="center" style="padding: 10px;">
       <b>After</b><br>
       <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px">
     </td>
