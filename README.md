@@ -56,9 +56,25 @@
 
 ### 5. GIF作成
 
-| Before | After |
-|:------:|:-----:|
-| ![GIF作成前](リンクをここに) | ![GIF作成後](リンクをここに) |
+<table style="border: 1px solid #ccc; border-collapse: collapse;">
+  <tr>
+    <td align="center" style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 10px;">
+      <b>Before (16:9)</b>
+    </td>
+    <td align="center" style="border-bottom: 1px solid #ccc; padding: 10px;">
+      <b>After (1:1)</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" style="border-right: 1px solid #ccc; padding: 10px;">
+      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px">
+    </td>
+    <td align="center" style="padding: 10px;">
+      <img src="<img width="1109" alt="スクリーンショット 2025-04-19 15 43 59" src="https://github.com/user-attachments/assets/ab86d883-63d9-45e0-93b9-6efa0f2004b8" />
+" height="300px">
+    </td>
+  </tr>
+</table>
 
 ---
 
