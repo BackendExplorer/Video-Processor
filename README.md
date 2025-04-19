@@ -25,7 +25,7 @@
 
 <h3>3. アスペクト比変更</h3>
 
-<div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px;">
   <div style="text-align: center;">
     <p><strong>Before</strong></p>
     <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" alt="アスペクト比変更前" width="500">
