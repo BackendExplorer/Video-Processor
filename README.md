@@ -36,10 +36,12 @@
   </tr>
   <tr>
     <td align="center" style="border-right: 1px solid #ccc; padding: 10px;">
-      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px">
+      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px"><br>
+      <a href="動画リンクURL1" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">▶︎ 動画を見る</a>
     </td>
     <td align="center" style="padding: 10px;">
-      <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px">
+      <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px"><br>
+      <a href="動画リンクURL2" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px;">▶︎ 動画を見る</a>
     </td>
   </tr>
 </table>
