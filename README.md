@@ -26,7 +26,7 @@
 <h3>3. アスペクト比変更</h3>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px" />
+  <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px" style="margin-right: 20px;" />
   <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px" />
 </p>
 
