@@ -56,7 +56,7 @@
 
 ---
 
-### 5. GIF作成
+### 5. GIF作成 (MP4→GIF )
 
 <table style="border: 1px solid #ccc; border-collapse: collapse;">
   <tr>
