@@ -25,16 +25,17 @@
 
 <h3>3. アスペクト比変更</h3>
 
-<div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+<div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; flex-wrap: nowrap;">
   <div style="text-align: center;">
     <p><strong>Before</strong></p>
-    <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" alt="アスペクト比変更前" width="500">
+    <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" alt="アスペクト比変更前" style="max-width: 100%; height: auto; width: 500px;">
   </div>
   <div style="text-align: center;">
     <p><strong>After</strong></p>
-    <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" alt="アスペクト比変更後" width="280">
+    <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" alt="アスペクト比変更後" style="max-width: 100%; height: auto; width: 280px;">
   </div>
 </div>
+
 ---
 
 ### 4. 音声変換
