@@ -28,11 +28,11 @@
 <table>
   <tr>
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px"><br>Before
+      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px"><br><b>Before</b>
     </td>
     <td style="width: 20px;"></td> <!-- スペース -->
     <td align="center">
-      <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px"><br>After
+      <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px"><br><b>After</b>
     </td>
   </tr>
 </table>
