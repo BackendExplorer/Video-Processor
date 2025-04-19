@@ -25,21 +25,21 @@
 
 <h3>3. アスペクト比変更</h3>
 
-<table style="border: 1px solid #ccc; border-collapse: collapse;">
+<table style="border: 1px solid #ccc; border-collapse: collapse; border-radius: 8px; box-shadow: 2px 2px 8px #aaa; overflow: hidden; width: 100%; max-width: 900px; margin: auto;">
   <tr>
-    <td align="center" style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 10px;">
-      <b>Before</b>
+    <td align="center" style="border-right: 1px solid #eee; border-bottom: 1px solid #ccc; padding: 20px;">
+      <div style="font-size: 20px; font-weight: bold;">Before</div>
     </td>
-    <td align="center" style="border-bottom: 1px solid #ccc; padding: 10px;">
-      <b>After</b>
+    <td align="center" style="border-bottom: 1px solid #ccc; padding: 20px;">
+      <div style="font-size: 20px; font-weight: bold;">After</div>
     </td>
   </tr>
   <tr>
-    <td align="center" style="border-right: 1px solid #ccc; padding: 10px;">
-      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px">
+    <td align="center" style="border-right: 1px solid #eee; padding: 20px;">
+      <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px" style="max-width: 100%; height: auto;">
     </td>
-    <td align="center" style="padding: 10px;">
-      <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px">
+    <td align="center" style="padding: 20px;">
+      <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px" style="max-width: 100%; height: auto;">
     </td>
   </tr>
 </table>
