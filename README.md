@@ -23,7 +23,7 @@
 
 ---
 
-<h3>3. アスペクト比変更</h3>
+<h3>3. アスペクト比変更 （16:9→1:1</h3>
 
 <table style="border: 1px solid #ccc; border-collapse: collapse;">
   <tr>
