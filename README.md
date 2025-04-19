@@ -24,16 +24,20 @@
 ---
 <h3>3. アスペクト比変更</h3>
 
-<div style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
-  <div style="flex: 1; text-align: center;">
+<h3>3. アスペクト比変更</h3>
+
+<div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; flex-wrap: nowrap; width: 100%;">
+  <div style="flex: 0 0 auto; text-align: center;">
     <p><strong>Before</strong></p>
-    <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" alt="アスペクト比変更前" style="width: 100%; height: auto;">
+    <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" alt="アスペクト比変更前" style="width: 500px; height: auto;">
   </div>
-  <div style="flex: 1; text-align: center;">
+  <div style="flex: 0 0 auto; text-align: center;">
     <p><strong>After</strong></p>
-    <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" alt="アスペクト比変更後" style="width: 100%; height: auto;">
+    <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" alt="アスペクト比変更後" style="width: 280px; height: auto;">
   </div>
-</div>---
+</div>
+
+---
 
 ### 4. 音声変換
 
