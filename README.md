@@ -27,14 +27,18 @@
 
 <table style="border: 1px solid #ccc; border-collapse: collapse;">
   <tr>
+    <td align="center" style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 10px;">
+      <b>Before</b>
+    </td>
+    <td align="center" style="border-bottom: 1px solid #ccc; padding: 10px;">
+      <b>After</b>
+    </td>
+  </tr>
+  <tr>
     <td align="center" style="border-right: 1px solid #ccc; padding: 10px;">
-      <b>Before</b><br>
-      <hr style="border: none; border-top: 1px solid #ccc; width: 80%;">
       <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px">
     </td>
     <td align="center" style="padding: 10px;">
-      <b>After</b><br>
-      <hr style="border: none; border-top: 1px solid #ccc; width: 80%;">
       <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px">
     </td>
   </tr>
