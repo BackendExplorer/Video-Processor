@@ -25,7 +25,7 @@
 
 <h3>3. アスペクト比変更 （16:9→1:1)</h3>
 
-<table style="border: 1px solid #ccc; border-collapse: collapse; width: 100%;">
+<table style="border: 1px solid #ccc; border-collapse: collapse;">
   <tr>
     <td align="center" style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 10px;">
       <b>Before (16:9)</b>
@@ -37,39 +37,11 @@
   <tr>
     <td align="center" style="border-right: 1px solid #ccc; padding: 10px;">
       <img src="https://github.com/user-attachments/assets/00dd03d7-9969-4467-930b-7fa6f30b1ed6" height="300px"><br>
-      <a href="動画リンクURL1" target="_blank" style="
-        display: inline-block;
-        margin-top: 10px;
-        padding: 8px 16px;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        color: #fff;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 25px;
-        font-size: 14px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: background 0.3s ease;
-      " onmouseover="this.style.background='linear-gradient(90deg, #00f2fe 0%, #4facfe 100%)'" onmouseout="this.style.background='linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)'">
-        ▶︎ 動画を見る
-      </a>
+      <a href="動画リンクURL1" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">▶︎ 動画を見る</a>
     </td>
     <td align="center" style="padding: 10px;">
       <img src="https://github.com/user-attachments/assets/b8080bde-8512-4f73-b23d-a1623060b03a" height="300px"><br>
-      <a href="動画リンクURL2" target="_blank" style="
-        display: inline-block;
-        margin-top: 10px;
-        padding: 8px 16px;
-        background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
-        color: #fff;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 25px;
-        font-size: 14px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: background 0.3s ease;
-      " onmouseover="this.style.background='linear-gradient(90deg, #38f9d7 0%, #43e97b 100%)'" onmouseout="this.style.background='linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)'">
-        ▶︎ 動画を見る
-      </a>
+      <a href="動画リンクURL2" target="_blank" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px;">▶︎ 動画を見る</a>
     </td>
   </tr>
 </table>
