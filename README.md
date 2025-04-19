@@ -59,10 +59,10 @@
 <table style="border: 1px solid #ccc; border-collapse: collapse;">
   <tr>
     <td align="center" style="border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 10px;">
-      <b>Before </b>
+      <b>Before (MP4)</b>
     </td>
     <td align="center" style="border-bottom: 1px solid #ccc; padding: 10px;">
-      <b>After </b>
+      <b>After (GIF)</b>
     </td>
   </tr>
   <tr>
