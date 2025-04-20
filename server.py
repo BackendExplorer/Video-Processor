@@ -224,8 +224,13 @@ class TCPServer:
 
 
 if __name__ == "__main__":
+    # サーバーのアドレスとポートを設定
     server_address = '0.0.0.0'
     server_port = 9001
+
+    # メディア処理用のインスタンスを作成
     processor = MediaProcessor()
+
+    # TCPサーバーを初期化して起動
     server = TCPServer(server_address, server_port, processor)
     server.start_server()
