@@ -349,6 +349,7 @@ sequenceDiagram
 ### 参考にしたサイト
 - [Pythonによるソケット通信の実装](https://qiita.com/t_katsumura/items/a83431671a41d9b6358f)
 
+---
 
 ## <a id="ライセンス"></a>👤 ライセンス
 このプロジェクトは [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。  
