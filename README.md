@@ -144,7 +144,7 @@ flowchart TD
 | メディア加工   | `ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
 | 開発環境       | macOS  ・ VSCode                               |
 | バージョン管理 | Git（バージョン管理）・GitHub（コード共有・公開）                          |
-| 描画ツール     | Mermaid （必要に応じてシーケンス図など作成） |
+| 描画ツール     | Mermaid ・ Latex |
 
 ### 技術選定の理由
 
