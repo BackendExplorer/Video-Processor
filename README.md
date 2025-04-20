@@ -262,6 +262,53 @@ classDiagram
 
 ### <a id="server.py のクラス図"></a> 
 
+
+## <a id="処理の流れ"></a>🔀処理の流れ
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant ユーザー
+    participant クライアント
+    participant サーバー
+    participant MediaProcessor
+    participant FFmpeg
+
+    %% ---- 起動 & アップロード ----
+    ユーザー ->> クライアント: プログラム起動・ファイル／操作を入力
+    note right of クライアント: FileHandler が入力を検証\nJSON メタ生成
+    クライアント ->> サーバー: TCP 接続確立
+    クライアント ->> サーバー: ヘッダ＋メタデータ送信\n(JSON, MediaType, FileSize)
+    クライアント ->> サーバー: ファイルデータをチャンク送信
+    サーバー -->> クライアント: ACK (0x00)\nアップロード成功通知
+
+    %% ---- 受信 & 保存 ----
+    サーバー ->> MediaProcessor: save_file()
+    MediaProcessor ->> MediaProcessor: 受信チャンクを書き込み
+    note right of MediaProcessor: 受信完了でログ出力
+
+    %% ---- 処理ディスパッチ ----
+    サーバー ->> MediaProcessor: operation_dispatcher()
+    alt operation == 1〜5
+        MediaProcessor ->> MediaProcessor: 圧縮 / 解像度変更\nアスペクト比変更 / 音声変換 / GIF 生成
+    end
+    MediaProcessor ->> FFmpeg: _run_ffmpeg() 呼び出し
+    FFmpeg -->> MediaProcessor: 変換済みファイル
+    MediaProcessor -->> サーバー: 出力ファイルパス返却
+
+    %% ---- ダウンロード ----
+    サーバー ->> クライアント: 処理済みヘッダ＋メタデータ送信
+    サーバー ->> クライアント: 処理済みファイルをチャンク送信
+    クライアント ->> クライアント: save_received_file()
+    note over クライアント: receive ディレクトリに保存\n完了メッセージ表示
+
+    %% ---- 終了 ----
+    クライアント ->> サーバー: ソケットクローズ
+    サーバー -->> ユーザー: (ログ) 接続終了
+
+```
+
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
 
