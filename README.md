@@ -263,34 +263,44 @@ classDiagram
 sequenceDiagram
     autonumber
 
-    %% スタイル定義
-    classDef userStyle    fill:#FFD700,stroke:#333,stroke-width:2px,color:#000;
-    classDef clientStyle  fill:#ADFF2F,stroke:#333,stroke-width:2px,color:#000;
-    classDef serverStyle  fill:#87CEEB,stroke:#333,stroke-width:2px,color:#000;
-    classDef ffmpegStyle  fill:#FF69B4,stroke:#333,stroke-width:2px,color:#000;
-
-    %% 参加者
     participant ユーザー
     participant クライアント
     participant サーバー
+    participant MediaProcessor
     participant FFmpeg
 
-    %% クラス適用
-    class ユーザー userStyle
-    class クライアント clientStyle
-    class サーバー serverStyle
-    class FFmpeg ffmpegStyle
+    %% ---- 起動 & アップロード ----
+    ユーザー ->> クライアント: プログラム起動・ファイル／操作を入力
+    note right of クライアント: FileHandler が入力を検証・JSONメタ生成
+    クライアント ->> サーバー: TCP 接続確立
+    クライアント ->> サーバー: ヘッダ＋メタデータ送信 (JSON, MediaType, FileSize)
+    クライアント ->> サーバー: ファイルデータをチャンク送信
+    サーバー -->> クライアント: ACK (0x00) アップロード成功通知
 
-    %% シーケンス
-    ユーザー ->> クライアント: **ファイル選択** ＆ **操作入力**
-    クライアント ->> サーバー: **ヘッダー＋ファイルデータ送信**
+    %% ---- 受信 & 保存 ----
+    サーバー ->> MediaProcessor: save_file()
+    MediaProcessor ->> MediaProcessor: 受信チャンクを書き込み
+    note right of MediaProcessor: 受信完了・ファイル保存
 
-    サーバー ->> FFmpeg: **メディア処理リクエスト**\n(圧縮／変換／GIF作成)
-    FFmpeg -->> サーバー: **処理済みファイル返却**
+    %% ---- 処理ディスパッチ ----
+    サーバー ->> MediaProcessor: operation_dispatcher()
+    alt operation == 1〜5
+        MediaProcessor ->> MediaProcessor: 圧縮 / 解像度変更 / アスペクト比変更 / 音声変換 / GIF生成
+    end
+    MediaProcessor ->> FFmpeg: _run_ffmpeg() 呼び出し
+    FFmpeg -->> MediaProcessor: 変換済みファイル返却
+    MediaProcessor -->> サーバー: 出力ファイルパス返却
+    note right of MediaProcessor: FFmpegで加工処理完了
 
-    サーバー ->> クライアント: **処理済みファイル送信**
-    クライアント ->> クライアント: **ファイル保存**
-    クライアント ->> ユーザー: **完了メッセージ表示**
+    %% ---- ダウンロード ----
+    サーバー ->> クライアント: 処理済みヘッダ＋メタデータ送信
+    サーバー ->> クライアント: 処理済みファイルをチャンク送信
+    クライアント ->> クライアント: save_received_file()
+    note over クライアント: receiveディレクトリに保存・完了メッセージ表示
+
+    %% ---- 終了 ----
+    クライアント ->> サーバー: ソケットクローズ
+    サーバー -->> ユーザー: (ログ) 接続終了
 ```
 
 ---
