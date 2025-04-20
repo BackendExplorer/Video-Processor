@@ -8,7 +8,9 @@ https://github.com/user-attachments/assets/be339ad0-1a5b-4105-a610-feef6faf65c7
 
 以下の動画では、左側に「変換前（オリジナル）」、右側に「変換後（アスペクト比変更後）」を同時に表示しています
 
-https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
+
+
+![output](https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5)
 
 ---
 ## **📎 概要**
