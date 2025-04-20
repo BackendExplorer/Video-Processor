@@ -176,6 +176,8 @@ flowchart TD
 
 ```mermaid
 classDiagram
+    direction LR
+
     class MediaProcessor {
         - dpath: str
         + __init__(dpath='processed')
@@ -208,7 +210,7 @@ classDiagram
         - build_header(json_length, media_type_length, file_size) : bytes
     }
 
-    TCPServer --> MediaProcessor : processor
+    TCPServer --> MediaProcessor 
 ```
 
 ### <a id="server.py のクラス図"></a> 
