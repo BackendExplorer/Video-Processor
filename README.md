@@ -300,7 +300,7 @@ sequenceDiagram
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
 
-この図は、**動画転送のために設計された独自プロトコル MMP (Multiple Media Protocol)**　のパケット構造を表します
+以下は、**動画転送のために設計された独自プロトコル MMP (Multiple Media Protocol)**　のパケット構造を表します
 
 
 
