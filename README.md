@@ -213,6 +213,44 @@ classDiagram
     TCPServer --> MediaProcessor 
 ```
 
+
+```mermaid
+classDiagram
+    direction LR
+
+    class FileHandler {
+        - dpath: str
+        + __init__(dpath='receive')
+        + input_file_path() : str
+        + input_operation() : int
+        + input_operation_details(operation, json_file, file_path) : dict
+        + input_resolution() : str
+        + input_aspect_ratio() : str
+        + input_gif_time_range(file_path) : (float, float)
+        + get_video_duration(file_path) : float
+        + save_received_file(file_name, connection, file_size, chunk_size=1400) : None
+    }
+
+    class TCPClient {
+        - sock: socket.socket
+        - server_address: str
+        - server_port: int
+        - chunk_size: int
+        - handler: FileHandler
+        + __init__(server_address, server_port, handler) : None
+        + start() : None
+        - upload_file() : None
+        - send_file_data(file_obj) : None
+        - receive_file() : None
+        - receive_response_header() : dict
+        - handle_response_body(header_info) : None
+        - prepare_upload_header(json_length, media_type_length, payload_length) : bytes
+    }
+
+    TCPClient --> FileHandler
+```
+
+
 ### <a id="server.py のクラス図"></a> 
 
 ---
