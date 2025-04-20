@@ -217,7 +217,7 @@ classDiagram
  [サーバプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
 
 
-### <a id="client.py のクラス図"></a> client.py のクラス図
+
 
 
 
