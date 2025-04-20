@@ -63,10 +63,6 @@ https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
 Web開発だけでは触れられない、ファイル処理とTCP通信を実践的に学ぶために開発しました。<br>
 メディア加工とネットワーク設計の力を同時に鍛えることを目指しています。
 
-
-
-
-
 ---
 
 ## <a id="セットアップ"></a> 🚀 セットアップ
@@ -137,10 +133,7 @@ flowchart TD
     ダウンロード -- 失敗 --> エラー
 ```
 
-
-
 ---
-
 
 ## <a id="使用技術"></a>🛠 使用技術
 
@@ -296,7 +289,6 @@ sequenceDiagram
 <img width="791" alt="スクリーンショット 2025-04-20 20 29 19" src="https://github.com/user-attachments/assets/fec958f6-9d2e-4c68-a4f0-ee4f4d08a0b3" />
 
 
-
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
 
@@ -306,13 +298,8 @@ sequenceDiagram
 
 <img width="790" alt="スクリーンショット 2025-04-20 20 28 14" src="https://github.com/user-attachments/assets/e3d90ebf-6210-40a5-8442-4c301867c7c1" />
 
-
-
-
-
 ---
 ## <a id="苦労した点"></a> ⚠️ 苦労した点
-
 
 
 ### 1. 大容量ファイルを安定して転送する仕組みづくり
@@ -322,15 +309,11 @@ sequenceDiagram
 パケットロスやデータ破損を防ぐため、**細部までデータ管理を最適化**しています。
 
 
-
-
 ### 2. FFmpegとPythonを連携させた高精度なメディア処理
 
 外部ツールの呼び出しはトラブルの温床になりがちですが、  
 **エラー検知・リカバリまで見据えた設計** により、  
 動画変換・編集・速度調整まで**安定動作**を実現しました。
-
-
 
 
 ### 3. ユーザー体験を損なわない同期・エラー制御
@@ -357,12 +340,14 @@ sequenceDiagram
 ---
 ## <a id="参考文献"></a>📄 参考文献
 
-
 ### 公式ドキュメント
+- [Python公式ドキュメント](https://docs.python.org/ja/3/)
+- [socketモジュール (Python)](https://docs.python.org/ja/3/library/socket.html)
+- [FFmpeg公式ドキュメント](https://ffmpeg.org/documentation.html)
 
 
 ### 参考にしたサイト
-
+- [Pythonによるソケット通信の実装](https://qiita.com/t_katsumura/items/a83431671a41d9b6358f)
 
 
 ## <a id="ライセンス"></a>👤 ライセンス
