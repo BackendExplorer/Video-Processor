@@ -2,11 +2,11 @@
 **TCP通信と独自プロトコル（MMP）で動画ファイルを処理するサービス**
 
 ## 🖥 デモ
-以下は動画のアスペクト比変更のデモです
+**以下は動画のアスペクト比変更のデモです**
 
 https://github.com/user-attachments/assets/be339ad0-1a5b-4105-a610-feef6faf65c7
 
-以下の動画では、上側に変換前、下側に変換後を同時に表示しています
+**以下の動画では、上側に変換前、下側に変換後を同時に表示しています**
 
 https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
 
