@@ -299,10 +299,6 @@ sequenceDiagram
 
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
-<img width="592" alt="スクリーンショット 2025-04-20 17 40 40" src="https://github.com/user-attachments/assets/6f664ba3-d9ab-4bd3-81ee-3ae3576e41b3" />
-
-
-<img width="554" alt="スクリーンショット 2025-04-20 17 40 54" src="https://github.com/user-attachments/assets/784a29c8-fa10-4968-9239-10e74d810c35" />
 
 
 <img width="418" alt="スクリーンショット 2025-04-20 17 02 03" src="https://github.com/user-attachments/assets/20852ed1-0b38-405b-8f3c-c9350ff7f313" />
