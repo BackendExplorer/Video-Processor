@@ -151,22 +151,29 @@ python3 client.py
 
 ```mermaid
 sequenceDiagram
+    participant User as ユーザー
     participant Client as クライアント
     participant Server as サーバ
 
-    Client->>Server: ファイル選択・加工オプション送信
-    Server-->>Client: アップロード受付確認 (ACK)
+    User->>Client: ファイルを選択
+    User->>Client: 加工オプションを選択
 
-    Client->>Server: ファイルデータを送信
-    Server-->>Server: ファイル保存＆加工処理開始
+    Client->>Server: ファイル・オプション送信
+    Server-->>Client: アップロード受付通知
 
+    User->>Client: 「アップロード開始」をクリック
+
+    Client->>Server: ファイルデータ送信
     Server-->>Client: 加工完了通知
 
-    Client->>Server: 加工ファイルダウンロード要求
-    Server-->>Client: 加工済みファイル送信
+    Client->>User: 加工完了メッセージ表示
 
-    Client-->>Client: ファイル保存完了
-```
+    User->>Client: 「ダウンロード開始」をクリック
+
+    Client->>Server: 加工ファイルダウンロード要求
+    Server-->>Client: 加工ファイル送信
+
+    Client->>User: 加工ファイルを保存・ダウンロード完了通知```
 
 ---
 
