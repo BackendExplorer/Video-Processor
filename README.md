@@ -67,16 +67,6 @@ https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
 ### 1. 前提条件
 
 - **Python 3.8以上**  
-  [Python公式サイト](https://www.python.org/downloads/) からインストールできます
-
-- **Git**  
-  [Git公式サイト](https://git-scm.com/) からインストールできます
-
-
-
-### 1. 前提条件
-
-- **Python 3.8以上**  
   [Python公式サイト](https://www.python.org/downloads/) からインストールできます。
 
 - **Git**  
@@ -99,7 +89,24 @@ cd Video-Processor
 
 ---
 
-## <a id="利用方法"></a>▶️ 利用方法
+## <a id="使い方"></a>▶️ 使い方
+
+### 1. サーバ起動
+
+サーバスクリプトを実行し、クライアントからのファイルアップロードと加工リクエストを待機します。
+
+```bash
+python3 server.py
+```
+サーバは接続された複数のクライアントとのやりとりを同時に処理します。
+
+### 2. クライアント起動
+別のターミナルを開き、以下のコマンドでクライアントを起動します。
+
+```bash
+python3 client.py
+```
+クライアントを複数起動すれば、同時に複数ファイルのアップロード・加工依頼をテストすることができます。
 
 
 ---
