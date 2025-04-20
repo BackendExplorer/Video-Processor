@@ -286,6 +286,10 @@ sequenceDiagram
     クライアント ->> ユーザー: 完了メッセージ表示
 ```
 
+
+<img width="629" alt="スクリーンショット 2025-04-20 16 52 39" src="https://github.com/user-attachments/assets/baa19677-4214-4513-9f7c-1527a5ab9d49" />
+
+
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
 
