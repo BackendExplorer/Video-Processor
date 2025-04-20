@@ -174,6 +174,43 @@ flowchart TD
 ## <a id="クラス図"></a>📦 クラス図と構成
 
 
+```mermaid
+classDiagram
+    class MediaProcessor {
+        - dpath: str
+        + __init__(dpath='processed')
+        + save_file(connection, file_path, file_size, chunk_size=1400) : None
+        - receive_in_chunks(connection, file_obj, remaining_size, chunk_size=1400) : None
+        + compress_video(input_file_path, file_name, bitrate='1M') : str
+        + change_resolution(input_file_path, file_name, resolution) : str
+        + change_aspect_ratio(input_file_path, file_name, aspect_ratio) : str
+        + convert_to_audio(input_file_path, file_name) : str
+        + create_gif(input_file_path, file_name, start_time, duration, fps=10) : str
+        - _run_ffmpeg(input_path, output_path, **kwargs) : None
+    }
+
+    class TCPServer {
+        - server_address: str
+        - server_port: int
+        - processor: MediaProcessor
+        - chunk_size: int
+        - sock: socket.socket
+        + __init__(server_address, server_port, processor) : None
+        + start_server() : None
+        - accept_connection() : (connection, client_address)
+        - handle_client(connection) : None
+        - parse_header(connection) : dict
+        - parse_body(connection, json_length, media_type_length) : (json_file, media_type)
+        - operation_dispatcher(json_file, input_file_path) : str
+        - send_file(connection, output_file_path) : None
+        - send_header_and_metadata(connection, json_bytes, media_type_bytes, file_size) : None
+        - send_error_response(connection, error_message) : None
+        - build_header(json_length, media_type_length, file_size) : bytes
+    }
+
+    TCPServer --> MediaProcessor : processor
+```
+
 ### <a id="server.py のクラス図"></a> 
 
 ---
