@@ -6,6 +6,10 @@ https://github.com/user-attachments/assets/536a4984-b559-44ee-b5d5-252c7e53a2a8
 
 
 
+https://github.com/user-attachments/assets/be339ad0-1a5b-4105-a610-feef6faf65c7
+
+
+
 
 ### 1. 動画の圧縮
 
