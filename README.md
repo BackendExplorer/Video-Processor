@@ -263,24 +263,34 @@ classDiagram
 sequenceDiagram
     autonumber
 
+    %% スタイル定義
+    classDef userStyle    fill:#FFD700,stroke:#333,stroke-width:2px,color:#000;
+    classDef clientStyle  fill:#ADFF2F,stroke:#333,stroke-width:2px,color:#000;
+    classDef serverStyle  fill:#87CEEB,stroke:#333,stroke-width:2px,color:#000;
+    classDef ffmpegStyle  fill:#FF69B4,stroke:#333,stroke-width:2px,color:#000;
+
+    %% 参加者
     participant ユーザー
     participant クライアント
     participant サーバー
     participant FFmpeg
 
-    %% ユーザー操作→アップロード
-    ユーザー ->> クライアント: ファイル選択 ＆ 操作入力
-    クライアント ->> サーバー: ヘッダー＋ファイルデータ送信
+    %% クラス適用
+    class ユーザー userStyle
+    class クライアント clientStyle
+    class サーバー serverStyle
+    class FFmpeg ffmpegStyle
 
-    %% サーバー側で処理
-    サーバー ->> FFmpeg: メディア処理リクエスト\n(圧縮／変換／GIF 作成 など)
-    FFmpeg -->> サーバー: 処理済みファイル返却
+    %% シーケンス
+    ユーザー ->> クライアント: **ファイル選択** ＆ **操作入力**
+    クライアント ->> サーバー: **ヘッダー＋ファイルデータ送信**
 
-    %% ダウンロード→保存
-    サーバー ->> クライアント: 処理済みファイル送信
-    クライアント ->> クライアント: ファイル保存
-    クライアント ->> ユーザー: 完了メッセージ表示
+    サーバー ->> FFmpeg: **メディア処理リクエスト**\n(圧縮／変換／GIF作成)
+    FFmpeg -->> サーバー: **処理済みファイル返却**
 
+    サーバー ->> クライアント: **処理済みファイル送信**
+    クライアント ->> クライアント: **ファイル保存**
+    クライアント ->> ユーザー: **完了メッセージ表示**
 ```
 
 ---
