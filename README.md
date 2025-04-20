@@ -173,6 +173,7 @@ flowchart TD
 
 ## <a id="クラス図"></a>📦 クラス図と構成
 
+### <a id="server.py のクラス図"></a> server.py のクラス図
 
 ```mermaid
 classDiagram
@@ -213,6 +214,12 @@ classDiagram
     TCPServer --> MediaProcessor 
 ```
 
+ [サーバプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
+
+
+### <a id="client.py のクラス図"></a> client.py のクラス図
+
+
 
 ```mermaid
 classDiagram
@@ -249,6 +256,8 @@ classDiagram
 
     TCPClient --> FileHandler
 ```
+
+[クライアントプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py)
 
 
 ### <a id="server.py のクラス図"></a> 
