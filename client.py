@@ -251,6 +251,7 @@ class TCPClient:
     def prepare_upload_header(self, json_length, media_type_length, payload_length):
         return json_length.to_bytes(2, 'big') + media_type_length.to_bytes(1, 'big') + payload_length.to_bytes(5, 'big')
 
+
 if __name__ == "__main__":
     # サーバーのアドレスとポート番号を設定
     server_address = '0.0.0.0'
