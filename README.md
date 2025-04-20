@@ -304,7 +304,7 @@ sequenceDiagram
 
 
 
-<img width="418" alt="スクリーンショット 2025-04-20 17 02 03" src="https://github.com/user-attachments/assets/20852ed1-0b38-405b-8f3c-c9350ff7f313" />
+
 
 ---
 ## <a id="苦労した点"></a> ⚠️ 苦労した点
