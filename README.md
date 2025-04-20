@@ -300,7 +300,7 @@ sequenceDiagram
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
 
-<img width="397" alt="スクリーンショット 2025-04-20 20 25 36" src="https://github.com/user-attachments/assets/a05aa954-3511-453e-ab3e-fb41a0412840" />
+<img width="790" alt="スクリーンショット 2025-04-20 20 28 14" src="https://github.com/user-attachments/assets/e3d90ebf-6210-40a5-8442-4c301867c7c1" />
 
 
 
