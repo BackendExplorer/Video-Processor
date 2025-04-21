@@ -164,6 +164,7 @@ flowchart TD
 | バージョン管理 | Git（バージョン管理）・GitHub（コード共有・公開）                          |
 | 描画ツール     | Mermaid ・ Latex |
 
+
 ### 技術選定の理由
 
 - **Python**
