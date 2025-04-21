@@ -241,6 +241,7 @@ classDiagram
 
 ### <a id="client.py のクラス図"></a> client.py のクラス図
 
+<br>
 
 ```mermaid
 classDiagram
@@ -278,8 +279,11 @@ classDiagram
     TCPClient --> FileHandler
 ```
 
+<br>
+
 [クライアントプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py)
 
+<br>
 
 ### <a id="server.py のクラス図"></a> 
 
