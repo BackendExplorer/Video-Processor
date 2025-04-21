@@ -189,7 +189,11 @@ flowchart TD
 
 ## <a id="クラス図"></a>📦 クラス図と構成
 
+<br>
+
 ### <a id="server.py のクラス図"></a> server.py のクラス図
+
+<br>
 
 ```mermaid
 classDiagram
