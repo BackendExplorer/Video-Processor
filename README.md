@@ -235,7 +235,8 @@ classDiagram
 ```
 <br>
 
- [サーバプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
+[**サーバプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
+
 
 <br>
 
