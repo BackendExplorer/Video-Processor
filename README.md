@@ -72,7 +72,6 @@ https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
   
   動画の好きな部分を切り取り、GIFアニメーションを作成
 
-  
 
 ### 作成動機
 
