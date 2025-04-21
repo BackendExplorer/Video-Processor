@@ -191,7 +191,7 @@ flowchart TD
 
 
 
-### <a id="server.py のクラス図"></a> server.py のクラス図
+## <a id="server.py のクラス図"></a> server.py のクラス図
 
 <br>
 
@@ -239,7 +239,7 @@ classDiagram
 
 <br>
 
-### <a id="client.py のクラス図"></a> client.py のクラス図
+## <a id="client.py のクラス図"></a> client.py のクラス図
 
 <br>
 
