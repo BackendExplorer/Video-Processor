@@ -193,7 +193,8 @@ flowchart TD
 
 ### <a id="server.py のクラス図"></a> server.py のクラス図
 
-<br>
+[**サーバプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
+
 
 ```mermaid
 classDiagram
@@ -235,7 +236,7 @@ classDiagram
 ```
 <br>
 
-[**サーバプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
+
 
 
 <br>
