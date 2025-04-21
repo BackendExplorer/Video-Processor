@@ -248,6 +248,10 @@ classDiagram
 
 <br>
 
+[**クライアントプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py)
+
+<br>
+
 ```mermaid
 classDiagram
     direction LR
@@ -284,9 +288,9 @@ classDiagram
     TCPClient --> FileHandler
 ```
 
-<br>
 
-[**クライアントプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py)
+
+
 
 <br>
 
