@@ -282,7 +282,7 @@ classDiagram
 
 <br>
 
-[クライアントプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py)
+[**クライアントプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py)
 
 <br>
 
