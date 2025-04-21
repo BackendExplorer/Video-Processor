@@ -1,4 +1,5 @@
 # 🎥 Video-Processor ✨
+<hr style="border-top: 1px dashed #bbb;">
 
 **TCP通信と独自プロトコル（MMP）で動画ファイルを処理するサービス**
 
