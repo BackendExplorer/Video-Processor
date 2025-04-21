@@ -229,10 +229,11 @@ classDiagram
 
     TCPServer --> MediaProcessor 
 ```
+<br>
 
  [サーバプログラムを見る](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
 
-
+<br>
 
 ### <a id="client.py のクラス図"></a> client.py のクラス図
 
