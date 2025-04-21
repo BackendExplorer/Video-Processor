@@ -77,13 +77,16 @@ Web開発だけでは触れられない、ファイル処理とTCP通信を実�
 
 ### 1. 前提条件
 
-- **Python 3.8以上**  
+- **Python 3.8以上**
+  
   [Python公式サイト](https://www.python.org/downloads/) からインストールできます。
 
-- **Git**  
+- **Git**
+  
   [Git公式サイト](https://git-scm.com/) からインストールできます。
 
-- **ffmpeg**  
+- **ffmpeg**
+  
   [ffmpeg公式サイト](https://ffmpeg.org/download.html) からインストールできます
 
 
