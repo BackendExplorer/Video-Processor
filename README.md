@@ -410,17 +410,22 @@ sequenceDiagram
 ## <a id="参考文献"></a>📄 参考文献
 
 ### 公式ドキュメント
+
 - [Python公式ドキュメント](https://docs.python.org/ja/3/)
+
 - [socketモジュール (Python)](https://docs.python.org/ja/3/library/socket.html)
+
 - [FFmpeg公式ドキュメント](https://ffmpeg.org/documentation.html)
 
 
 ### 参考にしたサイト
+
 - [Pythonによるソケット通信の実装](https://qiita.com/t_katsumura/items/a83431671a41d9b6358f)
 
 ---
 
 ## <a id="ライセンス"></a>👤 ライセンス
+
 このプロジェクトは [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。  
 
 自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。
