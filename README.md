@@ -129,9 +129,10 @@ git clone https://github.com/BackendExplorer/Video-Processor.git
 cd Video-Processor
 ```
 
+<br>
+
 ---
 
-<br>
 
 ## <a id="使い方"></a>▶️ 使い方
 
@@ -173,6 +174,8 @@ flowchart TD
     ダウンロード -- 成功 --> 完了
     ダウンロード -- 失敗 --> エラー
 ```
+
+<br>
 
 ---
 
