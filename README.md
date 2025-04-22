@@ -212,6 +212,8 @@ flowchart TD
   追加ライブラリ不要で、システム制御、ファイル管理、エラーハンドリング、データ構造化が完結できるため選択しました。
 
 
+<br>
+
 ---
 
 
@@ -357,6 +359,8 @@ sequenceDiagram
 <img width="791" alt="スクリーンショット 2025-04-20 20 29 19" src="https://github.com/user-attachments/assets/fec958f6-9d2e-4c68-a4f0-ee4f4d08a0b3" />
 
 
+<br>
+
 ---
 ## <a id="こだわりのポイント"></a> ✨ こだわりのポイント
 
@@ -365,6 +369,8 @@ sequenceDiagram
 
 
 <img width="790" alt="スクリーンショット 2025-04-20 20 28 14" src="https://github.com/user-attachments/assets/e3d90ebf-6210-40a5-8442-4c301867c7c1" />
+
+<br>
 
 ---
 ## <a id="苦労した点"></a> ⚠️ 苦労した点
@@ -398,6 +404,8 @@ sequenceDiagram
 
 操作性を犠牲にせず、滑らかな体験を提供できるよう細部にこだわりました。
 
+<br>
+
 ---
 
 ## <a id="さらに追加したい機能"></a> 🌱 さらに追加したい機能
@@ -420,6 +428,7 @@ sequenceDiagram
   
 - 逆に、クライアントもサーバの公開鍵で暗号化してメッセージ送信。
 
+<br>
 
 ---
 ## <a id="参考文献"></a>📄 参考文献
@@ -436,6 +445,8 @@ sequenceDiagram
 ### 参考にしたサイト
 
 - [Pythonによるソケット通信の実装](https://qiita.com/t_katsumura/items/a83431671a41d9b6358f)
+
+<br>
 
 ---
 
