@@ -224,6 +224,7 @@ class TCPServer:
 
 
 if __name__ == "__main__":
+    
     # サーバーのアドレスとポートを設定
     server_address = '0.0.0.0'
     server_port = 9001
