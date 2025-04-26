@@ -71,6 +71,8 @@ https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
 
 大容量ファイルのスムーズな送受信と、強力なエラーハンドリングに対応しています。
 
+<br>
+
 ### できること
 
 - **動画圧縮**
@@ -93,6 +95,7 @@ https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
   
   動画の好きな部分を切り取り、GIFアニメーションを作成
 
+<br>
 
 ### 作成動機
 
