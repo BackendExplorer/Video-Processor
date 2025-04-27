@@ -189,20 +189,12 @@ flowchart TD
 
 ## <a id="使用技術"></a>🧰 使用技術
 
-| カテゴリ       | 技術スタック                                                                 |
-|----------------|------------------------------------------------------------------------------|
-| 開発言語       | Python 3.8以上<br>（標準ライブラリ使用：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re`） |
-| 通信技術       | TCPソケット通信によるファイル送受信<br>カスタムヘッダー設計によるメタデータ管理 |
-| メディア加工   | `ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
-| 開発環境       | macOS  ・ VSCode                               |
-| バージョン管理 | Git（バージョン管理）・GitHub（コード共有・公開）                          |
-| 描画ツール     | Mermaid ・ Latex |
-
+<br>
 
 | カテゴリ       | 技術スタック                                                                 |
 |----------------|------------------------------------------------------------------------------|
 | 開発言語       | ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) <br>（標準ライブラリ使用：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re`） |
-| 通信技術       | ![TCP](https://img.shields.io/badge/Protocol-TCP-blue) <br>TCPソケット通信によるファイル送受信<br>カスタムヘッダー設計によるメタデータ管理 |
+| 通信技術       | ![TCP](https://img.shields.io/badge/Protocol-TCP-blue) <br>TCPソケット通信によるファイル送受信 |
 | メディア加工   | `ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
 | 開発環境       | ![macOS](https://img.shields.io/badge/OS-macOS-lightgrey) ![VSCode](https://img.shields.io/badge/Editor-VSCode-blue) |
 | バージョン管理 | ![Git](https://img.shields.io/badge/VersionControl-Git-orange) ![GitHub](https://img.shields.io/badge/Repo-GitHub-black) |
