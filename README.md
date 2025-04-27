@@ -233,7 +233,7 @@ flowchart TD
 
 <br>
 
-[**サーバプログラムを見る**](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py)
+### <a id="server.py のクラス図"></a> [サーバプログラム](https://github.com/BackendExplorer/Video-Processor/blob/main/server.py) のクラス図
 
 <br>
 
