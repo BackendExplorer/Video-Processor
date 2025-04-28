@@ -192,8 +192,6 @@ flowchart TD
 <br>
 
 
-## 技術スタック
-
 | カテゴリ | 技術スタック |
 |:---|:---|
 | 開発言語 | ![Python](https://img.shields.io/badge/-Python-3776AB.svg?logo=python&logoColor=white&style=flat) <br> 標準ライブラリ： `socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re` |
