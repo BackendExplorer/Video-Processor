@@ -34,7 +34,7 @@
 <tr>
 <td>バージョン管理</td>
 <td>
-<img src="https://img.shields.io/badge/-Git-F05032.svg?logo=git&style=popout">
+<img src="https://img.shields.io/badge/-Git-F05032.svg?logo=git&logoColor=white&style=popout">
 <img src="https://img.shields.io/badge/-GitHub-181717.svg?logo=github&style=popout">
 </td>
 </tr>
