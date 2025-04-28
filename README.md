@@ -210,7 +210,7 @@ flowchart TD
 <td>開発言語</td>
 <td>
 <p style="display: inline">
-<img src="https://img.shields.io/badge/-Python-3776AB.svg?logo=python&style=popout">
+<img src="https://img.shields.io/badge/-Python-3776AB.svg?logo=python&logoColor=white&style=popout">
 </p>
 <br>標準ライブラリ：<code>socket</code>, <code>os</code>, <code>json</code>, <code>logging</code>, <code>pathlib</code>, <code>sys</code>, <code>re</code>
 </td>
@@ -222,7 +222,6 @@ flowchart TD
 <img src="https://img.shields.io/badge/-TCP-0A66C2.svg?logo=protocolsio&style=popout">
 </p>
 <br>TCPソケット通信によるファイル送受信
-
 </td>
 </tr>
 <tr>
