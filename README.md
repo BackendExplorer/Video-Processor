@@ -192,14 +192,16 @@ flowchart TD
 <br>
 
 
+## 技術スタック
+
 | カテゴリ | 技術スタック |
 |:---|:---|
-| 開発言語 | ![Python](https://img.shields.io/badge/-Python-3776AB.svg?logo=python&logoColor=white&style=flat) <br> 標準ライブラリ： `socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re` |
-| 通信技術 | ![TCP](https://img.shields.io/badge/-TCP-0A66C2.svg?style=flat) <br> TCPソケット通信によるファイル送受信 |
-| メディア加工 | ![FFmpeg](https://img.shields.io/badge/-FFmpeg-007808.svg?logo=ffmpeg&style=flat) <br> `ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
-| 開発環境 | ![macOS](https://img.shields.io/badge/-macOS-000000.svg?logo=apple&style=flat) ![VSCode](https://img.shields.io/badge/VSCode-1E90FF?logo=visualstudiocode&logoColor=white&style=flat) |
-| バージョン管理 | ![Git](https://img.shields.io/badge/-Git-F05032.svg?logo=git&logoColor=white&style=flat) ![GitHub](https://img.shields.io/badge/-GitHub-181717.svg?logo=github&style=flat) |
-| 描画ツール | ![Mermaid](https://img.shields.io/badge/-Mermaid-0088CC.svg?logo=mermaid&style=flat) ![LaTeX](https://img.shields.io/badge/-LaTeX-008080.svg?logo=latex&style=flat) |
+| 開発言語 | ![Python](https://img.shields.io/badge/-Python-3776AB.svg?logo=python&logoColor=white&style=plastic) <br> 標準ライブラリ： `socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re` |
+| 通信技術 | ![TCP](https://img.shields.io/badge/-TCP-0A66C2.svg?style=plastic) <br> TCPソケット通信によるファイル送受信 |
+| メディア加工 | ![FFmpeg](https://img.shields.io/badge/-FFmpeg-007808.svg?logo=ffmpeg&style=plastic) <br> `ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
+| 開発環境 | ![macOS](https://img.shields.io/badge/-macOS-000000.svg?logo=apple&style=plastic) ![VSCode](https://img.shields.io/badge/VSCode-007ACC.svg?logo=visualstudiocode&logoColor=white&style=plastic) |
+| バージョン管理 | ![Git](https://img.shields.io/badge/-Git-F05032.svg?logo=git&logoColor=white&style=plastic) ![GitHub](https://img.shields.io/badge/-GitHub-181717.svg?logo=github&style=plastic) |
+| 描画ツール | ![Mermaid](https://img.shields.io/badge/-Mermaid-0088CC.svg?logo=mermaid&style=plastic) ![LaTeX](https://img.shields.io/badge/-LaTeX-008080.svg?logo=latex&style=plastic) |
 
 
 <br>
