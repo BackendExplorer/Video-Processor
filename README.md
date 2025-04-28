@@ -28,7 +28,7 @@
 <td>開発環境</td>
 <td>
 <img src="https://img.shields.io/badge/-macOS-000000.svg?logo=apple&style=popout">
-<img src="https://img.shields.io/badge/-VSCode-007ACC.svg?logo=visual-studio-code&style=popout">
+<img src="https://img.shields.io/badge/-VSCode-007ACC.svg?logo=visualstudiocode&style=popout">
 </td>
 </tr>
 <tr>
