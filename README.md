@@ -1,3 +1,55 @@
+<table>
+<thead>
+<tr><th>カテゴリ</th><th>技術スタック</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>開発言語</td>
+<td>
+<img src="https://img.shields.io/badge/-Python-3776AB.svg?logo=python&logoColor=white&style=popout">
+<br>標準ライブラリ：<code>socket</code>, <code>os</code>, <code>json</code>, <code>logging</code>, <code>pathlib</code>, <code>sys</code>, <code>re</code>
+</td>
+</tr>
+<tr>
+<td>通信技術</td>
+<td>
+<img src="https://img.shields.io/badge/-TCP-0A66C2.svg?logo=protocolsio&style=popout">
+<br>TCPソケット通信によるファイル送受信
+</td>
+</tr>
+<tr>
+<td>メディア加工</td>
+<td>
+<img src="https://img.shields.io/badge/-FFmpeg-007808.svg?logo=ffmpeg&style=popout">
+<br><code>ffmpeg</code>ライブラリをPythonから呼び出して動画・音声処理
+</td>
+</tr>
+<tr>
+<td>開発環境</td>
+<td>
+<img src="https://img.shields.io/badge/-macOS-000000.svg?logo=apple&style=popout">
+<img src="https://img.shields.io/badge/-VSCode-007ACC.svg?logo=visualstudiocode&style=popout">
+</td>
+</tr>
+<tr>
+<td>バージョン管理</td>
+<td>
+<img src="https://img.shields.io/badge/-Git-F05032.svg?logo=git&style=popout">
+<img src="https://img.shields.io/badge/-GitHub-181717.svg?logo=github&style=popout">
+</td>
+</tr>
+<tr>
+<td>描画ツール</td>
+<td>
+<img src="https://img.shields.io/badge/-Mermaid-0088CC.svg?logo=mermaid&style=popout">
+<img src="https://img.shields.io/badge/-LaTeX-008080.svg?logo=latex&style=popout">
+</td>
+</tr>
+</tbody>
+</table>
+
+
+
 # 🎥  Video-Processor  ✨
 
 
