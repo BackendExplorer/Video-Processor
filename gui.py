@@ -1,13 +1,16 @@
-# gui.py ― Streamlit GUI（タイトル＆ラベル非表示版）
-
 import streamlit as st
 from client import TCPClient, FileHandler
 import os, tempfile, base64, time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
+
 # ----------------- ヘルパ：動画 / 音声を base64 埋め込みして autoplay -----------------
 def autoplay_media(path: str, media_type: str):
+    """
+    video/audio を base64 に変換して HTML5 タグで埋め込み。
+    ＊動画はミュートせず、自動再生時に音声も出るようにした＊
+    """
     mime = {"video": "video/mp4", "audio": "audio/mpeg"}
     ext  = Path(path).suffix.lower()
     if ext == ".avi":
@@ -17,8 +20,9 @@ def autoplay_media(path: str, media_type: str):
         b64 = base64.b64encode(f.read()).decode()
 
     if media_type == "video":
+        # muted 属性を外し、playsinline を付与
         html = f"""
-        <video width="100%" controls autoplay muted loop>
+        <video width="100%" controls autoplay loop playsinline>
           <source src="data:{mime['video']};base64,{b64}" type="{mime['video']}">
         </video>"""
     else:
@@ -28,9 +32,11 @@ def autoplay_media(path: str, media_type: str):
         </audio>"""
     st.markdown(html, unsafe_allow_html=True)
 
+
 # ----------------- TCP クライアント -----------------
 handler = FileHandler()
 client  = TCPClient(server_address="0.0.0.0", server_port=9001, handler=handler)
+
 
 # ----------------- ファイルアップロード -----------------
 uploaded_file = st.file_uploader(
@@ -53,15 +59,18 @@ if uploaded_file:
 
     if operation == "圧縮":
         br = st.selectbox("圧縮ビットレート", ["500k", "1M", "2M"])
-        operation_details["bitrate"] = br; operation_code = 1
+        operation_details["bitrate"] = br
+        operation_code = 1
 
     elif operation == "解像度変更":
         res = st.selectbox("解像度", ["1920:1080", "1280:720", "720:480"])
-        operation_details["resolution"] = res; operation_code = 2
+        operation_details["resolution"] = res
+        operation_code = 2
 
     elif operation == "アスペクト比変更":
         ar  = st.selectbox("アスペクト比", ["16/9", "4/3", "1/1"])
-        operation_details["aspect_ratio"] = ar; operation_code = 3
+        operation_details["aspect_ratio"] = ar
+        operation_code = 3
 
     elif operation == "音声変換":
         operation_code = 4
@@ -94,7 +103,8 @@ if uploaded_file:
             try:
                 output_path = future.result()
             except Exception as e:
-                progress_bar.empty(); status_text.empty()
+                progress_bar.empty()
+                status_text.empty()
                 st.error(f"処理に失敗しました: {e}")
                 st.stop()
             progress_bar.progress(100)
@@ -102,7 +112,7 @@ if uploaded_file:
 
         st.success("処理完了！")
 
-        # ---------- 変換前後の比較表示（自動再生） ----------
+        # ---------- 変換前後の比較表示（自動再生：音声ON） ----------
         col1, col2 = st.columns(2)
 
         with col1:
