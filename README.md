@@ -151,6 +151,8 @@ python3 server.py
 ```
 サーバは接続された複数のクライアントとのやりとりを同時に処理します。
 
+<img width="500" alt="スクリーンショット 2025-05-02 15 58 02" src="https://github.com/user-attachments/assets/70e51767-ff19-4a6e-87d9-33efbe1baa3c" />
+
 <br>
 
 ### 2. クライアント起動
@@ -161,7 +163,9 @@ python3 server.py
 streamlit run gui.py
 ```
 
+<img width="463" alt="スクリーンショット 2025-05-02 15 58 08" src="https://github.com/user-attachments/assets/3708bba4-cb0f-4bb2-b5c5-b2ea3741bd3d" />
 
+<br>
 ### 3. 操作手順
 以下は、このアプリの基本的な操作手順です
 
