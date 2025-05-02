@@ -420,15 +420,6 @@ sequenceDiagram
 
 ## <a id="さらに追加したい機能"></a> 🔥 さらに追加したい機能
 
-### デスクトップアプリケーションの作成
-
-- Electron.js（Node.jsベース）を使用し、デスクトップアプリを開発。
-  
-- ユーザーは動画をアップロードし、圧縮または変換を選択可能。
-  
-- 圧縮時は設定選択、変換時は出力形式選択＆進捗確認ができるダッシュボードを提供。
-
-<br>
 
 ### メッセージの暗号化
 
@@ -450,6 +441,8 @@ sequenceDiagram
 - [socketモジュール (Python)](https://docs.python.org/ja/3/library/socket.html)
 
 - [FFmpeg公式ドキュメント](https://ffmpeg.org/documentation.html)
+
+- [Streamlit](https://docs.streamlit.io)
 
 
 
