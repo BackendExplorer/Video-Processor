@@ -1,138 +1,20 @@
+# client.py
+
 import socket
 import os
 import json
-import sys
 import logging
 from pathlib import Path
-import ffmpeg
-import re
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-# ファイル操作（アップロード用ファイル選択・オプション指定・保存）を担当するクラス
 class FileHandler:
-
-    # 保存用ディレクトリを作成し、初期化ログを出力
+    # フォルダを作成し、受信ファイルの保存先を準備する
     def __init__(self, dpath='receive'):
         self.dpath = dpath
         os.makedirs(self.dpath, exist_ok=True)
-        logging.info("\n=============================================")
-        logging.info(f"\n📂 ディレクトリを作成/確認しました: {self.dpath}")
 
-    # ユーザーから入力されたファイルパスを検証し、返却
-    def input_file_path(self):
-        valid_extensions = ('.mp4', '.avi')
-        while True:
-            file_path = input("ファイルパスを入力してください（mp4、avi）: ")
-            if file_path.endswith(valid_extensions):
-                logging.info("\n=============================================")
-                logging.info(f"\n📄 有効なファイルパスが入力されました: {file_path}")
-                return file_path
-            else:
-                logging.warning("❌ 無効なファイル拡張子です。もう一度試してください。")
-
-    # 実行する操作を選択し、操作コードを返却
-    def input_operation(self):
-        while True:
-            logging.info("")
-            print("1: 動画の圧縮\n"
-                  "2: 解像度変更\n"
-                  "3: アスペクト比変更\n"
-                  "4: 音声変換\n"
-                  "5: GIF作成")
-
-            try:
-                logging.info("")
-                operation = int(input("オペレーションを入力してください(1-5): "))
-                if operation in range(1, 6):
-                    logging.info("\n---------------------------------------------")
-                    logging.info(f"\n🎛️ 選択されたオペレーション: {operation}")
-                    return operation
-                else:
-                    logging.warning("❌ 無効な選択です。1から5の間で選択してください。")
-            except ValueError:
-                logging.warning("❌ 無効な入力です。数字を入力してください。")
-
-    # 操作に応じて追加の詳細入力を呼び出し、JSON用辞書に設定
-    def input_operation_details(self, operation, json_file, file_path):
-        if operation == 2:
-            json_file['resolution'] = self.input_resolution()
-        elif operation == 3:
-            json_file['aspect_ratio'] = self.input_aspect_ratio()
-        elif operation == 5:
-            start_time, duration = self.input_gif_time_range(file_path)
-            json_file['start_time'] = start_time
-            json_file['duration'] = duration
-        return json_file
-
-    # 解像度選択の入力を受け付け、対応する値を返却
-    def input_resolution(self):
-        resolutions = {"1": "1920:1080", "2": "1280:720", "3": "720:480"}
-        while True:
-            logging.info("")
-            print("1: フルHD(1920:1080)\n"
-                  "2: HD(1280:720)\n"
-                  "3: SD(720:480)")
-
-            logging.info("")
-            resolution = input("解像度を選択してください: ")
-            if resolution in resolutions:
-                return resolutions[resolution]
-            else:
-                logging.warning("❌ 無効な解像度選択です。")
-
-    # アスペクト比選択の入力を受け付け、対応する値を返却
-    def input_aspect_ratio(self):
-        aspect_ratios = {"1": "16/9", "2": "4/3", "3": "1/1"}
-        while True:
-            logging.info("")
-            print("1: (16:9)\n"
-                  "2: (4:3)\n"
-                  "3: (1:1)")
-
-            logging.info("")
-            aspect_ratio = input("アスペクト比を選択してください: ")
-            if aspect_ratio in aspect_ratios:
-                return aspect_ratios[aspect_ratio]
-            else:
-                logging.warning("❌ 無効なアスペクト比選択です。")
-
-    # GIF作成用の開始時間と長さを入力し、秒数に変換して返却
-    def input_gif_time_range(self, file_path):
-        video_duration = self.get_video_duration(file_path)
-        HH = video_duration // 3600
-        MM = (video_duration % 3600) // 60
-        SS = video_duration % 60
-        logging.info(f"動画の長さ: {int(HH):02}:{int(MM):02}:{int(SS):02}")
-        while True:
-            start_time = input("開始時間 (例: 00:00:10): ")
-            if re.match(r'^\d{2}:\d{2}:\d{2}$', start_time):
-                st_HH, st_MM, st_SS = map(int, start_time.split(":"))
-                start_time_sec = st_HH * 3600 + st_MM * 60 + st_SS
-                if start_time_sec < video_duration:
-                    break
-                else:
-                    logging.warning("❌ 開始時間は動画の長さより短く設定してください。")
-            else:
-                logging.warning("❌ 無効な時間形式です。")
-
-        while True:
-            duration = input("再生時間（秒）: ")
-            if duration.isdigit():
-                duration = float(duration)
-                if 0 < duration <= (video_duration - start_time_sec):
-                    return start_time_sec, duration
-                else:
-                    logging.warning("❌ 無効な再生時間です。")
-            else:
-                logging.warning("❌ 数字で入力してください。")
-
-    # ffmpegを用いて動画長を取得し、秒数を返却
-    def get_video_duration(self, file_path):
-        probe = ffmpeg.probe(file_path)
-        return float(probe['format']['duration'])
-
-    # サーバーから受信したファイルを保存
+    # サーバーから送られてきたファイルをチャンク単位で受信し、ディスクに保存する
     def save_received_file(self, file_name, connection, file_size, chunk_size=1400):
         output_file_path = os.path.join(self.dpath, file_name)
         with open(output_file_path, 'wb+') as f:
@@ -140,14 +22,11 @@ class FileHandler:
                 data = connection.recv(min(file_size, chunk_size))
                 f.write(data)
                 file_size -= len(data)
-        logging.info("\n---------------------------------------------")
-        logging.info(f"\n📥 ファイルを保存しました: {output_file_path}")
+        return output_file_path
 
 
-# TCP通信を行い、ファイル送信・受信を制御するクライアントクラス
 class TCPClient:
-
-    # ソケット生成とサーバ情報、ハンドラ設定
+    # サーバーへの接続設定とハンドラーの初期化
     def __init__(self, server_address, server_port, handler: FileHandler):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_address = server_address
@@ -155,112 +34,60 @@ class TCPClient:
         self.chunk_size = 1400
         self.handler = handler
 
-    # サーバー接続からアップロード・受信までの一連処理
-    def start(self):
-        try:
-            logging.info(f"📡 サーバーに接続中: {self.server_address}:{self.server_port}")
-            self.sock.connect((self.server_address, self.server_port))
-            self.upload_file()
-        except socket.error as err:
-            logging.error(f"❌ 接続エラー: {err}")
-            sys.exit(1)
-        finally:
-            logging.info("🔌 ソケットを閉じます")
-            logging.info("\n---------------------------------------------")
-            self.sock.close()
+    # ファイルをサーバーにアップロードし、指定の処理を実行して結果を受信する
+    def upload_and_process(self, file_path, operation, operation_details={}):
+        self.sock.connect((self.server_address, self.server_port))
 
-    # ファイル送信の準備・送信とレスポンス処理を実行
-    def upload_file(self):
-        try:
-            file_path = self.handler.input_file_path()
-            _, media_type = os.path.splitext(file_path)
-            media_type_bytes = media_type.encode('utf-8')
+        _, media_type = os.path.splitext(file_path)
+        media_type_bytes = media_type.encode('utf-8')
 
-            # ファイルサイズ計算
-            with open(file_path, 'rb') as f:
-                f.seek(0, os.SEEK_END)
-                file_size = f.tell()
-                f.seek(0)
+        with open(file_path, 'rb') as f:
+            f.seek(0, os.SEEK_END)
+            file_size = f.tell()
+            f.seek(0)
 
-                file_name = os.path.basename(f.name)
-                operation = self.handler.input_operation()
-                json_file = {'file_name': file_name, 'operation': operation}
-                json_file = self.handler.input_operation_details(operation, json_file, file_path)
+            file_name = os.path.basename(f.name)
+            json_file = {'file_name': file_name, 'operation': operation}
+            json_file.update(operation_details)
 
-                # ヘッダーとメタ情報を送信
-                json_bytes = json.dumps(json_file).encode('utf-8')
-                header = self.prepare_upload_header(len(json_bytes), len(media_type_bytes), file_size)
-                self.sock.sendall(header)
-                self.sock.sendall(json_bytes + media_type_bytes)
+            json_bytes = json.dumps(json_file).encode('utf-8')
+            header = self.prepare_upload_header(len(json_bytes), len(media_type_bytes), file_size)
+            self.sock.sendall(header)
+            self.sock.sendall(json_bytes + media_type_bytes)
 
-                # 実データ送信
-                self.send_file_data(f)
+            data = f.read(self.chunk_size)
+            while data:
+                self.sock.send(data)
+                data = f.read(self.chunk_size)
 
-                # サーバー応答チェック
-                response = self.sock.recv(16)
-                if int.from_bytes(response, 'big') != 0x00:
-                    logging.error("❌ アップロードに失敗しました")
-                    sys.exit(1)
-                else:
-                    logging.info("✅ アップロードに成功しました")
+            response = self.sock.recv(1)
+            if response != bytes([0x00]):
+                raise Exception("サーバーがエラーを返しました")
 
-            # 処理後ファイルを受信
-            self.receive_file()
+        return self.receive_file()
 
-        except Exception as e:
-            logging.error(f"❌ エラーが発生しました: {e}")
-            sys.exit(1)
-
-    # ファイルデータをチャンク単位で送信
-    def send_file_data(self, file_obj):
-        logging.info("\n📤 ファイル送信中...")
-        data = file_obj.read(self.chunk_size)
-        while data:
-            self.sock.send(data)
-            data = file_obj.read(self.chunk_size)
-        logging.info("✅ ファイル送信完了")
-
-    # サーバーから処理後ファイルの受信を開始
+    # サーバーからの応答を受け取り、ファイルを復元して保存する
     def receive_file(self):
-        header = self.receive_response_header()
-        self.handle_response_body(header)
-
-    # レスポンスヘッダーを受信し、JSON長などを抽出
-    def receive_response_header(self):
         header = self.sock.recv(8)
-        return {
-            'json_length': int.from_bytes(header[0:2], 'big'),
-            'media_type_length': int.from_bytes(header[2:3], 'big'),
-            'file_size': int.from_bytes(header[3:8], 'big')
-        }
+        json_length = int.from_bytes(header[0:2], 'big')
+        media_type_length = int.from_bytes(header[2:3], 'big')
+        file_size = int.from_bytes(header[3:8], 'big')
 
-    # レスポンスボディを解析し、保存処理を実行
-    def handle_response_body(self, header_info):
-        body = self.sock.recv(header_info['json_length'] + header_info['media_type_length'])
-        json_file = json.loads(body[:header_info['json_length']].decode('utf-8'))
+        body = self.sock.recv(json_length + media_type_length)
+        json_file = json.loads(body[:json_length].decode('utf-8'))
 
-        # エラー判定
         if json_file['error']:
-            logging.error(f"⚠️ サーバーエラー: {json_file['error_message']}")
-            sys.exit(1)
+            raise Exception(f"サーバーエラー: {json_file['error_message']}")
 
         file_name = json_file['file_name']
-        self.handler.save_received_file(file_name, self.sock, header_info['file_size'], self.chunk_size)
+        received_file_path = self.handler.save_received_file(file_name, self.sock, file_size, self.chunk_size)
+        self.sock.close()
+        return received_file_path
 
-    # アップロード用ヘッダーを構築し、バイト列で返却
+    # アップロード時に送信するヘッダーを構築して返す
     def prepare_upload_header(self, json_length, media_type_length, payload_length):
-        return json_length.to_bytes(2, 'big') + media_type_length.to_bytes(1, 'big') + payload_length.to_bytes(5, 'big')
-
-
-if __name__ == "__main__":
-    
-    # サーバーのアドレスとポート番号を設定
-    server_address = '0.0.0.0'
-    tcp_server_port = 9001
-
-    # ファイル操作用のハンドラクラスを初期化
-    handler = FileHandler()
-
-    # TCPクライアントを作成し、サーバーへ接続開始
-    client = TCPClient(server_address, tcp_server_port, handler)
-    client.start()
+        return (
+            json_length.to_bytes(2, 'big') +
+            media_type_length.to_bytes(1, 'big') +
+            payload_length.to_bytes(5, 'big')
+        )
