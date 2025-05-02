@@ -4,13 +4,141 @@ import os, tempfile, base64, time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
+# ----------------- ① ページ設定と CSS 注入 -----------------
+st.set_page_config(
+    page_title="メディア変換ツール",
+    page_icon="🎞️",
+    layout="centered"
+)
+
+st.markdown(
+    """
+    <style>
+    /* ----------------------- 共通レイアウト ----------------------- */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    header, footer {visibility: hidden;}
+
+    div.block-container {
+        max-width: 900px;
+        padding: 2rem 2rem 4rem;
+        margin: auto;
+    }
+    div[data-testid="stFileUploader"],
+    div[data-testid="stSelectbox"],
+    div[data-testid="stTextInput"],
+    div.stProgress,
+    button[kind="primary"] {
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    h3 {color: #1f4e79;}
+
+    /* ----------------------- 入力系ウィジェット ----------------------- */
+    div[data-testId="stFileUploader"] > label {
+        font-weight: 600;
+        color: #1f4e79;
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #ffffff;
+        border: 2px solid #1f4e79;
+        border-radius: 8px;
+    }
+    button[kind="primary"] {
+        background-color: #1f4e79;
+        color: #ffffff;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+    button[kind="primary"]:hover {
+        background-color: #163d5c;
+        color: #e0e0e0;
+    }
+    .stProgress > div > div > div > div {
+        background-color: #1f4e79;
+    }
+    video, audio, img {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* ----------------------- アップローダーカード ----------------------- */
+    div[data-testid="stFileUploader"] > div:first-child {
+        border: 2px dashed #1f4e79;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+    div[data-testid="stFileUploader"] > div:first-child:hover {
+        border-color: #163d5c;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    /* ドラッグ＆ドロップ雲アイコン（←ここは大きく） */
+    div[data-testid="stFileUploader"] > div:first-child svg {
+        width : 60px;
+        height: 60px;
+        stroke: #1f4e79;
+    }
+
+    /* Browse files ボタン */
+    div[data-testid="stFileUploader"] button {
+        background : #ffffff !important;
+        color      : #1f4e79 !important;
+        border     : 2px solid #1f4e79 !important;
+        border-radius: 12px !important;
+        padding    : 0.55rem 2rem !important;
+        font-weight: 700 !important;
+        transition : 0.25s;
+    }
+    div[data-testid="stFileUploader"] button:hover {
+        background : #1f4e79 !important;
+        color      : #ffffff !important;
+    }
+
+    /* ----------------------- アップロード後ファイル行 ----------------------- */
+    ul[role="listbox"] {
+        list-style: none;
+        padding-left: 0;
+    }
+    ul[role="listbox"] > li {
+        border        : 1px solid #d7deea;
+        border-radius : 12px;
+        background    : #ffffff;
+        padding       : 0.6rem 1rem;
+        display       : flex;
+        align-items   : center;
+        justify-content: space-between;
+        box-shadow    : 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* ----------------------- SVG サイズ調整 ----------------------- */
+    /* ファイルアイコン（先頭）だけ少し大きく */
+    ul[role="listbox"] li svg:first-child {
+        width : 32px;
+        height: 32px;
+        stroke: #1f4e79;
+    }
+
+    /* ✕（削除）アイコンを小さく戻す ← 変更ここだけ */
+    ul[role="listbox"] li svg:last-child,
+    ul[role="listbox"] li button svg {
+        width : 22px !important;
+        height: 22px !important;
+        stroke: #1f4e79;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ----------------- ヘルパ：動画 / 音声を base64 埋め込みして autoplay -----------------
 def autoplay_media(path: str, media_type: str):
-    """
-    video/audio を base64 に変換して HTML5 タグで埋め込み。
-    ＊動画はミュートせず、自動再生時に音声も出るようにした＊
-    """
+    """動画/音声を base64 で埋め込み、音声 ON で autoplay"""
     mime = {"video": "video/mp4", "audio": "audio/mpeg"}
     ext  = Path(path).suffix.lower()
     if ext == ".avi":
@@ -20,7 +148,6 @@ def autoplay_media(path: str, media_type: str):
         b64 = base64.b64encode(f.read()).decode()
 
     if media_type == "video":
-        # muted 属性を外し、playsinline を付与
         html = f"""
         <video width="100%" controls autoplay loop playsinline>
           <source src="data:{mime['video']};base64,{b64}" type="{mime['video']}">
@@ -32,15 +159,13 @@ def autoplay_media(path: str, media_type: str):
         </audio>"""
     st.markdown(html, unsafe_allow_html=True)
 
-
 # ----------------- TCP クライアント -----------------
 handler = FileHandler()
 client  = TCPClient(server_address="0.0.0.0", server_port=9001, handler=handler)
 
-
 # ----------------- ファイルアップロード -----------------
 uploaded_file = st.file_uploader(
-    "",  # ラベルを空にして非表示
+    "",                 # ラベルを空にして非表示
     type=["mp4", "avi", "mpeg4"]
 )
 
