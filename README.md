@@ -197,12 +197,12 @@ flowchart TD
 
 <br>
 
-
 | カテゴリ       | 技術スタック                                                                 |
 |----------------|------------------------------------------------------------------------------|
 | 開発言語       | ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) <br>（標準ライブラリ使用：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re`） |
 | 通信技術       | ![TCP](https://img.shields.io/badge/Protocol-TCP-blue) <br>TCPソケット通信によるファイル送受信 |
 | メディア加工   | ![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen) <br>`ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
+| UIフレームワーク | ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) <br>Webベースのインターフェースを簡易に構築 |
 | 開発環境       | ![macOS](https://img.shields.io/badge/OS-macOS-lightgrey) ![VSCode](https://img.shields.io/badge/Editor-VSCode-blue) |
 | バージョン管理 | ![Git](https://img.shields.io/badge/VersionControl-Git-orange) ![GitHub](https://img.shields.io/badge/Repo-GitHub-black) |
 | 描画ツール     | ![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green) ![LaTeX](https://img.shields.io/badge/Doc-LaTeX-9cf) |
@@ -228,6 +228,8 @@ flowchart TD
 - **標準ライブラリ（os, json, pathlib, logging, sys, re）**
   
   追加ライブラリ不要で、システム制御、ファイル管理、エラーハンドリング、データ構造化が完結できるため選択しました。
+
+- **Streamlit**: フロントエンド開発なしで、Pythonだけで高速にWeb UIを構築できるため
 
 
 <br>
