@@ -14,17 +14,10 @@
 
 <br>
 
-https://github.com/user-attachments/assets/be339ad0-1a5b-4105-a610-feef6faf65c7
+https://github.com/user-attachments/assets/8be1468e-6778-4cb5-a2da-19350aec02b0
 
 <br>
 
-**以下の動画では、上側に変換前、下側に変換後を同時に表示しています**
-
-<br>
-
-https://github.com/user-attachments/assets/2354d4d1-6439-47c5-88cc-d1e4aeb124a5
-
-<br>
 
 ## **📝 概要**
 - [説明](#説明)
