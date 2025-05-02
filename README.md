@@ -117,6 +117,11 @@ https://github.com/user-attachments/assets/8be1468e-6778-4cb5-a2da-19350aec02b0
   
   [ffmpeg公式サイト](https://ffmpeg.org/download.html) からインストールできます
 
+- **Streamlit 1.45.0** 
+
+  [Streamlit公式サイト]( https://streamlit.io/) からインストールできます
+
+
 <br>
 
 ### 2. リポジトリのクローン
@@ -146,13 +151,15 @@ python3 server.py
 ```
 サーバは接続された複数のクライアントとのやりとりを同時に処理します。
 
+<br>
+
 ### 2. クライアント起動
+
 別のターミナルを開き、以下のコマンドでクライアントを起動します。
 
 ```bash
-python3 client.py
+streamlit run gui.py
 ```
-クライアントを複数起動すれば、同時に複数ファイルのアップロード・加工依頼をテストすることができます。
 
 
 ### 3. 操作手順
