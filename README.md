@@ -107,13 +107,14 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 以下のソフトウェアが必要です（リンク先よりインストール可能）：
 
-- **Python 3.8以上**（Python公式サイト: https://www.python.org/downloads/）
+- **Python 3.8以上**　（<a href="https://www.python.org/downloads/" style="text-decoration: none;">Python公式サイト</a>）
 
-- **Git**（Git公式サイト: https://git-scm.com/）
+- **Git**　（<a href="https://git-scm.com/" style="text-decoration: none;">Git公式サイト</a>）
 
-- **ffmpeg**（ffmpeg公式サイト: https://ffmpeg.org/download.html）
+- **ffmpeg**　（<a href="https://ffmpeg.org/download.html" style="text-decoration: none;">ffmpeg公式サイト</a>）
 
-- **Streamlit 1.45.0**（Streamlit公式サイト: https://streamlit.io/）
+- **Streamlit 1.45.0**　（<a href="https://streamlit.io/" style="text-decoration: none;">Streamlit公式サイト</a>）
+
 
 
 <br>
