@@ -103,12 +103,6 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ## <a id="セットアップ"></a> 🚀 セットアップ
 
-<!-- リンクの下線を消す -->
-<style>
-  a {
-    text-decoration: none;
-  }
-</style>
 
 ### 1. 前提条件
 
