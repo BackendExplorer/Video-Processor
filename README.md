@@ -436,11 +436,9 @@ sequenceDiagram
 
 ### 公式ドキュメント
 
-- [Python公式ドキュメント](https://docs.python.org/ja/3/)
+- [Python](https://docs.python.org/ja/3/)
 
-- [socketモジュール (Python)](https://docs.python.org/ja/3/library/socket.html)
-
-- [FFmpeg公式ドキュメント](https://ffmpeg.org/documentation.html)
+- [FFmpeg](https://ffmpeg.org/documentation.html)
 
 - [Streamlit](https://docs.streamlit.io)
 
