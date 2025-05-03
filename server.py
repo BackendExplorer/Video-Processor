@@ -1,237 +1,289 @@
+# server.py
+
 import socket
 import os
 import json
 import logging
 from pathlib import Path
 import ffmpeg
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP, AES
+from Crypto.Random import get_random_bytes
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-# メディアファイルの保存および加工を担当するクラス
-class MediaProcessor:
+# ──── 暗号化ユーティリティ ─────────────────────────────
 
-    # 保存ディレクトリを作成し、ログ出力
+class Encryption:
+    def __init__(self):
+        # RSA鍵ペアを生成
+        self.private_key = RSA.generate(2048)
+        self.public_key = self.private_key.publickey()
+        self.peer_public_key = None
+        self.aes_key = None
+        self.iv = None
+
+    def get_public_key_bytes(self):
+        return self.public_key.export_key()
+
+    def load_peer_public_key(self, data: bytes):
+        self.peer_public_key = RSA.import_key(data)
+
+    def decrypt_symmetric_key(self, encrypted: bytes):
+        # クライアントから送られたAES鍵＋IVを復号
+        cipher = PKCS1_OAEP.new(self.private_key)
+        sym = cipher.decrypt(encrypted)
+        self.aes_key = sym[:16]
+        self.iv      = sym[16:32]
+
+    def wrap_socket(self, sock: socket.socket):
+        # AES-CFB で送受信用ストリーム暗号化ソケットを生成
+        cipher_enc = AES.new(self.aes_key, AES.MODE_CFB, iv=self.iv, segment_size=128)
+        cipher_dec = AES.new(self.aes_key, AES.MODE_CFB, iv=self.iv, segment_size=128)
+        return EncryptedSocket(sock, cipher_enc, cipher_dec)
+
+class EncryptedSocket:
+    def __init__(self, sock: socket.socket, cipher_enc: AES, cipher_dec: AES):
+        self.sock = sock
+        self.cipher_enc = cipher_enc
+        self.cipher_dec = cipher_dec
+
+    def sendall(self, data: bytes):
+        ct = self.cipher_enc.encrypt(data)
+        length = len(ct).to_bytes(4, 'big')
+        self.sock.sendall(length + ct)
+
+    def send(self, data: bytes):
+        # client.upload_and_process で send() を呼んでいる部分対応
+        self.sendall(data)
+
+    def recv(self) -> bytes:
+        # 4バイト長→暗号文→復号
+        lb = self._recvn(4)
+        if not lb:
+            return b''
+        length = int.from_bytes(lb, 'big')
+        ct = self._recvn(length)
+        return self.cipher_dec.decrypt(ct)
+
+    def _recvn(self, n: int) -> bytes:
+        data = b''
+        while len(data) < n:
+            packet = self.sock.recv(n - len(data))
+            if not packet:
+                break
+            data += packet
+        return data
+
+    def close(self):
+        self.sock.close()
+
+# ──── メディア処理ユーティリティ ────────────────────────
+
+class MediaProcessor:
     def __init__(self, dpath='processed'):
         self.dpath = dpath
         os.makedirs(self.dpath, exist_ok=True)
         logging.info("\n=============================================")
         logging.info(f"\n📂 メディア保管用ディレクトリを作成: {self.dpath}")
 
-    # クライアントからファイルを受信して保存
     def save_file(self, connection, file_path, file_size, chunk_size=1400):
         logging.info(f"📥 ファイル受信開始: {file_path}")
         with open(file_path, 'wb+') as f:
-            # データをチャンク単位で受け取りファイルに書き込む
             self.receive_in_chunks(connection, f, file_size, chunk_size)
         logging.info(f"✅ ファイル受信終了: {file_path}")
 
-    # 指定サイズまでチャンク受信を繰り返し
     def receive_in_chunks(self, connection, file_obj, remaining_size, chunk_size=1400):
         while remaining_size > 0:
-            data = connection.recv(min(remaining_size, chunk_size))  # 最大chunk_size分受信
+            data = connection.recv()
             if not data:
-                break  # データ終了時はループを抜ける
-            file_obj.write(data)  # ファイルに書き込み
-            remaining_size -= len(data)  # 残りサイズを更新
+                break
+            file_obj.write(data)
+            remaining_size -= len(data)
 
-    # 動画ファイルを指定ビットレートで圧縮
     def compress_video(self, input_file_path, file_name, bitrate='1M'):
         logging.info("\n---------------------------------------------")
         logging.info(f"\n🔧 加工開始: {file_name} - 加工ビットレート: {bitrate}")
         output_file_path = os.path.join(self.dpath, f'compressed_{file_name}')
-        self._run_ffmpeg(input_file_path, output_file_path, b=bitrate)  # ffmpegで圧縮実行
-        logging.info("\n---------------------------------------------")
-        logging.info(f"\n✅ 加工完了: {output_file_path}")
+        ffmpeg.input(input_file_path).output(output_file_path, b=bitrate).run()
+        os.remove(input_file_path)
+        logging.info("\n✅ 加工完了: " + output_file_path)
         return output_file_path
 
-    # 動画の解像度を変更
-    def change_resolution(self, input_file_path, file_name, resolution):        
+    def change_resolution(self, input_file_path, file_name, resolution):
         logging.info("\n---------------------------------------------")
         logging.info(f"\n🔧 加工開始: {file_name} - 新解像度: {resolution}")
         output_file_path = os.path.join(self.dpath, f'changed_resolution_{file_name}')
-        self._run_ffmpeg(input_file_path, output_file_path, vf=f"scale={resolution}")  # 解像度指定
-        logging.info("\n---------------------------------------------")
-        logging.info(f"\n✅ 解像度変更完了: {output_file_path}")
+        ffmpeg.input(input_file_path).output(output_file_path, vf=f"scale={resolution}").run()
+        os.remove(input_file_path)
+        logging.info("\n✅ 解像度変更完了: " + output_file_path)
         return output_file_path
 
-    # 動画のアスペクト比を変更
-    def change_aspect_ratio(self, input_file_path, file_name, aspect_ratio):        
-        logging.info(f"🔧 加工開始: {file_name} - 新アスペクト比: {aspect_ratio}")
+    def change_aspect_ratio(self, input_file_path, file_name, aspect_ratio):
+        logging.info(f"\n🔧 加工開始: {file_name} - 新アスペクト比: {aspect_ratio}")
         output_file_path = os.path.join(self.dpath, f'changed_aspect_ratio_{file_name}')
-        self._run_ffmpeg(input_file_path, output_file_path, vf=f"setdar={aspect_ratio}")  # DAR設定
-        logging.info("")
-        logging.info(f"✅ アスペクト比変更完了: {output_file_path}")
+        ffmpeg.input(input_file_path).output(output_file_path, vf=f"setdar={aspect_ratio}").run()
+        os.remove(input_file_path)
+        logging.info(f"\n✅ アスペクト比変更完了: {output_file_path}")
         return output_file_path
 
-    # メディアを音声ファイルに変換
     def convert_to_audio(self, input_file_path, file_name):
-        logging.info(f"🔧 加工開始: {file_name} - 音声に変換")
+        logging.info(f"\n🔧 加工開始: {file_name} - 音声に変換")
         output_file_path = os.path.join(self.dpath, f'converted_to_audio_{Path(file_name).stem}.mp3')
-        self._run_ffmpeg(input_file_path, output_file_path, acodec='mp3')  # 音声コーデック設定
-        logging.info("")
+        ffmpeg.input(input_file_path).output(output_file_path, acodec='mp3').run()
+        os.remove(input_file_path)
         logging.info(f"\n✅ 音声変換完了: {output_file_path}")
         return output_file_path
 
-    # 動画の一部からGIFを作成
     def create_gif(self, input_file_path, file_name, start_time, duration, fps=10):
         logging.info("\n---------------------------------------------")
         logging.info(f"🔧 加工開始: {file_name} - GIF作成 ({start_time}s から {duration}s, {fps}fps)")
         output_file_path = os.path.join(self.dpath, f'created_gif_{Path(file_name).stem}.gif')
-        self._run_ffmpeg(input_file_path, output_file_path, ss=start_time, t=duration, vf=f"fps={fps}", pix_fmt='rgb24')  # GIF生成
+        ffmpeg.input(input_file_path).output(
+            output_file_path,
+            ss=start_time, t=duration,
+            vf=f"fps={fps}", pix_fmt='rgb24'
+        ).run()
+        os.remove(input_file_path)
         logging.info(f"✅ GIF作成完了: {output_file_path}")
         return output_file_path
 
-    # 共通: ffmpegコマンドの実行と入力ファイル削除
-    def _run_ffmpeg(self, input_path, output_path, **kwargs):
-        if os.path.exists(output_path):
-            os.remove(output_path)  # 既存出力を削除
-        ffmpeg.input(input_path).output(output_path, **kwargs).run()  # ffmpeg実行
-        os.remove(input_path)  # 入力ファイルは削除
+# ──── TCPサーバー ────────────────────────────────────
 
-
-# TCP通信でファイル送受信と加工指示を受け付けるサーバークラス
 class TCPServer:
-
-    # サーバーソケットの設定と待受開始
     def __init__(self, server_address, server_port, processor: MediaProcessor):
         self.server_address = server_address
         self.server_port = server_port
         self.processor = processor
         self.chunk_size = 1400
 
+        # 暗号化インスタンス
+        self.encryption = Encryption()
+
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((server_address, server_port))
         self.sock.listen()
-
         logging.info(f"🚀 サーバーが起動 : {server_address}:{server_port}")
 
-    # クライアント接続を無限ループで待ち受け
     def start_server(self):
         while True:
-            connection, client_address = self.accept_connection()
-            self.handle_client(connection)
+            conn, addr = self.accept_connection()
+            self.handle_client(conn)
 
-    # 接続受付とクライアント情報のログ出力
     def accept_connection(self):
-        connection, client_address = self.sock.accept()
+        conn, client_address = self.sock.accept()
         logging.info("\n=============================================")
         logging.info(f"\n🔗 新しい接続を確立: {client_address}")
-        return connection, client_address
+        return conn, client_address
 
-    # クライアントからのリクエストを処理
-    def handle_client(self, connection):        
+    def handle_client(self, connection):
         try:
-            header = self.parse_header(connection)  # ヘッダー解析
-            json_file, media_type = self.parse_body(connection, header['json_length'], header['media_type_length'])  # 本文解析
+            # ── ハンドシェイク ───────────────────────────
+            # 1) クライアント公開鍵受信
+            raw = connection.recv(2)
+            pk_len = int.from_bytes(raw, 'big')
+            client_pk = connection.recv(pk_len)
+            self.encryption.load_peer_public_key(client_pk)
+            logging.info("🔑 クライアント公開鍵受信完了")
 
+            # 2) サーバ公開鍵送信
+            server_pk = self.encryption.get_public_key_bytes()
+            connection.sendall(len(server_pk).to_bytes(2, 'big') + server_pk)
+            logging.info("🔑 サーバ公開鍵送信完了")
+
+            # 3) 対称鍵受信
+            raw = connection.recv(2)
+            enc_len = int.from_bytes(raw, 'big')
+            enc_sym = connection.recv(enc_len)
+            self.encryption.decrypt_symmetric_key(enc_sym)
+            logging.info("🔒 対称鍵の共有完了")
+
+            # 4) 通信ソケットを暗号化ラップ
+            secure_conn = self.encryption.wrap_socket(connection)
+
+            # ── 既存の処理 ─────────────────────────────
+            header = self.parse_header(secure_conn)
+            json_file, media_type = self.parse_body(
+                secure_conn,
+                header['json_length'], header['media_type_length']
+            )
             input_file_path = os.path.join(self.processor.dpath, json_file['file_name'])
-            # ファイル受信
-            self.processor.save_file(connection, input_file_path, header['file_size'], self.chunk_size)
+            self.processor.save_file(secure_conn, input_file_path,
+                                     header['file_size'], self.chunk_size)
 
-            connection.sendall(bytes([0x00]))  # ACK送信
+            # ACK
+            secure_conn.sendall(bytes([0x00]))
 
-            # 処理選択と実行
             output_file_path = self.operation_dispatcher(json_file, input_file_path)
-            # 結果ファイルを送信
-            self.send_file(connection, output_file_path)
+            self.send_file(secure_conn, output_file_path)
 
         except Exception as e:
-            logging.error("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             logging.error(f"❌ エラー発生: {e}")
             self.send_error_response(connection, str(e))
 
         finally:
-            logging.info("\n---------------------------------------------")
-            logging.info("")
-            logging.info("🔚 接続を終了します")
+            logging.info("🔚 接続を終了します\n")
             connection.close()
 
-    # ヘッダーを受信し、JSON長やファイルサイズを抽出
     def parse_header(self, connection):
-        header = connection.recv(8)
+        data = connection.recv()
         return {
-            'json_length': int.from_bytes(header[0:2], 'big'),
-            'media_type_length': int.from_bytes(header[2:3], 'big'),
-            'file_size': int.from_bytes(header[3:8], 'big')
+            'json_length': int.from_bytes(data[0:2], 'big'),
+            'media_type_length': int.from_bytes(data[2:3], 'big'),
+            'file_size': int.from_bytes(data[3:8], 'big')
         }
 
-    # JSON部とメディアタイプ部を受信しパース
     def parse_body(self, connection, json_length, media_type_length):
-        body = connection.recv(json_length + media_type_length)
-        json_file = json.loads(body[:json_length].decode('utf-8'))
-        media_type = body[json_length:].decode('utf-8')
+        data = connection.recv()
+        json_file = json.loads(data[:json_length].decode('utf-8'))
+        media_type = data[json_length:].decode('utf-8')
         return json_file, media_type
 
-    # JSON内のoperationコードに応じてMediaProcessorを呼び出し
     def operation_dispatcher(self, json_file, input_file_path):
-        file_name = json_file['file_name']
-        operation = json_file['operation']
+        op = json_file['operation']
+        fn = {
+            1: self.processor.compress_video,
+            2: lambda p,n: self.processor.change_resolution(p,n,json_file['resolution']),
+            3: lambda p,n: self.processor.change_aspect_ratio(p,n,json_file['aspect_ratio']),
+            4: self.processor.convert_to_audio,
+            5: lambda p,n: self.processor.create_gif(p,n,json_file['start_time'], json_file['duration']),
+        }.get(op)
+        if not fn:
+            raise ValueError('Invalid operation')
+        return fn(input_file_path, json_file['file_name'])
 
-        if operation == 1:
-            return self.processor.compress_video(input_file_path, file_name)
-        elif operation == 2:
-            return self.processor.change_resolution(input_file_path, file_name, json_file['resolution'])
-        elif operation == 3:
-            return self.processor.change_aspect_ratio(input_file_path, file_name, json_file['aspect_ratio'])
-        elif operation == 4:
-            return self.processor.convert_to_audio(input_file_path, file_name)
-        elif operation == 5:
-            return self.processor.create_gif(input_file_path, file_name, json_file['start_time'],
-                                            json_file['duration'])
-        else:
-            raise ValueError('Invalid operation')  
-
-    # 処理後ファイルを送信するためにヘッダーとメタ情報を送出
     def send_file(self, connection, output_file_path):
-        media_type = Path(output_file_path).suffix
-        media_type_bytes = media_type.encode('utf-8')
-        media_type_length = len(media_type_bytes)
-
+        media_type = Path(output_file_path).suffix.encode('utf-8')
+        mt_len = len(media_type)
         with open(output_file_path, 'rb') as f:
-            file_size = f.seek(0, os.SEEK_END)
+            f.seek(0, os.SEEK_END)
+            fs = f.tell()
             f.seek(0)
+            header = (
+                len(json.dumps({'file_name': Path(f.name).name, 'error': False, 'error_message': None}).encode()) .to_bytes(2,'big')
+                + mt_len.to_bytes(1,'big')
+                + fs.to_bytes(5,'big')
+            )
+            connection.sendall(header)
+            connection.sendall(json.dumps({'file_name': Path(f.name).name, 'error': False, 'error_message': None}).encode() + media_type)
 
-            file_name = Path(f.name).name
-            json_file = {'file_name': file_name, 'error': False, 'error_message': None}
-            json_bytes = json.dumps(json_file).encode('utf-8')
-
-            self.send_header_and_metadata(connection, json_bytes, media_type_bytes, file_size)
-
-            logging.info(f"📤 ファイル送信開始")
-            data = f.read(self.chunk_size)
-            while data:
-                connection.sendall(data)  # チャンク送信
-                data = f.read(self.chunk_size)
+            logging.info("📤 ファイル送信開始")
+            while True:
+                chunk = f.read(self.chunk_size)
+                if not chunk:
+                    break
+                connection.sendall(chunk)
             logging.info("✅ ファイル送信完了")
 
-    # ヘッダー構築とJSON＋メディアタイプ送信
-    def send_header_and_metadata(self, connection, json_bytes, media_type_bytes, file_size):
-        header = self.build_header(len(json_bytes), len(media_type_bytes), file_size)
-        connection.sendall(header)
-        connection.sendall(json_bytes + media_type_bytes)
-
-    # エラー情報をJSONで返却
     def send_error_response(self, connection, error_message):
-        json_file = {'error': True, 'error_message': error_message}
-        json_bytes = json.dumps(json_file).encode('utf-8')
-        header = self.build_header(len(json_bytes), 0, 0)
-        connection.sendall(header)
-        connection.sendall(json_bytes)
-
-    # ヘッダーをバイト列として構築
-    def build_header(self, json_length, media_type_length, file_size):
-        return json_length.to_bytes(2, 'big') + media_type_length.to_bytes(1, 'big') + file_size.to_bytes(5, 'big')
+        jb = json.dumps({'error': True, 'error_message': error_message}).encode()
+        header = len(jb).to_bytes(2,'big') + (0).to_bytes(1,'big') + (0).to_bytes(5,'big')
+        connection.sendall(header + jb)
 
 
 if __name__ == "__main__":
-    
-    # サーバーのアドレスとポートを設定
     server_address = '0.0.0.0'
     server_port = 9001
-
-    # メディア処理用のインスタンスを作成
     processor = MediaProcessor()
-
-    # TCPサーバーを初期化して起動
     server = TCPServer(server_address, server_port, processor)
     server.start_server()
