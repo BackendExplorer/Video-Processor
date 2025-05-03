@@ -12,8 +12,23 @@ st.set_page_config(
 )
 
 st.markdown(
-    """
+    """ 
     <style>
+    /* ---- 全体を80%に縮小表示 ---- */
+    .app-scale {
+      transform: scale(0.8);
+      transform-origin: top center;
+    }
+
+    .stApp > div:first-child {
+      display: flex;
+      justify-content: center;
+    }
+
+    .block-container {
+      width: 100%;
+    }
+
     /* ---- カラーパレット ---- */
     :root {
       --bg: #eafcff;
@@ -63,7 +78,6 @@ st.markdown(
       background-color: #d0f7fb !important;
       border-color: var(--accent) !important;
     }
-    /* Browse files ボタン */
     div[data-testid="stFileUploader"] > div:first-child button {
       background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important;
       color: #fff !important;
@@ -136,15 +150,6 @@ st.markdown(
       border-color: var(--accent) !important;
       box-shadow: 0 8px 16px var(--shadow-light);
     }
-    /* 内部テキスト中央寄せ */
-    div[data-baseweb="select"] > div > div:first-child {
-      margin: 0 !important;
-      flex: 1 1 auto;
-      text-align: left;
-    }
-    div[data-baseweb="select"] > div > div:nth-child(2) {
-      flex: none;
-    }
 
     /* ---- ボタン ---- */
     .stButton > button {
@@ -163,6 +168,30 @@ st.markdown(
       box-shadow: 0 12px 24px var(--shadow-strong);
     }
 
+    /* ---- ダウンロードボタン（st.download_button用） ---- */
+    div.stDownloadButton,
+    div[data-testid="downloadButton"] {
+      text-align: center;
+      margin-top: 2rem !important;
+    }
+    div.stDownloadButton > button,
+    div[data-testid="downloadButton"] > button {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 12px !important;
+      padding: 0.7rem 2rem !important;
+      font-size: 1rem !important;
+      font-weight: 700 !important;
+      box-shadow: 0 8px 16px var(--shadow-light) !important;
+      transition: transform .15s ease, box-shadow .15s ease !important;
+    }
+    div.stDownloadButton > button:hover,
+    div[data-testid="downloadButton"] > button:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 24px var(--shadow-strong) !important;
+    }
+
     /* ---- プログレスバー ---- */
     .stProgress > div > div > div > div {
       background-color: var(--accent) !important;
@@ -176,7 +205,26 @@ st.markdown(
       box-shadow: 0 8px 24px var(--shadow-light);
       margin-top: 1rem;
     }
+
+    /* ---- 変換前→変換後 矢印 ---- */
+    .before-after {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .before-after .label {
+      margin: 0 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+    .before-after .arrow {
+      font-size: 2rem;
+      color: var(--accent);
+    }
     </style>
+    <div class="app-scale">
     """,
     unsafe_allow_html=True
 )
@@ -244,12 +292,14 @@ if uploaded_file:
     if st.button("処理開始"):
         prog = st.progress(0)
         status = st.empty()
+
         def convert():
             return client.upload_and_process(
                 file_path,
                 operation=code,
                 operation_details=operation_details
             )
+
         with ThreadPoolExecutor() as ex:
             fut = ex.submit(convert)
             pct = 0
@@ -261,21 +311,46 @@ if uploaded_file:
             try:
                 out = fut.result()
             except Exception as e:
-                prog.empty(); status.empty()
+                prog.empty()
+                status.empty()
                 st.error(f"処理失敗: {e}")
                 st.stop()
-            prog.progress(100)
-            status.text("変換進行中... 100%")
 
-        st.success("処理完了！")
+        prog.progress(100)
+        status.text("変換進行中... 100%")
+        # ── チェックアイコン付きに変更 ──
+        st.success("✅ 処理完了！")
+
+        # ── ここから矢印付きラベル ──
+        st.markdown(
+            '<div class="before-after">'
+            '<div class="label">変換前</div>'
+            '<div class="arrow">→</div>'
+            '<div class="label">変換後</div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
         c1, c2 = st.columns(2)
         with c1:
-            st.subheader("変換前"); autoplay_media(file_path, "video")
+            autoplay_media(file_path, "video")
         with c2:
-            st.subheader("変換後")
-            if operation=="音声変換":
+            if operation == "音声変換":
                 autoplay_media(out, "audio")
-            elif operation=="GIF作成":
+            elif operation == "GIF作成":
                 st.image(out)
             else:
                 autoplay_media(out, "video")
+
+                # ── ダウンロードボタン ──
+                data = Path(out).read_bytes()
+                file_name = Path(out).name
+                st.download_button(
+                    label="変換後の動画をダウンロード",
+                    data=data,
+                    file_name=file_name,
+                    mime="video/mp4"
+                )
+        # ── ここまで変更箇所 ──
+
+# CSSで開いた<div>の閉じタグ
+st.markdown("</div>", unsafe_allow_html=True)
