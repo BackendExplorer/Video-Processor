@@ -1,8 +1,3 @@
-
-<img width="963" alt="スクリーンショット 2025-05-03 18 20 09" src="https://github.com/user-attachments/assets/aaf0994d-c8fa-4212-aece-08d5caecf96c" />
-
-
-
 # 🎥  Video-Processor  ✨
 
 
