@@ -55,6 +55,8 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ## <a id="説明"></a> 📝 説明
 
+<br>
+
 このプロジェクトは、**動画変換サービス**です。
 
 ユーザーは動画をサーバにアップロードし、その動画に対して行いたい処理を指定すると、
