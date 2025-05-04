@@ -106,7 +106,7 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ### 1. 前提条件
 
-以下のソフトウェアが必要です（リンクから入手可能）
+以下のソフトウェアが必要です（リンクから入手可）
 
 - [Python 3.8以上](https://www.python.org/downloads/)
 
