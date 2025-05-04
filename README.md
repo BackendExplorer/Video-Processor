@@ -103,6 +103,8 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ## <a id="セットアップ"></a> 🚀 セットアップ
 
+<br>
+
 ### 1. 前提条件 
 
 以下を事前にインストールしてください
@@ -135,6 +137,8 @@ cd Video-Processor
 
 
 ## <a id="使い方"></a>🧑‍💻 使い方
+
+<br>
 
 ### 1. サーバ起動
 
@@ -369,6 +373,8 @@ sequenceDiagram
 ---
 ## <a id="こだわりのポイント"></a>⭐️ こだわりのポイント
 
+<br>
+
 以下は、動画転送のために設計された **独自プロトコル MMP** (Multiple Media Protocol) のパケット構造を表します。
 
 
@@ -429,6 +435,8 @@ sequenceDiagram
 
 ---
 ## <a id="参考文献"></a>📗 参考文献
+
+<br>
 
 ### 公式ドキュメント
 
