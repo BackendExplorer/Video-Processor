@@ -110,11 +110,11 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 - [Python 3.8以上](https://www.python.org/downloads/)
 
-- **Git**（[Git公式サイト](https://git-scm.com/)）
+- [Git](https://git-scm.com/)
 
-- **ffmpeg**（[ffmpeg公式サイト](https://ffmpeg.org/download.html)）
+- [ffmpeg](https://ffmpeg.org/download.html)
 
-- **Streamlit 1.45.0**（[Streamlit公式サイト](https://streamlit.io/)）
+- [Streamlit 1.45.0](https://streamlit.io/)
 
 <br>
 
