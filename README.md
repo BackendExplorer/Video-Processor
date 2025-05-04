@@ -193,7 +193,7 @@ flowchart TD
 
 | カテゴリ       | 技術スタック                                                                 |
 |----------------|------------------------------------------------------------------------------|
-| 開発言語       | ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) <br>（標準ライブラリ：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re`） |
+| 開発言語       | ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) <br>標準ライブラリ：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re` |
 | 通信技術       | ![TCP](https://img.shields.io/badge/Protocol-TCP-blue) <br>TCPソケットによるファイル送受信 |
 | メディア加工   | ![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen) <br>`ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
 | UIフレームワーク | ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) <br>Webベースのインターフェースを簡易に構築 |
