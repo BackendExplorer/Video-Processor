@@ -69,7 +69,7 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ### できること
 
-- **動画圧縮**
+- **`動画圧縮`**
   
   指定したビットレートでサイズを軽量化
 
