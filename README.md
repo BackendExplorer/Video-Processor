@@ -104,9 +104,9 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 ## <a id="セットアップ"></a> 🚀 セットアップ
 
 
-### 1. 前提条件
+### 1. 必要なソフトウェア
 
-以下のソフトウェアが必要です（リンクから入手可）
+インストールはこちら
 
 - [Python 3.8以上](https://www.python.org/downloads/)
 
@@ -120,11 +120,10 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ### 2. リポジトリのクローン
 
-以下のコマンドを使って、このプロジェクトのコードをローカルに取得します：
-
 ```bash
 git clone https://github.com/BackendExplorer/Video-Processor.git
 ```
+
 ```bash
 cd Video-Processor
 ```
