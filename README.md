@@ -103,6 +103,7 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 ## <a id="セットアップ"></a> 🚀 セットアップ
 
+以下を事前にインストールしてください
 
 ### 1. 前提条件 
 
@@ -117,6 +118,8 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 <br>
 
 ### 2. リポジトリのクローン
+
+以下のコマンドをターミナルで実行します
 
 ```bash
 git clone https://github.com/BackendExplorer/Video-Processor.git
