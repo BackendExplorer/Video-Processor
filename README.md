@@ -170,7 +170,7 @@ streamlit run gui.py
 
 
 ### 3. ユーザーの操作手順
-以下は、このアプリの基本的な操作手順です
+
 
 ```mermaid
 flowchart TD
