@@ -45,6 +45,9 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 <br>
 
 ## **📚 参考情報・ライセンス**
+
+- [開発ストーリー（Qiita記事)](#qiita-seisaku-katei-no-kaisetsu-ki)
+
 - [参考文献](#参考文献)
 
 - [ライセンス](#ライセンス)
@@ -423,6 +426,18 @@ sequenceDiagram
     <p>サービス全体の品質向上と保守性向上のため、単体テストおよび統合テストの導入</p>
   </li>
 </ul>
+
+<br>
+
+---
+
+## <a id="qiita-seisaku-katei-no-kaisetsu-ki"></a>✏️ 開発ストーリー （Qiita記事)
+
+<br>
+
+実装の背景や設計の工夫について、Qiita記事で詳しく解説しています。
+
+[TCPソケット×FFmpegで作る、ゼロからの動画処理サービス開発](https://qiita.com/your-article-link)
 
 <br>
 
