@@ -26,27 +26,27 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 <br>
 
-## **🛠 技術関連**
+## **🛠 技術構成**
 - [使用技術](#使用技術)
 
 - [クラス図](#クラス図)
 
-- [処理の流れ](#処理の流れ)
+- [システム全体の構成図](#システム全体の構成図)
 
 <br>
 
-## **💡 開発のポイント**
-- [こだわりのポイント](#こだわりのポイント)
+## **💡 開発の振り返りと展望**
+- [設計上のこだわり](#設計上のこだわり)
 
 - [苦労した点](#苦労した点)
 
-- [さらに追加したい機能](#さらに追加したい機能)
+- [追加予定の機能](#追加予定の機能)
 
 <br>
 
 ## **📚 参考情報・ライセンス**
 
-- [開発ストーリー（Qiita記事)](#qiita-seisaku-katei-no-kaisetsu-ki)
+- [Qiitaでの発信 : 開発ストーリー](#qiita-seisaku-katei-no-kaisetsu-ki)
 
 - [参考文献](#参考文献)
 
@@ -332,7 +332,7 @@ classDiagram
 
 ---
 
-## <a id="処理の流れ"></a>🔄 処理の流れ
+## <a id="システム全体の構成図"></a>🔄 システム全体の構成図
 
 ```mermaid
 sequenceDiagram
@@ -367,7 +367,7 @@ sequenceDiagram
 <br>
 
 ---
-## <a id="こだわりのポイント"></a>⭐️ こだわりのポイント
+## <a id="設計上のこだわり"></a>⭐️ 設計上のこだわり
 
 <br>
 
@@ -408,7 +408,7 @@ sequenceDiagram
 
 ---
 
-## <a id="さらに追加したい機能"></a> 🔥 さらに追加したい機能
+## <a id="追加予定の機能"></a> 🔥 追加予定の機能
 
 <br>
 
@@ -448,13 +448,25 @@ sequenceDiagram
 
 ### 公式ドキュメント
 
-- [Python](https://docs.python.org/ja/3/)
+- [Python socket - ソケット通信](https://docs.python.org/3/library/socket.html)
 
-- [FFmpeg](https://ffmpeg.org/documentation.html)
+  TCP・UDP通信の基本構文と使い方を参照
 
-- [Streamlit](https://docs.streamlit.io)
+- [Python FFmpeg - 動画処理](https://ffmpeg.org/documentation.html)
 
-- [PyCryptodome](https://www.pycryptodome.org/src/introduction)
+  アップロードした動画に指定した処理を行うために参照
+
+- [Python threading - マルチスレッド](https://docs.python.org/3/library/threading.html)
+
+  マルチスレッド処理（Thread の生成・開始・join）を実装するために参照
+
+- [PyCryptodome — RSA (PKCS1_OAEP)](https://pycryptodome.readthedocs.io/en/latest/src/cipher/oaep.html)
+
+  RSA公開鍵暗号の暗号化・復号化の仕組みを理解するために参照
+
+- [PyCryptodome — AES (CFBモード)](https://www.pycryptodome.org/)
+
+  共通鍵暗号方式によるデータの暗号化のために参照
 
 <br>
 
