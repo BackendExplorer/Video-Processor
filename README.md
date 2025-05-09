@@ -22,7 +22,7 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 - [セットアップ手順](#セットアップ手順)
 
-- [基本的な使い方](# 基本的な使い方)
+- [基本的な使い方](#基本的な使い方)
 
 <br>
 
