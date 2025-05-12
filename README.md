@@ -363,7 +363,7 @@ sequenceDiagram
     クライアント ->> ユーザー: 完了メッセージ表示
 ```
 
-<img width="791" alt="スクリーンショット 2025-04-20 20 29 19" src="https://github.com/user-attachments/assets/fec958f6-9d2e-4c68-a4f0-ee4f4d08a0b3" />
+<img width="790" alt="スクリーンショット 2025-05-12 12 27 44" src="https://github.com/user-attachments/assets/4418243b-48b0-4010-a8ba-300a7dea6188" />
 
 
 <br>
