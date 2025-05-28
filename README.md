@@ -1,4 +1,4 @@
-# Video-Processor 
+# Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
 ![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen)
