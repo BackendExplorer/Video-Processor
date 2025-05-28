@@ -1,14 +1,23 @@
-# 🎥  Video-Processor  ✨
+# Video-Processor 
+
+![Python](https://img.shields.io/badge/Python-3.13.2-blue)
+![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) 
+![TCP](https://img.shields.io/badge/Protocol-TCP-blue)
+![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
+<br>
 
 ### TCP と 独自プロトコル による動画処理サービス
 
 <br>
 
-## 🖥 デモ
+## ⭐ デモ動画
 
 <br>
 
-**動画のアスペクト比を変更するデモ動画**
+### 動画のアスペクト比を変更するデモ動画
 
 <br>
 
@@ -493,8 +502,15 @@ sequenceDiagram
 
 ---
 
-## <a id="ライセンス"></a>📜 ライセンス
+## <a id="ライセンス情報"></a>📜 ライセンス情報
 
-このプロジェクトは [MIT License](https://opensource.org/licenses/MIT) のもとで公開されています。  
+<br>
 
-自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。
+<ul>
+  <li>
+    このプロジェクトは <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a> のもとで公開されています。<br><br>
+    自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。
+  </li>
+</ul>
+
+<br>
