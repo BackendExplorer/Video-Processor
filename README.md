@@ -113,8 +113,7 @@ https://github.com/user-attachments/assets/9741fc4e-e8c4-46ab-ac5b-aca6d685881a
 
 2. **解決アプローチ**
 
-   `TCPソケット通信`や`FFmpeg制御`、`独自プロトコル`、`Streamlit`によって
-    メディア変換サービスを構築
+   `TCPソケット通信`や`FFmpeg制御`、`独自プロトコル`、`Streamlit`によってメディア変換サービスを構築
 
 3. **得られた学び**
 
