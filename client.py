@@ -31,7 +31,6 @@ class AESCipherCFB:
 class Encryption:
     
     def __init__(self):
-        # self.private_key = RSA.generate(2048)  # クライアント公開鍵生成は不要
         self.peer_public_key = None
         self.aes_key = self.iv = None
 
