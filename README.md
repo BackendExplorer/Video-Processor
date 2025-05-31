@@ -542,8 +542,9 @@ sequenceDiagram
 
 <ul>
   <li>
-    このプロジェクトは <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a> のもとで公開されています。<br><br>
-    自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。
+    このプロジェクトは [MIT License](./LICENSE) のもとで公開されています。<br><br>
+    自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。<br><br>
+    ライセンス全文はリポジトリ内の `LICENSE` ファイルをご参照ください。
   </li>
 </ul>
 
