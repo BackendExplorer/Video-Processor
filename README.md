@@ -1,94 +1,3 @@
-```mermaid
-classDiagram
-    direction LR
-
-    class TCPClient {
-        - server_address
-        - server_port
-        - chunk_size
-        - sock
-        - encryption
-        - dpath
-        + __init__(server_address, server_port, dpath)
-        + upload_and_process(file_path, operation, operation_details)
-        - perform_key_exchange()
-        - recv_exact(sock, n)
-        - receive_file()
-        - save_received_file(file_name, connection, file_size, chunk_size)
-    }
-
-    class Encryption {
-        - peer_public_key
-        - aes_key
-        - iv
-        + __init__()
-        + load_peer_public_key(data)
-        + generate_symmetric_key()
-        + encrypt_symmetric_key(sym)
-        + wrap_socket(sock)
-    }
-
-    class SecureSocket {
-        - sock
-        - cipher
-        + __init__(sock, cipher)
-        + recv_exact(n)
-        + sendall(plaintext)
-        + recv()
-        + close()
-    }
-
-    class AESCipherCFB {
-        - key
-        - iv
-        + __init__(key, iv)
-        + encrypt(data)
-        + decrypt(data)
-    }
-
-    TCPClient --> Encryption
-    Encryption --> SecureSocket
-    SecureSocket --> AESCipherCFB
-
-```
-
-
-```mermaid
-classDiagram
-    direction LR
-
-    class MediaProcessor {
-        - dpath: str
-        + __init__(dpath='processed')
-        + save_file(connection, file_path, file_size, chunk_size=1400) : None
-        - receive_in_chunks(connection, file_obj, remaining_size, chunk_size=1400) : None
-        + compress_video(input_file_path, file_name, bitrate='1M') : str
-        + change_resolution(input_file_path, file_name, resolution) : str
-        + change_aspect_ratio(input_file_path, file_name, aspect_ratio) : str
-        + convert_to_audio(input_file_path, file_name) : str
-        + create_gif(input_file_path, file_name, start_time, duration, fps=10) : str
-    }
-
-    class TCPServer {
-        - server_address: str
-        - server_port: int
-        - processor: MediaProcessor
-        - chunk_size: int
-        - sock: socket.socket
-        + __init__(server_address, server_port, processor) : None
-        + start_server() : None
-        - handle_client(connection) : None
-        - perform_key_exchange(conn) : SecureSocket
-        - parse_request(connection) : dict
-        - operation_dispatcher(json_file, input_file_path) : str
-        - send_file(connection, output_file_path) : None
-        - send_error_response(connection, error_message) : None
-        + recvn(conn, n) : bytes
-    }
-
-    TCPServer --> MediaProcessor
-```
-
 # Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
@@ -397,36 +306,53 @@ classDiagram
 classDiagram
     direction LR
 
-    class FileHandler {
-        - dpath: str
-        + __init__(dpath='receive')
-        + input_file_path() : str
-        + input_operation() : int
-        + input_operation_details(operation, json_file, file_path) : dict
-        + input_resolution() : str
-        + input_aspect_ratio() : str
-        + input_gif_time_range(file_path) : (float, float)
-        + get_video_duration(file_path) : float
-        + save_received_file(file_name, connection, file_size, chunk_size=1400) : None
-    }
-
     class TCPClient {
-        - sock: socket.socket
-        - server_address: str
-        - server_port: int
-        - chunk_size: int
-        - handler: FileHandler
-        + __init__(server_address, server_port, handler) : None
-        + start() : None
-        - upload_file() : None
-        - send_file_data(file_obj) : None
-        - receive_file() : None
-        - receive_response_header() : dict
-        - handle_response_body(header_info) : None
-        - prepare_upload_header(json_length, media_type_length, payload_length) : bytes
+        - server_address
+        - server_port
+        - chunk_size
+        - sock
+        - encryption
+        - dpath
+        + __init__(server_address, server_port, dpath)
+        + upload_and_process(file_path, operation, operation_details)
+        - perform_key_exchange()
+        - recv_exact(sock, n)
+        - receive_file()
+        - save_received_file(file_name, connection, file_size, chunk_size)
     }
 
-    TCPClient --> FileHandler
+    class Encryption {
+        - peer_public_key
+        - aes_key
+        - iv
+        + __init__()
+        + load_peer_public_key(data)
+        + generate_symmetric_key()
+        + encrypt_symmetric_key(sym)
+        + wrap_socket(sock)
+    }
+
+    class SecureSocket {
+        - sock
+        - cipher
+        + __init__(sock, cipher)
+        + recv_exact(n)
+        + sendall(plaintext)
+        + recv()
+        + close()
+    }
+
+    class AESCipherCFB {
+        - key
+        - iv
+        + __init__(key, iv)
+        + encrypt(data)
+        + decrypt(data)
+    }
+
+    TCPClient --> Encryption
+    Encryption --> SecureSocket
+    SecureSocket --> AESCipherCFB
 ```
 
 
