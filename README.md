@@ -1,3 +1,34 @@
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+
+  <img src="https://github.com/user-attachments/assets/789f1002-5946-4f15-a8b1-0869a6e4f42b" width="400"/>
+
+  <div style="flex: 1; min-width: 300px;">
+
+  ```mermaid
+  flowchart TD
+      Start(["クライアント起動"])
+      アップロード["ファイルをアップロード"]
+      加工["ファイル加工"]
+      通知["加工完了通知"]
+      ダウンロード["ファイルをダウンロード"]
+      完了(["完了"])
+      エラー(["エラー発生"])
+
+      Start --> アップロード
+      アップロード -- 成功 --> 加工
+      アップロード -- 失敗 --> エラー
+      加工 --> 通知 --> ダウンロード
+      ダウンロード -- 成功 --> 完了
+      ダウンロード -- 失敗 --> エラー
+```
+
+</div> 
+</div> 
+
+
+
+
+
 # Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
