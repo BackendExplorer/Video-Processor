@@ -205,6 +205,30 @@ class TCPServer:
             # 接続をクローズ
             connection.close()
 
+    def perform_key_exchange(self, conn):
+        # RSA 鍵ペアを生成
+        key_manager = RSAKeyExchange()
+
+        # 自身の公開鍵をクライアントに送信（長さ 2 バイト + 本体）
+        public_key_bytes = key_manager.public_key_bytes()
+        conn.sendall(len(public_key_bytes).to_bytes(2, 'big') + public_key_bytes)
+
+        # クライアントから公開鍵を受信
+        # peer_key_size    = int.from_bytes(self.recvn(conn, 2), 'big')
+        # peer_public_key  = RSA.import_key(self.recvn(conn, peer_key_size))
+
+        # クライアントから暗号化された AES 鍵＋IV を受信
+        encrypted_key_size = int.from_bytes(self.recvn(conn, 2), 'big')
+        encrypted_key_iv   = self.recvn(conn, encrypted_key_size)
+
+        # 秘密鍵で復号して AES 鍵と IV を取得
+        aes_key, aes_iv    = key_manager.decrypt_symmetric_key(encrypted_key_iv)
+
+        # AES 暗号オブジェクトを作成し、暗号化ソケットでラップ
+        symmetric_cipher   = AESCipherCFB(aes_key, aes_iv)
+        secure_socket      = SecureSocket(conn, symmetric_cipher)
+
+        return secure_socket
 
     def parse_request(self, connection):
         # ヘッダーとボディをそれぞれ受信
@@ -231,31 +255,6 @@ class TCPServer:
             'json_file'         : json_file,
             'media_type'        : media_type
         }
-
-    def perform_key_exchange(self, conn):
-        # RSA 鍵ペアを生成
-        key_manager = RSAKeyExchange()
-
-        # 自身の公開鍵をクライアントに送信（長さ 2 バイト + 本体）
-        public_key_bytes = key_manager.public_key_bytes()
-        conn.sendall(len(public_key_bytes).to_bytes(2, 'big') + public_key_bytes)
-
-        # クライアントから公開鍵を受信
-        # peer_key_size    = int.from_bytes(self.recvn(conn, 2), 'big')
-        # peer_public_key  = RSA.import_key(self.recvn(conn, peer_key_size))
-
-        # クライアントから暗号化された AES 鍵＋IV を受信
-        encrypted_key_size = int.from_bytes(self.recvn(conn, 2), 'big')
-        encrypted_key_iv   = self.recvn(conn, encrypted_key_size)
-
-        # 秘密鍵で復号して AES 鍵と IV を取得
-        aes_key, aes_iv    = key_manager.decrypt_symmetric_key(encrypted_key_iv)
-
-        # AES 暗号オブジェクトを作成し、暗号化ソケットでラップ
-        symmetric_cipher   = AESCipherCFB(aes_key, aes_iv)
-        secure_socket      = SecureSocket(conn, symmetric_cipher)
-
-        return secure_socket
 
     # 指定されたバイト数を受信するまで繰り返す
     @staticmethod
