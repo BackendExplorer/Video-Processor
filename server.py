@@ -107,12 +107,23 @@ class MediaProcessor:
 
     # 動画ファイルを指定ビットレートで圧縮
     def compress_video(self, input_file_path, file_name, bitrate='1M'):
+        # ログ出力: 圧縮処理の開始
         logging.info("\n---------------------------------------------")
         logging.info(f"\n🔧 動画圧縮: {file_name} - ビットレート: {bitrate}")
+        
+        # 圧縮後のファイルの保存先パスを構築
         output_file_path = os.path.join(self.dpath, f'compressed_{file_name}')
+        
+        # ffmpegを使って動画を指定ビットレートで再エンコード（圧縮）して保存
         ffmpeg.input(input_file_path).output(output_file_path, b=bitrate).run()
+        
+        # 元の動画ファイルを削除（不要なため）
         os.remove(input_file_path)
+        
+        # ログ出力: 圧縮処理の完了
         logging.info("\n✅ 圧縮完了: " + output_file_path)
+        
+        # 圧縮後のファイルパスを返す
         return output_file_path
 
     # 指定された解像度に動画サイズを変更（アスペクト比は維持）
