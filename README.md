@@ -391,11 +391,15 @@ sequenceDiagram
 
 <br>
 
-以下は、動画転送のために設計された **独自プロトコル MMP** (Multiple Media Protocol) のパケット構造を表します。
+<ul>
+  <li>
+    <p>以下は、動画転送のために設計された</p>
+    <p> <strong>独自プロトコル MMP（Multiple Media Protocol）</strong> のパケット構造を表します。</p>
+    
+  </li>
+</ul>
 
 <img width="739" alt="スクリーンショット 2025-05-31 13 48 57" src="https://github.com/user-attachments/assets/4244fafb-7062-456c-a714-b25624f10f47" />
-
-
 
 <br>
 
