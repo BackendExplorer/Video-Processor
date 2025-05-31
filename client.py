@@ -1,194 +1,237 @@
-# client.py
-
 import socket
 import os
 import json
 import logging
 from pathlib import Path
+
 from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP, AES
-from Crypto.Random import get_random_bytes
+from Crypto.Cipher    import AES, PKCS1_OAEP
+from Crypto.Random    import get_random_bytes
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-# ──── 暗号化ユーティリティ ─────────────────────────────
+
+
+class AESCipherCFB:
+    
+     # 対称鍵と初期化ベクトル（IV）を保存
+    def __init__(self, key, iv):
+        self.key = key
+        self.iv  = iv
+        
+    # AES CFBモードでデータを暗号化して返す
+    def encrypt(self, data):
+        return AES.new(self.key, AES.MODE_CFB, iv=self.iv, segment_size=128).encrypt(data)
+
+     # AES CFBモードでデータを復号して返す
+    def decrypt(self, data):
+        return AES.new(self.key, AES.MODE_CFB, iv=self.iv, segment_size=128).decrypt(data)
+
 
 class Encryption:
+    
     def __init__(self):
-        self.private_key = RSA.generate(2048)
-        self.public_key = self.private_key.publickey()
+        # self.private_key = RSA.generate(2048)  # クライアント公開鍵生成は不要
         self.peer_public_key = None
-        self.aes_key = None
-        self.iv = None
+        self.aes_key = self.iv = None
 
-    def get_public_key_bytes(self):
-        return self.public_key.export_key()
-
-    def load_peer_public_key(self, data: bytes):
+    # 通信相手から受け取った公開鍵をインポート
+    def load_peer_public_key(self, data):
         self.peer_public_key = RSA.import_key(data)
 
+    # ランダムなAES鍵とIV（各16バイト）を生成
     def generate_symmetric_key(self):
-        # AES鍵＋IV をまとめてバイト列で返す
         self.aes_key = get_random_bytes(16)
         self.iv      = get_random_bytes(16)
+
+        # AES鍵とIVを結合して返す（RSA暗号化用）
         return self.aes_key + self.iv
 
-    def encrypt_symmetric_key(self, sym: bytes):
-        cipher = PKCS1_OAEP.new(self.peer_public_key)
-        return cipher.encrypt(sym)
+    # 相手の公開鍵で対称鍵＋IVをRSA暗号化して返す
+    def encrypt_symmetric_key(self, sym):
+        return PKCS1_OAEP.new(self.peer_public_key).encrypt(sym)
 
-    def wrap_socket(self, sock: socket.socket):
-        cipher_enc = AES.new(self.aes_key, AES.MODE_CFB, iv=self.iv, segment_size=128)
-        cipher_dec = AES.new(self.aes_key, AES.MODE_CFB, iv=self.iv, segment_size=128)
-        return EncryptedSocket(sock, cipher_enc, cipher_dec)
+    # 対称鍵でソケット通信を暗号化するSecureSocketを生成
+    def wrap_socket(self, sock):        
+        cipher = AESCipherCFB(self.aes_key, self.iv)
+        return SecureSocket(sock, cipher)
 
-class EncryptedSocket:
-    def __init__(self, sock: socket.socket, cipher_enc: AES, cipher_dec: AES):
-        self.sock = sock
-        self.cipher_enc = cipher_enc
-        self.cipher_dec = cipher_dec
 
-    def sendall(self, data: bytes):
-        ct = self.cipher_enc.encrypt(data)
-        length = len(ct).to_bytes(4, 'big')
-        self.sock.sendall(length + ct)
 
-    def send(self, data: bytes):
-        self.sendall(data)
+class SecureSocket:
 
-    def recv(self) -> bytes:
-        lb = self._recvn(4)
-        if not lb:
-            return b''
-        length = int.from_bytes(lb, 'big')
-        ct = self._recvn(length)
-        return self.cipher_dec.decrypt(ct)
+    # ソケット本体と暗号化用の対称暗号オブジェクトを保存
+    def __init__(self, sock, cipher):
+        self.sock   = sock
+        self.cipher = cipher
 
-    def _recvn(self, n: int) -> bytes:
-        data = b''
-        while len(data) < n:
-            packet = self.sock.recv(n - len(data))
-            if not packet:
+    # 指定されたバイト数を受信するまで繰り返す
+    def recv_exact(self, n):
+        buf = bytearray()
+        while len(buf) < n:
+            chunk = self.sock.recv(n - len(buf))
+            if not chunk:
                 break
-            data += packet
-        return data
+            buf.extend(chunk)
+        return bytes(buf)
 
+    # 平文を暗号化し、長さ（4バイト）付きで送信
+    def sendall(self, plaintext):
+        ciphertext = self.cipher.encrypt(plaintext)
+        self.sock.sendall(len(ciphertext).to_bytes(4, 'big') + ciphertext)
+
+    # 暗号化されたデータを受信して復号して返す
+    def recv(self):
+        length = self.recv_exact(4)
+        if not length:
+            return b''
+        ciphertext = self.recv_exact(int.from_bytes(length, 'big'))
+        return self.cipher.decrypt(ciphertext)
+
+    # ソケットを閉じる
     def close(self):
         self.sock.close()
 
-# ──── ファイル受信ユーティリティ ────────────────────────
+class TCPClient:
 
-class FileHandler:
-    def __init__(self, dpath='receive'):
+    def __init__(self, server_address, server_port, dpath='receive'):
+        self.server_address = server_address
+        self.server_port    = server_port
+        self.chunk_size     = 1400
+        
+        self.encryption     = Encryption()
         self.dpath = dpath
         os.makedirs(self.dpath, exist_ok=True)
 
-    def save_received_file(self, file_name, connection, file_size, chunk_size=1400):
-        output_file_path = os.path.join(self.dpath, file_name)
-        with open(output_file_path, 'wb+') as f:
-            while file_size > 0:
-                data = connection.recv()
-                f.write(data)
-                file_size -= len(data)
-        return output_file_path
+    # 指定されたバイト数を受信するまで繰り返す
+    def recv_exact(self, sock, n):
+        buf = bytearray()
+        while len(buf) < n:
+            chunk = sock.recv(n - len(buf))
+            if not chunk:
+                break
+            buf.extend(chunk)
+        return bytes(buf)
 
-# ──── TCPクライアント ──────────────────────────────────
+    def perform_key_exchange(self):
+        # TCP ソケットを作成して接続
+        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        tcp_socket.connect((self.server_address, self.server_port))
 
-class TCPClient:
-    def __init__(self, server_address, server_port, handler: FileHandler):
-        self.server_address = server_address
-        self.server_port = server_port
-        self.handler = handler
-        self.chunk_size = 1400
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # 暗号化インスタンス
-        self.encryption = Encryption()
-
-    def upload_and_process(self, file_path, operation, operation_details={}):
-        # 1) サーバ接続
-        self.sock.connect((self.server_address, self.server_port))
-
-        # ── ハンドシェイク ───────────────────────────
-        # a) クライアント公開鍵送信
-        client_pk = self.encryption.get_public_key_bytes()
-        self.sock.sendall(len(client_pk).to_bytes(2,'big') + client_pk)
-        logging.info("🔑 クライアント公開鍵送信完了")
-
-        # b) サーバ公開鍵受信
-        raw = self.sock.recv(2)
-        srv_len = int.from_bytes(raw, 'big')
-        srv_pk = self.sock.recv(srv_len)
-        self.encryption.load_peer_public_key(srv_pk)
+        # サーバの公開鍵を受信してインポート
+        pubkey_length = int.from_bytes(self.recv_exact(tcp_socket, 2), 'big')
+        server_pubkey = self.recv_exact(tcp_socket, pubkey_length)
+        self.encryption.load_peer_public_key(server_pubkey)
+        
         logging.info("🔑 サーバ公開鍵受信完了")
 
-        # c) 対称鍵生成→暗号化→送信
-        sym = self.encryption.generate_symmetric_key()
-        enc_sym = self.encryption.encrypt_symmetric_key(sym)
-        self.sock.sendall(len(enc_sym).to_bytes(2,'big') + enc_sym)
+        # 対称鍵（AES + IV）を生成し、サーバ公開鍵で暗号化して送信
+        sym_key       = self.encryption.generate_symmetric_key()
+        encrypted_key = self.encryption.encrypt_symmetric_key(sym_key)
+        tcp_socket.sendall(len(encrypted_key).to_bytes(2, 'big') + encrypted_key)
+        
         logging.info("🔒 対称鍵共有完了")
 
-        # d) 暗号化ソケットにラップ
-        secure_sock = self.encryption.wrap_socket(self.sock)
-        # 以後 self.sock を secure_sock に置き換え
-        self.sock = secure_sock
+        # 暗号化されたソケットでラップ
+        self.sock = self.encryption.wrap_socket(tcp_socket)
 
-        # ── 既存の送受信処理 ───────────────────────
-        _, media_type = os.path.splitext(file_path)
-        media_bytes = media_type.encode('utf-8')
+    def upload_and_process(self, file_path, operation, operation_details={}):
+        # 鍵交換と暗号化ソケットの確立
+        self.perform_key_exchange()
 
-        with open(file_path, 'rb') as f:
-            f.seek(0, os.SEEK_END)
-            file_size = f.tell()
-            f.seek(0)
+        # 拡張子（例: .mp4）をメディアタイプとして抽出
+        media_type = Path(file_path).suffix.encode('utf-8')
+        media_type_length = len(media_type)
 
-            payload = {'file_name': os.path.basename(f.name), 'operation': operation}
+        with open(file_path, 'rb') as file:
+            # ファイルサイズ取得
+            file.seek(0, os.SEEK_END)
+            file_size = file.tell()
+            file.seek(0)
+
+            # メタ情報ペイロードを構築（JSON形式）
+            payload = {
+                'file_name': Path(file.name).name,
+                'operation': operation
+            }
+            
             payload.update(operation_details)
-            json_bytes = json.dumps(payload).encode('utf-8')
+            json_bytes   = json.dumps(payload).encode('utf-8')
+            json_length  = len(json_bytes)
 
-            # ヘッダー送信
+            # ヘッダー: JSON長(2B) + メディアタイプ長(1B) + ファイルサイズ(5B)
             header = (
-                len(json_bytes).to_bytes(2, 'big')
-                + len(media_bytes).to_bytes(1, 'big')
-                + file_size.to_bytes(5, 'big')
+                json_length.to_bytes(2, 'big')       +
+                media_type_length.to_bytes(1, 'big') +
+                file_size.to_bytes(5, 'big')
             )
+            
+            # ヘッダー + JSON + メディアタイプを送信
             self.sock.sendall(header)
-            self.sock.sendall(json_bytes + media_bytes)
+            self.sock.sendall(json_bytes + media_type)
 
-            # ファイルデータ送信
-            data = f.read(self.chunk_size)
-            while data:
-                self.sock.send(data)
-                data = f.read(self.chunk_size)
+            # ファイル本体をチャンク送信
+            while True:
+                chunk = file.read(self.chunk_size)
+                if not chunk:
+                    break
+                self.sock.sendall(chunk)
 
-            # ACK 受信
-            response = self.sock.recv()
-            if response != bytes([0x00]):
-                raise Exception("サーバーがエラーを返しました")
+        # サーバ応答を確認
+        if self.sock.recv() != bytes([0x00]):
+            raise Exception("サーバーがエラーを返しました")
 
-        # レスポンスファイル受信
         return self.receive_file()
 
     def receive_file(self):
-        # ヘッダー受信
+        # ヘッダーとボディをそれぞれ受信
         header = self.sock.recv()
-        json_len = int.from_bytes(header[0:2], 'big')
-        media_len = int.from_bytes(header[2:3], 'big')
-        file_size = int.from_bytes(header[3:8], 'big')
+        body   = self.sock.recv()
 
-        body = self.sock.recv()
-        info = json.loads(body[:json_len].decode('utf-8'))
+        # ヘッダーから各フィールドを抽出
+        json_length       = int.from_bytes(header[0:2], 'big')
+        media_type_length = int.from_bytes(header[2:3], 'big')
+        file_size         = int.from_bytes(header[3:8], 'big')
+
+        # ボディから JSON 部とメディアタイプ部に分割
+        json_part  = body[:json_length]
+        media_part = body[json_length:]
+
+        # JSON デコード
+        info = json.loads(json_part.decode('utf-8'))
         if info['error']:
             raise Exception(f"サーバーエラー: {info['error_message']}")
 
         file_name = info['file_name']
-        received = self.handler.save_received_file(
-            file_name, self.sock, file_size, self.chunk_size
-        )
+
+        # ファイルを受信して保存
+        out_path = self.save_received_file(file_name, self.sock, file_size, self.chunk_size)
         self.sock.close()
-        return received
+        return out_path
+
+    def save_received_file(self, file_name, connection, file_size, chunk_size=1400):
+        # 出力先ファイルパスを構築
+        output_path = os.path.join(self.dpath, file_name)
+
+        with open(output_path, 'wb') as file:
+            remaining = file_size
+            while remaining > 0:
+                chunk = connection.recv()
+                if not chunk:
+                    break
+                file.write(chunk)
+                remaining -= len(chunk)
+
+        return output_path
+
+
 
 if __name__ == "__main__":
-    client = TCPClient('127.0.0.1', 9001, FileHandler())
-    # 例: 動画圧縮（operation=1）
-    out = client.upload_and_process('input.mp4', 1, {})
-    logging.info("受信ファイル: " + out)
+    # 接続先サーバーの IP アドレスとポート番号
+    server_address = '127.0.0.1'
+    server_port    = 9001
+
+    # TCP クライアントを初期化してファイルをアップロード・処理
+    client = TCPClient(server_address, server_port)
+    result = client.upload_and_process('input.mp4', 1, {})
+    logging.info("受信ファイル: " + result)
