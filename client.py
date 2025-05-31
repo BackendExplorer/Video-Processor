@@ -96,10 +96,9 @@ class TCPClient:
     def __init__(self, server_address, server_port, dpath='receive'):
         self.server_address = server_address
         self.server_port    = server_port
-        self.chunk_size     = 1400
-        
+        self.chunk_size     = 1400       
         self.encryption     = Encryption()
-        self.dpath = dpath
+        self.dpath          = dpath
         os.makedirs(self.dpath, exist_ok=True)
 
     def upload_and_process(self, file_path, operation, operation_details={}):
@@ -226,6 +225,7 @@ class TCPClient:
 
 
 if __name__ == "__main__":
+    
     # 接続先サーバーの IP アドレスとポート番号
     server_address = '127.0.0.1'
     server_port    = 9001
