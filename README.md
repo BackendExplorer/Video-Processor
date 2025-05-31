@@ -401,7 +401,7 @@ sequenceDiagram
   </li>
 </ul>
 
-<img width="850" alt="スクリーンショット 2025-05-31 14 05 31" src="https://github.com/user-attachments/assets/99d6c3b9-ea55-447c-8417-ef8296ff29c8" />
+<img width="800" alt="スクリーンショット 2025-05-31 14 05 31" src="https://github.com/user-attachments/assets/99d6c3b9-ea55-447c-8417-ef8296ff29c8" />
 
 
 <br>
