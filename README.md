@@ -2,6 +2,61 @@
 classDiagram
     direction LR
 
+    class TCPClient {
+        - server_address: str
+        - server_port: int
+        - chunk_size: int
+        - sock: SecureSocket
+        - encryption: Encryption
+        - dpath: str
+        + __init__(server_address, server_port, dpath='receive')
+        + upload_and_process(file_path, operation, operation_details={}) : str
+        - perform_key_exchange() : None
+        - recv_exact(sock, n) : bytes
+        - receive_file() : str
+        - save_received_file(file_name, connection, file_size, chunk_size=1400) : str
+    }
+
+    class Encryption {
+        - peer_public_key: RSA.RsaKey
+        - aes_key: bytes
+        - iv: bytes
+        + __init__() 
+        + load_peer_public_key(data) : None
+        + generate_symmetric_key() : bytes
+        + encrypt_symmetric_key(sym) : bytes
+        + wrap_socket(sock) : SecureSocket
+    }
+
+    class SecureSocket {
+        - sock: socket.socket
+        - cipher: AESCipherCFB
+        + __init__(sock, cipher)
+        + recv_exact(n) : bytes
+        + sendall(plaintext) : None
+        + recv() : bytes
+        + close() : None
+    }
+
+    class AESCipherCFB {
+        - key: bytes
+        - iv: bytes
+        + __init__(key, iv)
+        + encrypt(data) : bytes
+        + decrypt(data) : bytes
+    }
+
+    TCPClient --> Encryption
+    Encryption --> SecureSocket
+    SecureSocket --> AESCipherCFB
+
+```
+
+
+```mermaid
+classDiagram
+    direction LR
+
     class MediaProcessor {
         - dpath: str
         + __init__(dpath='processed')
