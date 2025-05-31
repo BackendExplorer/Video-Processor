@@ -192,7 +192,7 @@ streamlit run gui.py
 
 <br>
 
-<img width="662" alt="スクリーンショット 2025-05-31 13 58 25" src="https://github.com/user-attachments/assets/789f1002-5946-4f15-a8b1-0869a6e4f42b" />
+<img width="500" alt="スクリーンショット 2025-05-31 13 58 25" src="https://github.com/user-attachments/assets/789f1002-5946-4f15-a8b1-0869a6e4f42b" />
 
 
 ```mermaid
