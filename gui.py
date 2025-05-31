@@ -264,7 +264,6 @@ class MediaConverterApp:
                 self.show_before_after(input_file_path, output_path, operation_code)
 
             except Exception as error:
-                # エラー発生時に詳細を表示
                 st.error(f"処理失敗: {error}")
 
         # ページ下部のスケーリング用DIVを閉じる
