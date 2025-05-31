@@ -483,6 +483,8 @@ sequenceDiagram
     <p>MediaProcessor：ファイル保存、変換パスの返却、例外処理の確認 </p>
   </li>
 
+<br>
+
   <li>
     <h3>統合テストの例</h3>
     <p>ファイル送信 → ffmpeg変換 → ファイル受信まで</p>
