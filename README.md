@@ -186,6 +186,14 @@ streamlit run gui.py
 
 ### 3. ユーザーの操作手順
 
+<br>
+
+以下の画面で手順に従って画像を変換できます。
+
+<br>
+
+<img width="662" alt="スクリーンショット 2025-05-31 13 58 25" src="https://github.com/user-attachments/assets/789f1002-5946-4f15-a8b1-0869a6e4f42b" />
+
 
 ```mermaid
 flowchart TD
