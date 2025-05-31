@@ -213,10 +213,6 @@ class TCPServer:
         public_key_bytes = key_manager.public_key_bytes()
         conn.sendall(len(public_key_bytes).to_bytes(2, 'big') + public_key_bytes)
 
-        # クライアントから公開鍵を受信
-        # peer_key_size    = int.from_bytes(self.recvn(conn, 2), 'big')
-        # peer_public_key  = RSA.import_key(self.recvn(conn, peer_key_size))
-
         # クライアントから暗号化された AES 鍵＋IV を受信
         encrypted_key_size = int.from_bytes(self.recvn(conn, 2), 'big')
         encrypted_key_iv   = self.recvn(conn, encrypted_key_size)
