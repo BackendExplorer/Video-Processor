@@ -171,7 +171,7 @@ cd Video-Processor
 python3 server.py
 ```
 
-<br><br>
+<br>
 
 ### 2. クライアント起動
 
@@ -181,7 +181,7 @@ python3 server.py
 streamlit run gui.py
 ```
 
-<br><br>
+<br>
 
 
 ### 3. ユーザーの操作手順
