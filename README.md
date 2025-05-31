@@ -478,7 +478,7 @@ sequenceDiagram
   
   <li>
     <h3>ユニットテストの対象予定のモジュール</h3>
-    <p>RSAKeyExchange：鍵生成、復号、例外処理の確認 </p>
+    <p><strong>RSAKeyExchange</strong>：鍵生成、復号、例外処理の確認 </p>
     <p>AESCipherCFB：暗号化・復号の正当性（往復で一致）</p>
     <p>MediaProcessor：ファイル保存、変換パスの返却、例外処理の確認 </p>
   </li>
