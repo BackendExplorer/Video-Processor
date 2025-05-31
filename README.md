@@ -555,7 +555,7 @@ sequenceDiagram
   <li>
     このプロジェクトは <strong>MIT License</strong>のもとで公開されています。<br><br>
     自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。<br><br>
-    ライセンス全文はリポジトリ内の [LICENSEファイル]を(./LICENSE)ご参照ください。
+    ライセンス全文はリポジトリ内の [LICENSEファイル](./LICENSE)ご参照ください。
   </li>
 </ul>
 
