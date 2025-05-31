@@ -9,9 +9,9 @@
 
 <br>
 
-### RSA/AESによる暗号化通信とFFmpeg処理を組み合わせた動画変換サーバ  
+### RSA/AES による暗号化通信と FFmpeg処理 を組み合わせた動画変換サーバ  
 
-### TCPソケットとStreamlit UIを用いた完全自作のメディア処理基盤
+### TCPソケット と Streamlit UI を用いた完全自作のメディア処理基盤
 
 <br>
 
