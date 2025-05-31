@@ -1,3 +1,39 @@
+```mermaid
+classDiagram
+    direction LR
+
+    class MediaProcessor {
+        - dpath: str
+        + __init__(dpath='processed')
+        + save_file(connection, file_path, file_size, chunk_size=1400) : None
+        - receive_in_chunks(connection, file_obj, remaining_size, chunk_size=1400) : None
+        + compress_video(input_file_path, file_name, bitrate='1M') : str
+        + change_resolution(input_file_path, file_name, resolution) : str
+        + change_aspect_ratio(input_file_path, file_name, aspect_ratio) : str
+        + convert_to_audio(input_file_path, file_name) : str
+        + create_gif(input_file_path, file_name, start_time, duration, fps=10) : str
+    }
+
+    class TCPServer {
+        - server_address: str
+        - server_port: int
+        - processor: MediaProcessor
+        - chunk_size: int
+        - sock: socket.socket
+        + __init__(server_address, server_port, processor) : None
+        + start_server() : None
+        - handle_client(connection) : None
+        - perform_key_exchange(conn) : SecureSocket
+        - parse_request(connection) : dict
+        - operation_dispatcher(json_file, input_file_path) : str
+        - send_file(connection, output_file_path) : None
+        - send_error_response(connection, error_message) : None
+        + recvn(conn, n) : bytes
+    }
+
+    TCPServer --> MediaProcessor
+```
+
 # Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
