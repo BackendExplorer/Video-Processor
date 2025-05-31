@@ -103,38 +103,6 @@ class TCPClient:
         self.dpath = dpath
         os.makedirs(self.dpath, exist_ok=True)
 
-    # 指定されたバイト数を受信するまで繰り返す
-    def recv_exact(self, sock, n):
-        buf = bytearray()
-        while len(buf) < n:
-            chunk = sock.recv(n - len(buf))
-            if not chunk:
-                break
-            buf.extend(chunk)
-        return bytes(buf)
-
-    def perform_key_exchange(self):
-        # TCP ソケットを作成して接続
-        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        tcp_socket.connect((self.server_address, self.server_port))
-
-        # サーバの公開鍵を受信してインポート
-        pubkey_length = int.from_bytes(self.recv_exact(tcp_socket, 2), 'big')
-        server_pubkey = self.recv_exact(tcp_socket, pubkey_length)
-        self.encryption.load_peer_public_key(server_pubkey)
-        
-        logging.info("🔑 サーバ公開鍵受信完了")
-
-        # 対称鍵（AES + IV）を生成し、サーバ公開鍵で暗号化して送信
-        sym_key       = self.encryption.generate_symmetric_key()
-        encrypted_key = self.encryption.encrypt_symmetric_key(sym_key)
-        tcp_socket.sendall(len(encrypted_key).to_bytes(2, 'big') + encrypted_key)
-        
-        logging.info("🔒 対称鍵共有完了")
-
-        # 暗号化されたソケットでラップ
-        self.sock = self.encryption.wrap_socket(tcp_socket)
-
     def upload_and_process(self, file_path, operation, operation_details={}):
         # 鍵交換と暗号化ソケットの確立
         self.perform_key_exchange()
@@ -182,6 +150,38 @@ class TCPClient:
             raise Exception("サーバーがエラーを返しました")
 
         return self.receive_file()
+
+    def perform_key_exchange(self):
+        # TCP ソケットを作成して接続
+        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        tcp_socket.connect((self.server_address, self.server_port))
+
+        # サーバの公開鍵を受信してインポート
+        pubkey_length = int.from_bytes(self.recv_exact(tcp_socket, 2), 'big')
+        server_pubkey = self.recv_exact(tcp_socket, pubkey_length)
+        self.encryption.load_peer_public_key(server_pubkey)
+        
+        logging.info("🔑 サーバ公開鍵受信完了")
+
+        # 対称鍵（AES + IV）を生成し、サーバ公開鍵で暗号化して送信
+        sym_key       = self.encryption.generate_symmetric_key()
+        encrypted_key = self.encryption.encrypt_symmetric_key(sym_key)
+        tcp_socket.sendall(len(encrypted_key).to_bytes(2, 'big') + encrypted_key)
+        
+        logging.info("🔒 対称鍵共有完了")
+
+        # 暗号化されたソケットでラップ
+        self.sock = self.encryption.wrap_socket(tcp_socket)
+
+    # 指定されたバイト数を受信するまで繰り返す
+    def recv_exact(self, sock, n):
+        buf = bytearray()
+        while len(buf) < n:
+            chunk = sock.recv(n - len(buf))
+            if not chunk:
+                break
+            buf.extend(chunk)
+        return bytes(buf)
 
     def receive_file(self):
         # ヘッダーとボディをそれぞれ受信
