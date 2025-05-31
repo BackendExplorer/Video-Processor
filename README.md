@@ -3,47 +3,47 @@ classDiagram
     direction LR
 
     class TCPClient {
-        - server_address: str
-        - server_port: int
-        - chunk_size: int
-        - sock: SecureSocket
-        - encryption: Encryption
-        - dpath: str
-        + __init__(server_address, server_port, dpath='receive')
-        + upload_and_process(file_path, operation, operation_details={}) : str
-        - perform_key_exchange() : None
-        - recv_exact(sock, n) : bytes
-        - receive_file() : str
-        - save_received_file(file_name, connection, file_size, chunk_size=1400) : str
+        - server_address
+        - server_port
+        - chunk_size
+        - sock
+        - encryption
+        - dpath
+        + __init__(server_address, server_port, dpath)
+        + upload_and_process(file_path, operation, operation_details)
+        - perform_key_exchange()
+        - recv_exact(sock, n)
+        - receive_file()
+        - save_received_file(file_name, connection, file_size, chunk_size)
     }
 
     class Encryption {
-        - peer_public_key: RSA.RsaKey
-        - aes_key: bytes
-        - iv: bytes
-        + __init__() 
-        + load_peer_public_key(data) : None
-        + generate_symmetric_key() : bytes
-        + encrypt_symmetric_key(sym) : bytes
-        + wrap_socket(sock) : SecureSocket
+        - peer_public_key
+        - aes_key
+        - iv
+        + __init__()
+        + load_peer_public_key(data)
+        + generate_symmetric_key()
+        + encrypt_symmetric_key(sym)
+        + wrap_socket(sock)
     }
 
     class SecureSocket {
-        - sock: socket.socket
-        - cipher: AESCipherCFB
+        - sock
+        - cipher
         + __init__(sock, cipher)
-        + recv_exact(n) : bytes
-        + sendall(plaintext) : None
-        + recv() : bytes
-        + close() : None
+        + recv_exact(n)
+        + sendall(plaintext)
+        + recv()
+        + close()
     }
 
     class AESCipherCFB {
-        - key: bytes
-        - iv: bytes
+        - key
+        - iv
         + __init__(key, iv)
-        + encrypt(data) : bytes
-        + decrypt(data) : bytes
+        + encrypt(data)
+        + decrypt(data)
     }
 
     TCPClient --> Encryption
