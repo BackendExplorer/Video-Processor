@@ -471,14 +471,14 @@ sequenceDiagram
   <li>
     <h3>pytest によるユニットテスト・統合テストの導入</h3>
     <p>暗号通信やメディア処理機能の品質を保つため、 </p>
-<p>`pytest` を用いたユニットテストと統合テストを導入予定です。</p>
+<p>pytestを用いたユニットテストと統合テストを導入予定です。</p>
   </li>
 
   <br>
   
   <li>
     <h3>ユニットテストの対象予定のモジュール</h3>
-    <p>`RSAKeyExchange`：鍵生成、復号、例外処理の確認 </p>
+    <p><strong>RSAKeyExchange</strong>strong>：鍵生成、復号、例外処理の確認 </p>
     <p>`AESCipherCFB`：暗号化・復号の正当性（往復で一致）</p>
     <p>`MediaProcessor`：ファイル保存、変換パスの返却、例外処理の確認 </p>
   </li>
