@@ -553,18 +553,11 @@ sequenceDiagram
 
 <ul>
   <li>
-    このプロジェクトは <a href="./LICENSE" target="_blank">MIT License</a> のもとで公開されています。
+    このプロジェクトは <strong>MIT License</strong>のもとで公開されています。<br><br>
+    自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。<br><br>
+    ライセンス全文はリポジトリ内の [LICENSEファイル]を(./LICENSE)ご参照ください。
   </li>
 </ul>
-
-<p>
-  自由に利用、改変、再配布が可能ですが、<br>
-  利用の際は <strong>著作権表示およびライセンス条文</strong> をすべてのコピーに含めてください。
-</p>
-
-<p>
-  ライセンス全文は、リポジトリ内の <code>LICENSE</code> ファイルをご参照ください。
-</p>
 
 
 <br>
