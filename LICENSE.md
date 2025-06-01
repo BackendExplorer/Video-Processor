@@ -1,21 +1,17 @@
-MIT License
+カスタムライセンス 
 
 Copyright (c) 2025 Tenshin Noji
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+本ソフトウェアおよび関連ドキュメント（以下「本ソフトウェア」）は、<br>**個人的な学習、採用選考、または技術評価**を目的とする閲覧者に対して、無償で閲覧・参照する権利を付与します。
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ただし、以下の行為については、著作権者の事前の書面による許可なしに行うことは**一切認められません**：
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+- 本ソフトウェアの複製、改変、結合、公開、配布、サブライセンス、再利用、販売
+- ソースコードまたはバイナリ形式でのいかなる再利用も含みます
+
+本ソフトウェアに関する正当な参照や言及においては、本著作権表示および本許諾表示を保持する必要があります。
+
+本ソフトウェアは「現状のまま（AS IS）」で提供されており、<br>**商品性、特定目的への適合性、非侵害性などに関するいかなる明示または黙示の保証もありません**。  
+また、著作権者は、本ソフトウェアの無断使用に起因または関連して発生するいかなる損害、請求、責任についても、<br>一切の責任を負いません。
+
+本ライセンスは、作者の作品を保護しつつ、学習または評価目的での公正な閲覧を許容するためのものです。
