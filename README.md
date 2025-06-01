@@ -165,7 +165,7 @@ cd Video-Processor
 
 ### 1. サーバ起動
 
-serverフォルダに移動して、以下のコマンドを実行し、サーバを起動します。
+serverフォルダに移動して、以下のコマンドでサーバを起動します。
 
 ```bash
 python3 server.py
