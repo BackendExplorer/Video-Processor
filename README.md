@@ -399,8 +399,7 @@ sequenceDiagram
     クライアント ->> ユーザー: 完了メッセージ表示
 ```
 
-<img width="732" alt="Image" src="https://github.com/user-attachments/assets/743d1aed-f0f5-4f78-98a0-f47f59d6c40d" />
-
+<img width="791" alt="Image" src="https://github.com/user-attachments/assets/b38c91d7-b524-4568-8972-cbc5c486ea0e" />
 
 <br>
 
@@ -417,8 +416,7 @@ sequenceDiagram
   </li>
 </ul>
 
-<img width="800" alt="スクリーンショット 2025-05-31 14 05 31" src="https://github.com/user-attachments/assets/99d6c3b9-ea55-447c-8417-ef8296ff29c8" />
-
+<img width="732" alt="Image" src="https://github.com/user-attachments/assets/743d1aed-f0f5-4f78-98a0-f47f59d6c40d" />
 
 <br>
 
