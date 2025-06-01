@@ -23,7 +23,7 @@
 
 <br>
 
-![Image](https://github.com/user-attachments/assets/2ea2054a-fb73-444c-86e4-bbaffc078c5b)
+![Image](https://github.com/user-attachments/assets/f8b53cb9-798e-43ab-9db2-139c5a590331)
 
 <br>
 
