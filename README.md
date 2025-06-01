@@ -399,7 +399,7 @@ sequenceDiagram
     クライアント ->> ユーザー: 完了メッセージ表示
 ```
 
-<img width="790" alt="スクリーンショット 2025-05-12 12 27 44" src="https://github.com/user-attachments/assets/4418243b-48b0-4010-a8ba-300a7dea6188" />
+<img width="732" alt="Image" src="https://github.com/user-attachments/assets/743d1aed-f0f5-4f78-98a0-f47f59d6c40d" />
 
 
 <br>
