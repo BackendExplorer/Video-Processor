@@ -1,5 +1,3 @@
-![Image](https://github.com/user-attachments/assets/aaaaf07b-9766-46e7-b981-f4bbf44a1b86)
-
 # Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
@@ -25,7 +23,7 @@
 
 <br>
 
-![demo](https://github.com/user-attachments/assets/cf0888cd-e2d3-4038-81df-f5a558d9c4b0/demo.mov)
+![Image](https://github.com/user-attachments/assets/aaaaf07b-9766-46e7-b981-f4bbf44a1b86)
 
 <br>
 
