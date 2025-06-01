@@ -542,9 +542,10 @@ sequenceDiagram
 
 <ul>
   <li>
-    このプロジェクトは MIT License のもとで公開されています。<br><br>
-    自由に利用、改変、再配布が可能ですが、利用の際は本ライセンス表記を保持してください。<br><br>
-    ライセンス全文はリポジトリ内の <a href="./LICENSE.md" target="_blank">LICENSEファイル</a>をご参照ください。
+    本プロジェクトの全コード・構成・図・UIなどの著作権は、制作者である Tenshin Noji に帰属します。<br><br>
+    採用選考や個人的な学習を目的とした閲覧・参照は歓迎しますが、<br><br>
+    無断転載・複製・商用利用・二次配布は禁止とさせていただきます。<br><br>
+    ライセンス全文はリポジトリ内の <a href="./LICENSE.md" target="_blank">LICENSEファイル</a>をご覧ください。
   </li>
 </ul>
 
