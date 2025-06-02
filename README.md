@@ -5,7 +5,8 @@
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) 
 ![TCP](https://img.shields.io/badge/Protocol-TCP-blue)
 ![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![License: Custom - Evaluation Only](https://img.shields.io/badge/License-Evaluation--Only-lightgrey.svg)](./LICENSE)
+
 
 <br>
 
