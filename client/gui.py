@@ -74,8 +74,8 @@ class MediaConverterApp:
     def setup_page(self):
         # ページのタイトル、アイコン、レイアウトを設定
         st.set_page_config(
-            page_title="メディア変換ツール",  # ブラウザタブに表示されるタイトル
-            page_icon="🎮️",                # タブのアイコン（絵文字）
+            page_title="Video Processor",  # ブラウザタブに表示されるタイトル
+            page_icon="🎥",                # タブのアイコン（絵文字）
             layout="centered"              # ページを中央寄せレイアウトに
         )
 
