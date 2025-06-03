@@ -190,14 +190,12 @@ class StreamlitApp:
 
     # =========  アプリ起動エントリポイント  =========
     def start_streamlit_app(self):
+        # ページの初期設定（タイトルやスタイルの読み込み）
         self.setup_page()
-
+        # アップロードした動画ファイルを、一時的に保存したパスを取得
         uploaded_file_path = self.get_uploaded_file()
-        if not uploaded_file_path:
-            return  # ファイル未選択なら終了
-
+        # 動画の変換処理を実行
         self.handle_conversion(uploaded_file_path)
-
         # ページ下部のスケール用 DIV を閉じる
         st.markdown("</div>", unsafe_allow_html=True)
 
