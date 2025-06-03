@@ -272,5 +272,5 @@ class MediaConverterApp:
 # メイン処理としてアプリを起動
 if __name__ == "__main__":
 
-    converter = Converter()
+    converter = MediaConverterApp()
     converter.run()
