@@ -10,7 +10,7 @@ import streamlit as st
 from client import TCPClient
 
 
-class ConversionService:
+class VideoConverter:
     
     def __init__(self, server_address = "0.0.0.0",
                  server_port = 9001,
@@ -63,16 +63,14 @@ class ConversionService:
         return output_path
 
 
-class MediaConverterApp:
+class StreamlitApp:
     
     def __init__(self):
-        self.converter    = ConversionService()
+        self.converter    = VideoConverter()
         self.progress_bar = None
         self.status_text  = None
 
-
-    # アプリ実行エントリーポイント
-    def start_convert_app(self):
+    def start_streamlit_app(self):
         # ページ設定およびスタイルの初期化
         self.setup_page()
 
@@ -271,9 +269,8 @@ class MediaConverterApp:
                 )
 
     
-    
-# メイン処理としてアプリを起動
+
 if __name__ == "__main__":
 
-    converter = MediaConverterApp()
-    converter.start_convert_app()
+    streamlit_app = StreamlitApp()
+    streamlit_app.start_streamlit_app()
