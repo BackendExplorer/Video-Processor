@@ -339,8 +339,9 @@ class TCPServer:
             header = (
                 json_size      .to_bytes(2, 'big')   +
                 media_type_size.to_bytes(1, 'big')   +
-                file_size        .to_bytes(5, 'big')
+                file_size      .to_bytes(5, 'big')
             )
+            
             # ヘッダー + JSON + メディアタイプを送信
             connection.sendall(header)
             connection.sendall(json_bytes + media_type)
