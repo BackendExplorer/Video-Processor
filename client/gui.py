@@ -10,11 +10,139 @@ import streamlit as st
 from client import TCPClient
 
 
-class VideoConverter:
+# ===== 変換オプション選択ロジック =====
+class OperationSelector:
     
-    def __init__(self, server_address = "0.0.0.0",
-                 server_port = 9001,
-                 receive_dir = "receive"):
+    def select_operation(self):
+        option = st.selectbox(
+            "変換オプションを選択",
+            ["圧縮", "解像度変更", "アスペクト比変更", "音声変換", "GIF作成"]
+        )
+
+        if option == "圧縮":
+            details = self.compression_params()
+            code = 1
+        elif option == "解像度変更":
+            details = self.resolution_params()
+            code = 2
+        elif option == "アスペクト比変更":
+            details = self.aspect_ratio_params()
+            code = 3
+        elif option == "音声変換":
+            details = {}
+            code = 4
+        else:  # GIF作成
+            details = self.gif_params()
+            code = 5
+
+        return code, details, option
+
+    # ---------- 各オプションの入力 UI ----------    
+    def compression_params(self):
+        bitrate_options = ["500k", "1M", "2M"]
+        return {
+            "bitrate": st.selectbox("ビットレート", bitrate_options)
+        }
+
+    def resolution_params(self):
+        resolution_options = ["1920:1080", "1280:720", "720:480"]
+        return {
+            "resolution": st.selectbox("解像度", resolution_options)
+        }
+
+    def aspect_ratio_params(self):
+        aspect_ratio_options = ["16/9", "4/3", "1/1"]
+        return {
+            "aspect_ratio": st.selectbox("アスペクト比", aspect_ratio_options)
+        }
+
+    def gif_params(self):
+        return {
+            "start_time": st.text_input(
+                "開始時間 (秒)", ""
+            ),
+            "duration": st.text_input(
+                "続續時間 (秒)", ""
+            )
+        }
+
+
+# ===== メディア表示ロジック =====
+class MediaRenderer:
+    """
+    変換前後メディアの表示／ダウンロード UI を担当
+    """
+
+    # =========  メディア自動再生  =========
+    def autoplay_media(self, media_file_path, media_type):
+        mime_types = {"video": "video/mp4", "audio": "audio/mpeg"}
+        ext = Path(media_file_path).suffix.lower()
+        if ext == ".avi":
+            mime_types["video"] = "video/avi"
+
+        media_data = Path(media_file_path).read_bytes()
+        media_b64 = base64.b64encode(media_data).decode()
+
+        if media_type == "video":
+            html = f"""
+            <video width="100%" controls autoplay loop playsinline>
+              <source src="data:{mime_types['video']};base64,{media_b64}" type="{mime_types['video']}">
+            </video>
+            """
+        else:
+            html = f"""
+            <audio controls autoplay style="width:100%;">
+              <source src="data:{mime_types['audio']};base64,{media_b64}" type="{mime_types['audio']}">
+            </audio>
+            """
+
+        st.markdown(html, unsafe_allow_html=True)
+
+    # =========  比較表示  =========
+    def show_before_after(self, original_path, result_path, conversion_type_code):
+        self.show_compare_header()
+        col1, col2 = st.columns(2)
+        with col1:
+            # 変換前メディアを直接表示
+            self.autoplay_media(original_path, "video")
+        with col2:
+            self.show_converted(result_path, conversion_type_code)
+
+    # ---------- 比較画面ヘルパ ----------
+    def show_compare_header(self):
+        st.markdown(
+            """
+            <div class="before-after">
+              <div class="label">変換前</div>
+              <div class="arrow">→</div>
+              <div class="label">変換後</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    def show_converted(self, result_path, conversion_type_code):
+        if conversion_type_code == 4:
+            self.autoplay_media(result_path, "audio")
+        elif conversion_type_code == 5:
+            st.image(result_path)
+        else:
+            self.autoplay_media(result_path, "video")
+            self.download_converted(result_path)
+
+    def download_converted(self, result_path):
+        converted_data = Path(result_path).read_bytes()
+        st.download_button(
+            label="変換後の動画をダウンロード",
+            data=converted_data,
+            file_name=Path(result_path).name,
+            mime="video/mp4"
+        )
+
+
+# ===== サーバーとの通信・変換処理 =====
+class VideoConverter:
+    def __init__(self, server_address="0.0.0.0", server_port=9001, receive_dir="receive"):
         self.client = TCPClient(
             server_address=server_address,
             server_port=server_port,
@@ -23,253 +151,116 @@ class VideoConverter:
 
     # 指定ファイルをサーバへアップロードし、変換処理を実行
     # 処理完了後は変換済みファイルの保存パスを返す
-    def convert(self,
-                uploaded_file_path,
-                conversion_type_code,
-                conversion_params,
-                progress_callback=None):
-        
-        # 処理開始時に進捗を 0% にリセット
+    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, progress_callback=None):
         if progress_callback:
             progress_callback(0)
 
-        # サーバとの通信・変換処理を別スレッドで実行するタスク
         def conversion_task():
             return self.client.upload_and_process(
-                    uploaded_file_path,
-                    operation=conversion_type_code,
-                    operation_details=conversion_params
-                )
+                uploaded_file_path,
+                operation=conversion_type_code,
+                operation_details=conversion_params
+            )
 
-
-        # スレッドプールを用いて非同期で変換処理を実行
         with ThreadPoolExecutor() as executor:
             future = executor.submit(conversion_task)
-            progress_progress_percent = 0
-
-            # 変換処理が完了するまで疑似的な進捗を更新（最大 95%）
+            progress_percent = 0
             while not future.done():
                 time.sleep(0.2)
-                progress_progress_percent = min(progress_progress_percent + 2, 95)
+                progress_percent = min(progress_percent + 2, 95)
                 if progress_callback:
-                    progress_callback(progress_progress_percent)
-            
-            # 処理結果のファイルパスを取得
+                    progress_callback(progress_percent)
+
             converted_file_path = future.result()
 
-        # 完了時に進捗を 100% に設定
         if progress_callback:
             progress_callback(100)
-        
+
         return converted_file_path
 
 
+# ===== Streamlit アプリ本体 =====
 class StreamlitApp:
-    
     def __init__(self):
-        self.converter    = VideoConverter()
+        self.converter = VideoConverter()
+        self.selector = OperationSelector()
+        self.renderer = MediaRenderer()
         self.progress_bar = None
-        self.status_text  = None
+        self.status_text = None
 
+    # =========  アプリ起動エントリポイント  =========
     def start_streamlit_app(self):
-        # ページ設定およびスタイルの初期化
         self.setup_page()
 
-        # ユーザーがアップロードしたファイルを取得
         uploaded_file_path = self.get_uploaded_file()
         if not uploaded_file_path:
-            return  # ファイル未選択なら中断
+            return  # ファイル未選択なら終了
 
-        # 変換操作とパラメータを取得（例：解像度、ビットレートなど）
-        conversion_type_code, conversion_params, _ = self.select_operation()
+        self.handle_conversion(uploaded_file_path)
 
-        # 「処理開始」ボタンを押したときの処理
-        if st.button("処理開始"):
-            # 進捗バーとステータス用プレースホルダを初期化
-            self.progress_bar = st.progress(0)
-            self.status_text  = st.empty()
-
-            try:
-                # サーバーへファイルを送信し、変換を実行
-                converted_file_path = self.converter.convert(
-                    uploaded_file_path=uploaded_file_path,
-                    conversion_type_code=conversion_type_code,
-                    conversion_params=conversion_params,
-                    progress_callback=self.update_progress
-                )
-
-                # 成功メッセージとメディアの比較表示
-                st.success("✅ 処理完了！")
-                self.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
-
-            except Exception as error:
-                st.error(f"処理失敗: {error}")
-
-        # ページ下部のスケーリング用DIVを閉じる
+        # ページ下部のスケール用 DIV を閉じる
         st.markdown("</div>", unsafe_allow_html=True)
-    
-    # Streamlit ページ全体の設定とスタイルシート適用
+
+    # =========  ページ設定・CSS  =========
     def setup_page(self):
-        # ページのタイトル、アイコン、レイアウトを設定
         st.set_page_config(
-            page_title="Video Processor",  # ブラウザタブに表示されるタイトル
-            page_icon="🎥",                # タブのアイコン（絵文字）
-            layout="centered"              # ページを中央寄せレイアウトに
+            page_title="Video Processor",
+            page_icon="🎥",
+            layout="centered"
         )
 
-        # カスタムCSSファイルを読み込んでスタイルを適用
-        css = Path(__file__).parent / "style.css"  # スタイルファイルのパス
+        css = Path(__file__).parent / "style.css"
         st.markdown(
             f"<style>{css.read_text()}</style>\n<div class=\"app-scale\">",
-            unsafe_allow_html=True  # HTMLの直接レンダリングを許可
+            unsafe_allow_html=True
         )
 
-    # ファイルアップロード UI の処理
+    # =========  ファイルアップロード  =========
     def get_uploaded_file(self):
-        # ユーザーにファイルをアップロードさせるUI（mp4, avi, mpeg4形式を許可）
         uploaded_file = st.file_uploader("", type=["mp4", "avi", "mpeg4"])
-        
         if uploaded_file is None:
             return None
 
         tmp_dir = tempfile.gettempdir()
-
-        # 一時ファイルとして保存するパスを生成（アップロードされたファイル名を保持）
         temp_file_path = os.path.join(tmp_dir, uploaded_file.name)
-
-        # アップロードされたファイルの内容を一時ファイルとして書き込む
         Path(temp_file_path).write_bytes(uploaded_file.getbuffer())
-
         return temp_file_path
 
+    # =========  変換ハンドラ（ボタンクリック含む）  =========
+    def handle_conversion(self, uploaded_file_path):
+        conversion_type_code, conversion_params, _ = self.selector.select_operation()
 
-    # 処理内容の選択とパラメータ入力
-    def select_operation(self):
-        # ユーザーに対して変換オプションを選択させるドロップダウン
-        selected_conversion_option = st.selectbox(
-            "変換オプションを選択",
-            ["圧縮", "解像度変更", "アスペクト比変更", "音声変換", "GIF作成"]
+        if st.button("処理開始"):
+            self.init_progress_ui()
+            try:
+                converted_file_path = self.execute_conversion(
+                    uploaded_file_path,
+                    conversion_type_code,
+                    conversion_params
+                )
+                st.success("✅ 処理完了！")
+                self.renderer.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
+            except Exception as error:
+                st.error(f"処理失敗: {error}")
+
+    # =========  プログレス UI 初期化  =========
+    def init_progress_ui(self):
+        self.progress_bar = st.progress(0)
+        self.status_text = st.empty()
+
+    # =========  変換実行  =========
+    def execute_conversion(self, path, code, params):
+        return self.converter.convert(
+            path, code, params, self.update_progress
         )
 
-        # オプションに応じた追加のパラメータを格納する辞書
-        conversion_details = {}
-
-        # 選択されたオプションごとに、必要なパラメータと操作コードを設定
-        if selected_conversion_option == "圧縮":
-            # ビットレート選択（動画圧縮）
-            conversion_details["bitrate"] = st.selectbox("ビットレート", ["500k", "1M", "2M"])
-            conversion_type_code = 1
-
-        elif selected_conversion_option == "解像度変更":
-            # 解像度選択（スケーリング）
-            conversion_details["resolution"] = st.selectbox("解像度", ["1920:1080", "1280:720", "720:480"])
-            conversion_type_code = 2
-
-        elif selected_conversion_option == "アスペクト比変更":
-            # アスペクト比選択（表示比率変更）
-            conversion_details["aspect_ratio"] = st.selectbox("アスペクト比", ["16/9", "4/3", "1/1"])
-            conversion_type_code = 3
-
-        elif selected_conversion_option == "音声変換":
-            # 音声抽出処理（追加パラメータなし）
-            conversion_type_code = 4
-
-        else:
-            # GIF作成用の時間指定（秒数をテキスト入力）
-            conversion_details["start_time"] = st.text_input("開始時間 (秒)", "10")
-            conversion_details["duration"]   = st.text_input("続續時間 (秒)", "5")
-            conversion_type_code = 5
-
-        # 処理コード、詳細パラメータ、選択ラベルを返す
-        return (
-            conversion_type_code,    # 処理コード
-            conversion_details, # 詳細パラメータ
-            selected_conversion_option    # 選択されたオプション名
-        )
-
-    # 進捗表示の更新
+    # =========  進捗更新  =========
     def update_progress(self, progress_percent):
-        # プログレスバーとステータステキストが初期化されている場合のみ実行
         if self.progress_bar and self.status_text:
-            # プログレスバーの進捗率を更新
             self.progress_bar.progress(progress_percent)
-            # 現在の進行状況をテキストで表示
             self.status_text.text(f"変換進行中... {progress_percent}%")
 
 
-    # メディアファイルを base64 形式で HTML に埋め込み、自動再生する
-    def autoplay_media(self, media_file_path, media_type):
-        # 拡張子に応じた MIME タイプを設定（初期値）
-        mime_types = {"video": "video/mp4", "audio": "audio/mpeg"}
-
-        # ファイルの拡張子を取得し、AVI形式の場合は MIME を上書き
-        ext = Path(media_file_path).suffix.lower()
-        if ext == ".avi":
-            mime_types["video"] = "video/avi"
-
-        # メディアファイルをバイナリとして読み込み、base64 にエンコード
-        media_data = Path(media_file_path).read_bytes()
-        media_b64  = base64.b64encode(media_data).decode()
-
-        # メディアタイプに応じて HTML を構築
-        if media_type == "video":
-            html = f"""
-            <video width="100%" controls autoplay loop playsinline>
-            <source src="data:{mime_types['video']};base64,{media_b64}" type="{mime_types['video']}">
-            </video>
-            """
-        else:
-            html = f"""
-            <audio controls autoplay style="width:100%;">
-            <source src="data:{mime_types['audio']};base64,{media_b64}" type="{mime_types['audio']}">
-            </audio>
-            """
-
-        # Streamlit に HTML を描画（unsafe_allow_html により埋め込みを許可）
-        st.markdown(html, unsafe_allow_html=True)
-
-
-    # 変換前後のメディアを左右に並べて表示する
-    def show_before_after(self, original_path, result_path, conversion_type_code):
-        # タイトルラベルと矢印を表示（HTMLベース）
-        st.markdown(
-            """
-            <div class="before-after">
-            <div class="label">変換前</div>
-            <div class="arrow">→</div>
-            <div class="label">変換後</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-        # 左右2カラムに分割してメディアを表示
-        col1, col2 = st.columns(2)
-
-        # 左：変換前のメディア（常に動画として再生）
-        with col1:
-            self.autoplay_media(original_path, "video")
-
-        # 右：変換後のメディア
-        with col2:
-            if conversion_type_code == 4:
-                # 音声変換の場合はオーディオ再生
-                self.autoplay_media(result_path, "audio")
-            elif conversion_type_code == 5:
-                # GIF変換の場合は画像表示
-                st.image(result_path)
-            else:
-                # その他（動画変換等）の場合は動画再生＋ダウンロードボタン
-                self.autoplay_media(result_path, "video")
-                converted_data = Path(result_path).read_bytes()
-                st.download_button(
-                    label="変換後の動画をダウンロード",
-                    data=converted_data,
-                    file_name=Path(result_path).name,
-                    mime="video/mp4"
-                )
-
-    
 
 if __name__ == "__main__":
 
