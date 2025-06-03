@@ -226,11 +226,12 @@ class TCPClient:
 
 if __name__ == "__main__":
     
-    # 接続先サーバーの IP アドレスとポート番号
+    # 接続先サーバーの IPアドレス と ポート番号
     server_address = '127.0.0.1'
     server_port    = 9001
 
     # TCP クライアントを初期化してファイルをアップロード・処理
     client = TCPClient(server_address, server_port)
     result = client.upload_and_process('input.mp4', 1, {})
+    
     logging.info("受信ファイル: " + result)
