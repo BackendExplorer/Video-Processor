@@ -191,7 +191,7 @@ class TCPClient:
         # ヘッダーから各フィールドを抽出
         json_size       = int.from_bytes(header[0:2], 'big')
         media_type_size = int.from_bytes(header[2:3], 'big')
-        file_size         = int.from_bytes(header[3:8], 'big')
+        file_size       = int.from_bytes(header[3:8], 'big')
 
         # ボディから JSON 部とメディアタイプ部に分割
         json_part  = body[:json_size]
