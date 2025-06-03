@@ -370,6 +370,7 @@ class TCPServer:
 
 
 if __name__ == "__main__":
+    
     # サーバーの IP アドレスとポート番号を設定
     server_address = '0.0.0.0'
     server_port    = 9001
