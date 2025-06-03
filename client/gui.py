@@ -215,7 +215,7 @@ class StreamlitApp:
             unsafe_allow_html=True
         )
 
-    # アップロードしたファイルを一時的なパスに保存する
+    # アップロードしたファイルを一時的なパスに保存して、そのパスを返す
     def get_uploaded_file(self):
         uploaded_file = st.file_uploader("", type=["mp4", "avi", "mpeg4"])
         if uploaded_file is None:
