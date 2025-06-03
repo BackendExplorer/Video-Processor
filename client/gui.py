@@ -70,6 +70,45 @@ class MediaConverterApp:
         self.progress_bar = None
         self.status_text  = None
 
+
+    # アプリ実行エントリーポイント
+    def start_convert_app(self):
+        # ページ設定およびスタイルの初期化
+        self.setup_page()
+
+        # ユーザーがアップロードしたファイルを取得
+        input_file_path = self.get_uploaded_file()
+        if not input_file_path:
+            return  # ファイル未選択なら中断
+
+        # 変換操作とパラメータを取得（例：解像度、ビットレートなど）
+        operation_code, operation_params, _ = self.select_operation()
+
+        # 「処理開始」ボタンを押したときの処理
+        if st.button("処理開始"):
+            # 進捗バーとステータス用プレースホルダを初期化
+            self.progress_bar = st.progress(0)
+            self.status_text  = st.empty()
+
+            try:
+                # サーバーへファイルを送信し、変換を実行
+                output_path = self.converter.convert(
+                    input_path=input_file_path,
+                    operation_code=operation_code,
+                    operation_params=operation_params,
+                    progress_callback=self._update_progress
+                )
+
+                # 成功メッセージとメディアの比較表示
+                st.success("✅ 処理完了！")
+                self.show_before_after(input_file_path, output_path, operation_code)
+
+            except Exception as error:
+                st.error(f"処理失敗: {error}")
+
+        # ページ下部のスケーリング用DIVを閉じる
+        st.markdown("</div>", unsafe_allow_html=True)
+    
     # Streamlit ページ全体の設定とスタイルシート適用
     def setup_page(self):
         # ページのタイトル、アイコン、レイアウトを設定
@@ -231,46 +270,10 @@ class MediaConverterApp:
                     mime="video/mp4"
                 )
 
-    # アプリ実行エントリーポイント
-    def run(self):
-        # ページ設定およびスタイルの初期化
-        self.setup_page()
-
-        # ユーザーがアップロードしたファイルを取得
-        input_file_path = self.get_uploaded_file()
-        if not input_file_path:
-            return  # ファイル未選択なら中断
-
-        # 変換操作とパラメータを取得（例：解像度、ビットレートなど）
-        operation_code, operation_params, _ = self.select_operation()
-
-        # 「処理開始」ボタンを押したときの処理
-        if st.button("処理開始"):
-            # 進捗バーとステータス用プレースホルダを初期化
-            self.progress_bar = st.progress(0)
-            self.status_text  = st.empty()
-
-            try:
-                # サーバーへファイルを送信し、変換を実行
-                output_path = self.converter.convert(
-                    input_path=input_file_path,
-                    operation_code=operation_code,
-                    operation_params=operation_params,
-                    progress_callback=self._update_progress
-                )
-
-                # 成功メッセージとメディアの比較表示
-                st.success("✅ 処理完了！")
-                self.show_before_after(input_file_path, output_path, operation_code)
-
-            except Exception as error:
-                st.error(f"処理失敗: {error}")
-
-        # ページ下部のスケーリング用DIVを閉じる
-        st.markdown("</div>", unsafe_allow_html=True)
-
+    
+    
 # メイン処理としてアプリを起動
 if __name__ == "__main__":
 
     converter = MediaConverterApp()
-    converter.run()
+    converter.start_convert_app()
