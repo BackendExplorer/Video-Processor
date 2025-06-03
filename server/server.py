@@ -374,6 +374,9 @@ if __name__ == "__main__":
     server_address = '0.0.0.0'
     server_port    = 9001
 
-    # メディア処理オブジェクトを生成し、サーバーを起動
+    # メディア処理オブジェクトを作成
     processor = MediaProcessor()
-    TCPServer(server_address, server_port, processor).start_server()
+
+    # サーバを起動
+    tcp_server = TCPServer(server_address, server_port, processor)
+    tcp_server.start_server()
