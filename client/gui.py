@@ -179,8 +179,8 @@ class VideoConverter:
         return converted_file_path
 
 
+# ===== Streamlit アプリ本体 =====
 class StreamlitApp:
-
     def __init__(self):
         self.converter = VideoConverter()
         self.selector = OperationSelector()
@@ -188,16 +188,20 @@ class StreamlitApp:
         self.progress_bar = None
         self.status_text = None
 
+    # =========  アプリ起動エントリポイント  =========
     def start_streamlit_app(self):
-        # ページの初期設定（タイトルやスタイルの読み込み）
         self.setup_page()
-        # アップロードした動画ファイルを、一時的に保存したパスを取得
+
         uploaded_file_path = self.get_uploaded_file()
-        # 動画の変換処理を実行
+        if not uploaded_file_path:
+            return  # ファイル未選択なら終了
+
         self.handle_conversion(uploaded_file_path)
+
         # ページ下部のスケール用 DIV を閉じる
         st.markdown("</div>", unsafe_allow_html=True)
 
+    # =========  ページ設定・CSS  =========
     def setup_page(self):
         st.set_page_config(
             page_title="Video Processor",
@@ -211,13 +215,18 @@ class StreamlitApp:
             unsafe_allow_html=True
         )
 
+    # アップロードしたファイルを一時的なパスに保存する
     def get_uploaded_file(self):
         uploaded_file = st.file_uploader("", type=["mp4", "avi", "mpeg4"])
+        if uploaded_file is None:
+            return None
+
         tmp_dir = tempfile.gettempdir()
         temp_file_path = os.path.join(tmp_dir, uploaded_file.name)
         Path(temp_file_path).write_bytes(uploaded_file.getbuffer())
         return temp_file_path
 
+    # =========  変換ハンドラ（ボタンクリック含む）  =========
     def handle_conversion(self, uploaded_file_path):
         conversion_type_code, conversion_params, _ = self.selector.select_operation()
 
@@ -234,15 +243,18 @@ class StreamlitApp:
             except Exception as error:
                 st.error(f"処理失敗: {error}")
 
+    # =========  プログレス UI 初期化  =========
     def init_progress_ui(self):
         self.progress_bar = st.progress(0)
         self.status_text = st.empty()
 
+    # =========  変換実行  =========
     def execute_conversion(self, path, code, params):
         return self.converter.convert(
             path, code, params, self.update_progress
         )
 
+    # =========  進捗更新  =========
     def update_progress(self, progress_percent):
         if self.progress_bar and self.status_text:
             self.progress_bar.progress(progress_percent)
