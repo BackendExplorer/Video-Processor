@@ -235,4 +235,5 @@ if __name__ == "__main__":
     # TCP クライアントを初期化してファイルをアップロード・処理
     client = TCPClient(server_address, server_port)
     result = client.upload_and_process('input.mp4', 1, {})
+
     logging.info("受信ファイル: " + result)
