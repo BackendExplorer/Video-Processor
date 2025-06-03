@@ -1,3 +1,4 @@
+
 import socket
 import os
 import json
@@ -247,21 +248,21 @@ class TCPServer:
         body   = connection.recv()
 
         # ヘッダーから各フィールドを抽出
-        json_length       = int.from_bytes(header[0:2], 'big')
-        media_type_length = int.from_bytes(header[2:3], 'big')
-        file_size         = int.from_bytes(header[3:8], 'big')
+        json_size       = int.from_bytes(header[0:2], 'big')
+        media_type_size = int.from_bytes(header[2:3], 'big')
+        file_size       = int.from_bytes(header[3:8], 'big')
 
         # ボディからJSONとメディアタイプを抽出
-        json_part  = body[:json_length]
-        media_part = body[json_length:]
+        json_part  = body[:json_size]
+        media_part = body[json_size:]
 
         json_file  = json.loads(json_part.decode('utf-8'))
         media_type = media_part.decode('utf-8')
 
         # 結果を辞書形式で返す
         return {
-            'json_length'       : json_length,
-            'media_type_length' : media_type_length,
+            'json_size'         : json_size,
+            'media_type_size'   : media_type_size,
             'file_size'         : file_size,
             'json_file'         : json_file,
             'media_type'        : media_type
@@ -315,7 +316,7 @@ class TCPServer:
     def send_file(self, connection, output_file_path):
         # メディアタイプ（拡張子）を抽出
         media_type = Path(output_file_path).suffix.encode('utf-8')
-        media_type_length = len(media_type)
+        media_type_size = len(media_type)
 
         # ファイルをバイナリ読み込みモードで開く
         with open(output_file_path, 'rb') as file:
@@ -332,12 +333,12 @@ class TCPServer:
             }
 
             json_bytes  = json.dumps(response_info).encode('utf-8')
-            json_length = len(json_bytes)
+            json_size = len(json_bytes)
 
             # ヘッダー構築: JSON長(2B) + メディアタイプ長(1B) + ファイルサイズ(5B)
             header = (
-                json_length      .to_bytes(2, 'big') +
-                media_type_length.to_bytes(1, 'big') +
+                json_size      .to_bytes(2, 'big')   +
+                media_type_size.to_bytes(1, 'big')   +
                 file_size        .to_bytes(5, 'big')
             )
             # ヘッダー + JSON + メディアタイプを送信
@@ -359,12 +360,12 @@ class TCPServer:
         }
         
         json_bytes  = json.dumps(error_response).encode('utf-8')
-        json_length = len(json_bytes)
+        json_size   = len(json_bytes)
 
         # ヘッダー: JSON長(2B) + メディアタイプ長(1B=0) + ファイルサイズ(5B=0)
         header = (
-            json_length.to_bytes(2, 'big') +
-            (0).to_bytes(1, 'big')         +
+            json_size.to_bytes(2, 'big') +
+            (0).to_bytes(1, 'big')       +
             (0).to_bytes(5, 'big')
         )
 
