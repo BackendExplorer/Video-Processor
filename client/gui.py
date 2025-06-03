@@ -10,7 +10,6 @@ import streamlit as st
 from client import TCPClient
 
 
-# ===== 変換オプション選択ロジック =====
 class OperationSelector:
     
     def select_operation(self):
@@ -37,7 +36,6 @@ class OperationSelector:
 
         return code, details, option
 
-    # ---------- 各オプションの入力 UI ----------    
     def compression_params(self):
         bitrate_options = ["500k", "1M", "2M"]
         return {
@@ -67,12 +65,7 @@ class OperationSelector:
         }
 
 
-# ===== メディア表示ロジック =====
 class MediaRenderer:
-    """
-    変換前後メディアの表示／ダウンロード UI を担当
-    """
-
     # =========  メディア自動再生  =========
     def autoplay_media(self, media_file_path, media_type):
         mime_types = {"video": "video/mp4", "audio": "audio/mpeg"}
@@ -140,7 +133,6 @@ class MediaRenderer:
         )
 
 
-
 class VideoConverter:
     def __init__(self, server_address="0.0.0.0", server_port=9001, receive_dir="receive"):
         # TCPクライアントを初期化（指定されたサーバーアドレスとポートで接続）
@@ -181,6 +173,7 @@ class VideoConverter:
 
         # 変換後のファイルパスを返す
         return converted_file_path
+
 
 class StreamlitApp:
 
@@ -237,7 +230,6 @@ class StreamlitApp:
 
         # 一時ファイルのパスを返す
         return temp_file_path
-
 
     # 動画の変換処理を実行
     def handle_conversion(self, uploaded_file_path):
