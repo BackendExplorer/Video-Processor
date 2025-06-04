@@ -263,9 +263,7 @@ class StreamlitApp:
 
     def execute_conversion(self, path, code, params):
         # 変換処理を実行し、進捗更新用のコールバックを渡す
-        return self.converter.convert(
-            path, code, params, self.update_progress
-        )
+        return self.converter.convert(path, code, params, self.update_progress)
 
     def update_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
