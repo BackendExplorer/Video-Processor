@@ -135,7 +135,6 @@ class MediaRenderer:
 
 class VideoConverter:
     def __init__(self, server_address="0.0.0.0", server_port=9001, receive_dir="receive"):
-        # TCPクライアントを初期化（指定されたサーバーアドレスとポートで接続）
         self.client = TCPClient(server_address, server_port, dpath=receive_dir)
 
     # 指定されたファイルをサーバーにアップロードし、変換処理を実行する
