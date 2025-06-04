@@ -239,6 +239,7 @@ class StreamlitApp:
         if st.button("処理開始"):
             # プログレスバーとステータステキストの初期化
             self.init_progress_ui()
+            
             try:
                 # 実際の変換処理を非同期で実行し、変換後ファイルのパスを取得
                 converted_file_path = self.converter.convert(
