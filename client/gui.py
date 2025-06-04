@@ -280,8 +280,10 @@ if __name__ == "__main__":
     server_port = 9001
     receive_dir = "receive"
 
+    # TCP クライアントを作成
     tcp_client = TCPClient(server_address, server_port, receive_dir)
 
+    # 各コンポーネントを初期化（変換ロジック・操作選択・メディア表示）
     converter = VideoConverter(tcp_client)
     selector = OperationSelector()
     renderer = MediaRenderer()
