@@ -366,6 +366,8 @@ TCPServer --> RSAKeyExchange : uses
 
 ## <a id="システム全体の構成図"></a>🔄 システム全体の構成図
 
+<br>
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -392,6 +394,8 @@ sequenceDiagram
     note right of クライアント: 保存完了・ダウンロード終了
     クライアント ->> ユーザー: 完了メッセージ表示
 ```
+
+<br>
 
 <img width="791" alt="Image" src="https://github.com/user-attachments/assets/b38c91d7-b524-4568-8972-cbc5c486ea0e" />
 
