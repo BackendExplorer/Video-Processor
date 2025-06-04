@@ -333,103 +333,70 @@ flowchart TD
 
 ```mermaid
 classDiagram
-    direction LR
 
-    class MediaProcessor {
-        - dpath: str
-        + __init__(dpath='processed')
-        + save_file(connection, file_path, file_size, chunk_size=1400) : None
-        - receive_in_chunks(connection, file_obj, remaining_size, chunk_size=1400) : None
-        + compress_video(input_file_path, file_name, bitrate='1M') : str
-        + change_resolution(input_file_path, file_name, resolution) : str
-        + change_aspect_ratio(input_file_path, file_name, aspect_ratio) : str
-        + convert_to_audio(input_file_path, file_name) : str
-        + create_gif(input_file_path, file_name, start_time, duration, fps=10) : str
-    }
+class RSAKeyExchange {
+    - private_key
+    + __init__()
+    + public_key_bytes() bytes
+    + decrypt_symmetric_key(encrypted) tuple
+}
 
-    class TCPServer {
-        - server_address: str
-        - server_port: int
-        - processor: MediaProcessor
-        - chunk_size: int
-        - sock: socket.socket
-        + __init__(server_address, server_port, processor) : None
-        + start_server() : None
-        - handle_client(connection) : None
-        - perform_key_exchange(conn) : SecureSocket
-        - parse_request(connection) : dict
-        - operation_dispatcher(json_file, input_file_path) : str
-        - send_file(connection, output_file_path) : None
-        - send_error_response(connection, error_message) : None
-        + recvn(conn, n) : bytes
-    }
+class AESCipherCFB {
+    - key
+    - iv
+    + __init__(key, iv)
+    + encrypt(data) bytes
+    + decrypt(data) bytes
+}
 
-    TCPServer --> MediaProcessor
+class SecureSocket {
+    - sock
+    - cipher
+    + __init__(sock, cipher)
+    + recv_exact(n) bytes
+    + sendall(plaintext)
+    + recv() bytes
+}
+
+class MediaProcessor {
+    - dpath
+    + __init__(dpath)
+    + save_file(connection, file_path, file_size, chunk_size)
+    + receive_in_chunks(secure_socket, file_handle, bytes_remaining, chunk_size)
+    + compress_video(input_file_path, file_name, bitrate)
+    + change_resolution(input_file_path, file_name, resolution)
+    + change_aspect_ratio(input_file_path, file_name, aspect_ratio)
+    + convert_to_audio(input_file_path, file_name)
+    + create_gif(input_file_path, file_name, start_time, duration, fps)
+}
+
+class TCPServer {
+    - processor
+    - chunk_size
+    - server_address
+    - server_port
+    - sock
+    + __init__(server_address, server_port, processor)
+    + start_server()
+    + handle_client(connection)
+    + perform_key_exchange(conn)
+    + parse_request(connection)
+    + recvn(conn, n) static
+    + operation_dispatcher(json_file, input_file_path)
+    + send_file(connection, output_file_path)
+    + send_error_response(connection, error_message)
+}
+
+TCPServer --> MediaProcessor : uses
+TCPServer --> SecureSocket : uses
+SecureSocket --> AESCipherCFB : uses
+TCPServer --> RSAKeyExchange : uses
+
+
 ```
 <br>
 
-### <a id="client.py のクラス図"></a> [クライアントプログラム](https://github.com/BackendExplorer/Video-Processor/blob/main/client.py) のクラス図
 
-<br>
-
-```mermaid
-classDiagram
-    direction LR
-
-    class TCPClient {
-        - server_address
-        - server_port
-        - chunk_size
-        - sock
-        - encryption
-        - dpath
-        + __init__(server_address, server_port, dpath)
-        + upload_and_process(file_path, operation, operation_details)
-        - perform_key_exchange()
-        - recv_exact(sock, n)
-        - receive_file()
-        - save_received_file(file_name, connection, file_size, chunk_size)
-    }
-
-    class Encryption {
-        - peer_public_key
-        - aes_key
-        - iv
-        + __init__()
-        + load_peer_public_key(data)
-        + generate_symmetric_key()
-        + encrypt_symmetric_key(sym)
-        + wrap_socket(sock)
-    }
-
-    class SecureSocket {
-        - sock
-        - cipher
-        + __init__(sock, cipher)
-        + recv_exact(n)
-        + sendall(plaintext)
-        + recv()
-        + close()
-    }
-
-    class AESCipherCFB {
-        - key
-        - iv
-        + __init__(key, iv)
-        + encrypt(data)
-        + decrypt(data)
-    }
-
-    TCPClient --> Encryption
-    Encryption --> SecureSocket
-    SecureSocket --> AESCipherCFB
-```
-
-
-
-
-
-<br>
 
 ### <a id="server.py のクラス図"></a> 
 
