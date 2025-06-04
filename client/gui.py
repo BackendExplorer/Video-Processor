@@ -1,9 +1,9 @@
-import os
-import time
 import base64
+import os
 import tempfile
-from pathlib import Path
+import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import streamlit as st
 
@@ -134,8 +134,9 @@ class MediaRenderer:
 
 
 class VideoConverter:
-    def __init__(self, server_address="0.0.0.0", server_port=9001, receive_dir="receive"):
-        self.client = TCPClient(server_address, server_port, dpath=receive_dir)
+    
+    def __init__(self, client):
+        self.client = client
 
     # 指定されたファイルをサーバーにアップロードし、変換処理を実行する
     # 処理完了後、変換後ファイルの保存パスを返す
@@ -176,10 +177,10 @@ class VideoConverter:
 
 class StreamlitApp:
 
-    def __init__(self):
-        self.converter = VideoConverter()
-        self.selector = OperationSelector()
-        self.renderer = MediaRenderer()
+    def __init__(self, converter, selector, renderer):
+        self.converter = converter
+        self.selector = selector
+        self.renderer = renderer
         self.progress_bar = None
         self.status_text = None
 
@@ -271,7 +272,20 @@ class StreamlitApp:
             self.status_text.text(f"変換進行中... {progress_percent}%")
 
 
-if __name__ == "__main__":
 
-    streamlit_app = StreamlitApp()
+if __name__ == "__main__":
+    
+    # サーバーの IPアドレス と ポート番号、および受信ディレクトリを設定
+    server_address = "0.0.0.0"
+    server_port = 9001
+    receive_dir = "receive"
+
+    tcp_client = TCPClient(server_address, server_port, receive_dir)
+
+    converter = VideoConverter(tcp_client)
+    selector = OperationSelector()
+    renderer = MediaRenderer()
+
+    # Streamlit アプリを起動
+    streamlit_app = StreamlitApp(converter, selector, renderer)
     streamlit_app.start_streamlit_app()
