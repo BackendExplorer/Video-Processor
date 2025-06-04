@@ -154,7 +154,6 @@ class MediaProcessor:
 class TCPServer:
     
     def __init__(self, server_address, server_port, processor):
-
         self.server_address = server_address
         self.server_port    = server_port
         self.sock           = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
