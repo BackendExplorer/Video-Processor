@@ -272,7 +272,6 @@ class TCPServer:
         operation = json_file['operation']
         file_name = json_file['file_name']
 
-        # 操作コードに応じて処理を分岐
         if operation == 1:
             return self.processor.compress_video(input_file_path, file_name)
 
