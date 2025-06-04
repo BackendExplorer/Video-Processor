@@ -145,9 +145,7 @@ class MediaProcessor:
         logging.info(f"🔧 GIF 作成: {file_name} - {start_time}s から {duration}s, {fps}fps")
         output_file_path = os.path.join(self.dpath, f'created_gif_{Path(file_name).stem}.gif')
         input_stream = ffmpeg.input(input_file_path, ss=start_time, t=duration)
-        ffmpeg.output(input_stream, output_file_path,
-                      vf=f'fps={fps},scale=320:-1:flags=lanczos',
-                      loop=0).overwrite_output().run()
+        ffmpeg.output(input_stream, output_file_path, vf=f'fps={fps},scale=320:-1:flags=lanczos', loop=0).overwrite_output().run()
         os.remove(input_file_path)
         logging.info(f"✅ GIF 作成完了: {output_file_path}")
         return output_file_path
