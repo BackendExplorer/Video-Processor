@@ -34,7 +34,7 @@ class OperationSelector:
             details = self.gif_params()
             code = 5
 
-        return code, details, option
+        return code, details
 
     def compression_params(self):
         bitrate_options = ["500k", "1M", "2M"]
@@ -234,7 +234,7 @@ class StreamlitApp:
     # 動画の変換処理を実行
     def handle_conversion(self, uploaded_file_path):
         # ユーザーが選択した変換オプションとそのパラメータを取得
-        conversion_type_code, conversion_params, _ = self.selector.select_operation()
+        conversion_type_code, conversion_params = self.selector.select_operation()
 
         # 「処理開始」ボタンがクリックされたら変換処理を実行
         if st.button("処理開始"):
