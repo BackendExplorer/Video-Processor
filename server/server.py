@@ -91,19 +91,14 @@ class MediaProcessor:
 
     # クライアントからファイルを受信し、保存
     def save_file(self, connection, file_path, file_size, chunk_size=1400):
-        logging.info(f"📥 ファイル受信開始: {file_path}")
         with open(file_path, 'wb+') as f:
-            self.receive_in_chunks(connection, f, file_size, chunk_size)
-        logging.info(f"✅ ファイル受信終了: {file_path}")
+            while file_size > 0:
+                chunk = connection.recv()
+                if not chunk:
+                    break
+                f.write(chunk)
+                file_size -= len(chunk)
 
-    # 指定サイズ分ファイルを分割受信しながら書き込む
-    def receive_in_chunks(self, secure_socket, file_handle, bytes_remaining, chunk_size=1400):
-        while bytes_remaining > 0:
-            chunk = secure_socket.recv()
-            if not chunk:
-                break
-            file_handle.write(chunk)
-            bytes_remaining -= len(chunk)
 
     # 動画ファイルを指定ビットレートで圧縮
     def compress_video(self, input_file_path, file_name, bitrate='1M'):
@@ -190,8 +185,11 @@ class TCPServer:
 
             # 受信したファイルを保存（チャンク単位で受信）
             input_file_path = os.path.join(self.processor.dpath, json_file['file_name'])
-            self.processor.save_file(secure_conn, input_file_path,
-                                    request['file_size'], self.chunk_size)
+            self.processor.save_file(secure_conn,
+                                     input_file_path,
+                                     request['file_size'],
+                                     self.chunk_size
+                                    )
 
             # ファイル受信完了のACKを送信
             secure_conn.sendall(bytes([0x00]))
