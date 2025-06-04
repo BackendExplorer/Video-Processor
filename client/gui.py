@@ -237,8 +237,10 @@ class StreamlitApp:
 
         # 「処理開始」ボタンがクリックされたら変換処理を実行
         if st.button("処理開始"):
-            # プログレスバーとステータステキストの初期化
-            self.init_progress_ui()
+            # プログレスバーを初期化（0%からスタート）
+            self.progress_bar = st.progress(0)
+            # ステータス表示用の空要素を作成（後で動的に更新）
+            self.status_text = st.empty()
             
             try:
                 # 実際の変換処理を非同期で実行し、変換後ファイルのパスを取得
@@ -258,12 +260,6 @@ class StreamlitApp:
                 # 変換中にエラーが発生した場合はエラーメッセージを表示
                 st.error(f"処理失敗: {error}")
 
-    def init_progress_ui(self):
-        # プログレスバーを初期化（0%からスタート）
-        self.progress_bar = st.progress(0)
-        # ステータス表示用の空要素を作成（後で動的に更新）
-        self.status_text = st.empty()
-
     def update_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
         self.progress_bar.progress(progress_percent)
@@ -281,7 +277,7 @@ if __name__ == "__main__":
     # TCP クライアントを作成
     tcp_client = TCPClient(server_address, server_port, receive_dir)
 
-    # 各コンポーネントを初期化（変換ロジック・操作選択・メディア表示）
+    #各コンポーネントを初期化（変換ロジック・操作選択・メディア表示）
     converter = VideoConverter(tcp_client)
     selector = OperationSelector()
     renderer = MediaRenderer()
