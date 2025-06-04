@@ -99,6 +99,7 @@ class MediaProcessor:
                 f.write(chunk)
                 file_size -= len(chunk)
 
+
     # 動画ファイルを指定ビットレートで圧縮
     def compress_video(self, input_file_path, file_name, bitrate='1M'):
         logging.info("\n---------------------------------------------")
@@ -187,7 +188,6 @@ class TCPServer:
             self.processor.save_file(secure_conn,
                                      input_file_path,
                                      request['file_size'],
-                                     self.chunk_size
                                     )
 
             # ファイル受信完了のACKを送信
