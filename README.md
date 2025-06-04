@@ -412,7 +412,7 @@ sequenceDiagram
 
 <img width="732" alt="Image" src="https://github.com/user-attachments/assets/743d1aed-f0f5-4f78-98a0-f47f59d6c40d" />
 
-<br>
+<br><br>
 
 
 - **課題点**
