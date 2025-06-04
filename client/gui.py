@@ -241,10 +241,11 @@ class StreamlitApp:
             self.init_progress_ui()
             try:
                 # 実際の変換処理を非同期で実行し、変換後ファイルのパスを取得
-                converted_file_path = self.execute_conversion(
+                converted_file_path = self.converter.convert(
                     uploaded_file_path,
                     conversion_type_code,
-                    conversion_params
+                    conversion_params,
+                    self.update_progress
                 )
                 # 処理が正常に完了したことをユーザーに通知
                 st.success("✅ 処理完了！")
@@ -259,10 +260,6 @@ class StreamlitApp:
         self.progress_bar = st.progress(0)
         # ステータス表示用の空要素を作成（後で動的に更新）
         self.status_text = st.empty()
-
-    def execute_conversion(self, path, code, params):
-        # 変換処理を実行し、進捗更新用のコールバックを渡す
-        return self.converter.convert(path, code, params, self.update_progress)
 
     def update_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
