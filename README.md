@@ -134,7 +134,7 @@
 
 ### 1. 前提条件 
 
-                            以下を事前にインストールしてください
+以下を事前にインストールしてください
 
 - [Python 3.8以上](https://www.python.org/downloads/)
 
@@ -581,3 +581,10 @@ sequenceDiagram
 </ul>
 
 <br>
+
+
+
+
+
+
+                      asdfasdfあd
