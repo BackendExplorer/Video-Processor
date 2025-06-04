@@ -138,50 +138,54 @@ class TCPClient:
     def upload_and_process(self, file_path, operation, operation_details={}):
         # 鍵交換と暗号化ソケットの確立
         self.perform_key_exchange()
-
+    
         # 拡張子（例: .mp4）をメディアタイプとして抽出
         media_type = Path(file_path).suffix.encode('utf-8')
         media_type_size = len(media_type)
-
+    
         with open(file_path, 'rb') as file:
             # ファイルサイズ取得
             file.seek(0, os.SEEK_END)
             file_size = file.tell()
             file.seek(0)
-
+    
             # メタ情報ペイロードを構築（JSON形式）
             payload = {
                 'file_name': Path(file.name).name,
                 'operation': operation
             }
-            
+    
             payload.update(operation_details)
-            json_bytes   = json.dumps(payload).encode('utf-8')
-            json_size  = len(json_bytes)
-
+            json_bytes = json.dumps(payload).encode('utf-8')
+            json_size = len(json_bytes)
+    
             # ヘッダー: JSON長(2B) + メディアタイプ長(1B) + ファイルサイズ(5B)
             header = (
-                json_size.to_bytes(2, 'big')       +
+                json_size.to_bytes(2, 'big') +
                 media_type_size.to_bytes(1, 'big') +
                 file_size.to_bytes(5, 'big')
             )
-            
-            # ヘッダー + JSON + メディアタイプを送信
-            self.sock.sendall(header)
-            self.sock.sendall(json_bytes + media_type)
-
+    
+            # ボディ: JSON + メディアタイプ
+            body = json_bytes + media_type
+    
+            # パケットを結合して送信
+            packet = header + body
+            self.sock.sendall(packet)
+    
             # ファイル本体をチャンク送信
             while True:
                 chunk = file.read(self.chunk_size)
                 if not chunk:
                     break
                 self.sock.sendall(chunk)
-
+    
         # サーバ応答を確認
         if self.sock.recv() != bytes([0x00]):
             raise Exception("サーバーがエラーを返しました")
-
+    
         return self.receive_file()
+
 
     def receive_file(self):
         # ヘッダーとボディをそれぞれ受信
