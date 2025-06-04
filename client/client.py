@@ -175,9 +175,9 @@ class TCPClient:
         return self.receive_file()
 
     def receive_file(self):
-        data   = self.sock.recv()           # 復号済み平文をまとめて取得
-        header = data[:8]                   # 先頭 8 バイト = ヘッダー
-        body   = data[8:]                   # 残り = JSON + メディアタイプ
+        packet   = self.sock.recv()           # 復号済み平文をまとめて取得
+        header = packet[:8]                   # 先頭 8 バイト = ヘッダー
+        body   = packet[8:]                   # 残り = JSON + メディアタイプ
         
         # ヘッダーから各フィールドを抽出
         json_size       = int.from_bytes(header[0:2], 'big')
