@@ -146,11 +146,7 @@ class VideoConverter:
 
         # サーバーへのアップロードと変換処理を別スレッドで実行する関数
         def conversion_task():
-            return self.client.upload_and_process(
-                uploaded_file_path,
-                operation=conversion_type_code,
-                operation_details=conversion_params
-            )
+            return self.client.upload_and_process(uploaded_file_path, conversion_type_code, conversion_params)
 
         # スレッドプールを使って非同期で変換処理を実行
         with ThreadPoolExecutor() as executor:
