@@ -402,14 +402,6 @@ sequenceDiagram
 
 <br>
 
-<ul>
-  <li>
-    <p>以下は、動画転送のために設計された</p>
-    <p> <strong>独自プロトコル MMP（Multiple Media Protocol）</strong> のパケット構造を表します。</p>
-    
-  </li>
-</ul>
-
 - **プロトコル仕様**
 
   以下は、動画転送のために設計された
