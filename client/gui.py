@@ -263,9 +263,8 @@ class StreamlitApp:
 
     def update_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
-        if self.progress_bar and self.status_text:
-            self.progress_bar.progress(progress_percent)
-            self.status_text.text(f"変換進行中... {progress_percent}%")
+        self.progress_bar.progress(progress_percent)
+        self.status_text.text(f"変換進行中... {progress_percent}%")
 
 
 
