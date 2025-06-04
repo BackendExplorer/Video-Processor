@@ -247,10 +247,12 @@ class StreamlitApp:
                     conversion_params,
                     self.update_progress
                 )
+                
                 # 処理が正常に完了したことをユーザーに通知
                 st.success("✅ 処理完了！")
                 # 元のメディアと変換後メディアを並べて表示
                 self.renderer.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
+                
             except Exception as error:
                 # 変換中にエラーが発生した場合はエラーメッセージを表示
                 st.error(f"処理失敗: {error}")
