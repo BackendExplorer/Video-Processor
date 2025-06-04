@@ -132,39 +132,37 @@ class MediaRenderer:
             mime="video/mp4"
         )
 
-
 class VideoConverter:
     
     def __init__(self, client):
         self.client = client
 
-    # 指定されたファイルをサーバーにアップロードし、変換処理を実行する
     def convert(self, uploaded_file_path, conversion_type_code, conversion_params, progress_callback):
-        # プログレスバーの初期値（0%）を設定
-        if progress_callback:
-            progress_callback(0)
+        # 進捗を0%で初期化（開始時）
+        progress_callback(0)
 
-        # サーバーへのアップロードと変換処理を別スレッドで実行する関数
-        def conversion_task():
-            return self.client.upload_and_process(uploaded_file_path, conversion_type_code, conversion_params)
-
-        # スレッドプールを使って非同期で変換処理を実行
+        # スレッドプールを使って非同期に変換処理を実行
         with ThreadPoolExecutor() as executor:
-            future = executor.submit(conversion_task)
-            progress_percent = 0
-            # 処理が完了するまで進捗を定期的に更新（最大95%まで）
-            while not future.done():
-                time.sleep(0.2)
-                progress_percent = min(progress_percent + 2, 95)
-                if progress_callback:
-                    progress_callback(progress_percent)
+            # アップロードおよび変換処理を別スレッドで開始
+            future = executor.submit(
+                self.client.upload_and_process,
+                uploaded_file_path,
+                conversion_type_code,
+                conversion_params
+            )
 
-            # 処理結果（変換後ファイルのパス）を取得
+            percent = 0
+            # 処理が完了するまで定期的に進捗を報告（最大95%まで）
+            while not future.done():
+                time.sleep(0.2)  # 200ミリ秒ごとに進捗確認
+                percent = min(percent + 2, 95)  # 過剰に進まないよう上限を95%に制限
+                progress_callback(percent)
+
+            # 処理完了後、変換結果のファイルパスを取得
             converted_file_path = future.result()
 
-        # 処理完了後に進捗を100%に更新
-        if progress_callback:
-            progress_callback(100)
+        # 進捗を100%に更新（完了時）
+        progress_callback(100)
 
         # 変換後のファイルパスを返す
         return converted_file_path
