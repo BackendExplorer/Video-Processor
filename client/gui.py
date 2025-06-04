@@ -139,7 +139,7 @@ class VideoConverter:
         self.client = client
 
     # 指定されたファイルをサーバーにアップロードし、変換処理を実行する
-    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, progress_callback=None):
+    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, progress_callback):
         # プログレスバーの初期値（0%）を設定
         if progress_callback:
             progress_callback(0)
