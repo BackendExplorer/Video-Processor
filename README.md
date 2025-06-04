@@ -400,7 +400,7 @@ sequenceDiagram
 ---
 ## <a id="設計上のこだわり"></a>🌟 設計上のこだわり
 
-<br><br>
+<br>
 
 - **プロトコル仕様**
 
@@ -408,6 +408,7 @@ sequenceDiagram
 
   独自プロトコル MMP （Multiple Media Protocol) のパケット構造を表します。
 
+<br>
 
 <img width="732" alt="Image" src="https://github.com/user-attachments/assets/743d1aed-f0f5-4f78-98a0-f47f59d6c40d" />
 
