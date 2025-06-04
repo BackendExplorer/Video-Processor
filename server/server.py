@@ -90,7 +90,7 @@ class MediaProcessor:
         logging.info(f"\n📂 メディア保管用ディレクトリを作成: {self.dpath}")
 
     # クライアントからファイルを受信し、保存
-    def save_file(self, connection, file_path, file_size, chunk_size=1400):
+    def save_file(self, connection, file_path, file_size):
         with open(file_path, 'wb+') as f:
             while file_size > 0:
                 chunk = connection.recv()
