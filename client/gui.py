@@ -137,12 +137,13 @@ class VideoConverter:
     def __init__(self, client):
         self.client = client
 
-    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, progress_callback):
+    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, update_progress):
         # 進捗を0%で初期化（開始時）
-        progress_callback(0)
+        update_progress(0)
 
-        # アップロードおよび変換処理を別スレッドで開始
+        # スレッドプールを使って非同期に変換処理を実行
         with ThreadPoolExecutor() as executor:
+            # アップロードおよび変換処理を別スレッドで開始
             future = executor.submit(
                 self.client.upload_and_process,
                 uploaded_file_path,
@@ -155,15 +156,14 @@ class VideoConverter:
             while not future.done():
                 time.sleep(0.2)  # 200ミリ秒ごとに進捗確認
                 percent = min(percent + 2, 95)  # 過剰に進まないよう上限を95%に制限
-                progress_callback(percent)
+                update_progress(percent)
 
             # 処理完了後、変換結果のファイルパスを取得
             converted_file_path = future.result()
 
         # 進捗を100%に更新（完了時）
-        progress_callback(100)
+        update_progress(100)
 
-        # 変換後のファイルパスを返す
         return converted_file_path
 
 
@@ -228,7 +228,6 @@ class StreamlitApp:
         # ユーザーが選択した変換オプションとそのパラメータを取得
         conversion_type_code, conversion_params = self.selector.select_operation()
 
-        # 「処理開始」ボタンがクリックされたら変換処理を実行
         if st.button("処理開始"):
             # プログレスバーを初期化（0%からスタート）
             self.progress_bar = st.progress(0)
@@ -244,7 +243,6 @@ class StreamlitApp:
                     self.update_progress
                 )
                 
-                # 処理が正常に完了したことをユーザーに通知
                 st.success("✅ 処理完了！")
                 # 元のメディアと変換後メディアを並べて表示
                 self.renderer.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
