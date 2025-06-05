@@ -68,27 +68,19 @@ class OperationSelector:
 class MediaRenderer:
     # =========  メディア自動再生  =========
     def autoplay_media(self, media_file_path, media_type):
-        mime_types = {"video": "video/mp4", "audio": "audio/mpeg"}
         ext = Path(media_file_path).suffix.lower()
-        if ext == ".avi":
-            mime_types["video"] = "video/avi"
+        video_mime = "video/avi" if ext == ".avi" else "video/mp4"
+        mime = video_mime if media_type == "video" else "audio/mpeg"
 
         media_data = Path(media_file_path).read_bytes()
         media_b64 = base64.b64encode(media_data).decode()
 
-        if media_type == "video":
-            html = f"""
-            <video width="100%" controls autoplay loop playsinline>
-              <source src="data:{mime_types['video']};base64,{media_b64}" type="{mime_types['video']}">
-            </video>
-            """
-        else:
-            html = f"""
-            <audio controls autoplay style="width:100%;">
-              <source src="data:{mime_types['audio']};base64,{media_b64}" type="{mime_types['audio']}">
-            </audio>
-            """
-
+        tag = "video" if media_type == "video" else "audio"
+        html = f"""
+        <{tag} width="100%" controls autoplay loop playsinline style="width:100%;">
+          <source src="data:{mime};base64,{media_b64}" type="{mime}">
+        </{tag}>
+        """
         st.markdown(html, unsafe_allow_html=True)
 
     # =========  比較表示  =========
@@ -96,7 +88,6 @@ class MediaRenderer:
         self.show_compare_header()
         col1, col2 = st.columns(2)
         with col1:
-            # 変換前メディアを直接表示
             self.autoplay_media(original_path, "video")
         with col2:
             self.show_converted(result_path, conversion_type_code)
@@ -115,13 +106,13 @@ class MediaRenderer:
         )
 
     def show_converted(self, result_path, conversion_type_code):
-        if conversion_type_code == 4:
-            self.autoplay_media(result_path, "audio")
-        elif conversion_type_code == 5:
+        if conversion_type_code == 5:
             st.image(result_path)
         else:
-            self.autoplay_media(result_path, "video")
-            self.download_converted(result_path)
+            media_type = "audio" if conversion_type_code == 4 else "video"
+            self.autoplay_media(result_path, media_type)
+            if media_type == "video":
+                self.download_converted(result_path)
 
     def download_converted(self, result_path):
         converted_data = Path(result_path).read_bytes()
@@ -131,15 +122,16 @@ class MediaRenderer:
             file_name=Path(result_path).name,
             mime="video/mp4"
         )
+        
 
 class VideoConverter:
     
     def __init__(self, client):
         self.client = client
 
-    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, update_progress):
+    def convert(self, uploaded_file_path, conversion_type_code, conversion_params, show_progress):
         # 進捗を0%で初期化（開始時）
-        update_progress(0)
+        show_progress(0)
 
         # スレッドプールを使って非同期に変換処理を実行
         with ThreadPoolExecutor() as executor:
@@ -156,13 +148,13 @@ class VideoConverter:
             while not future.done():
                 time.sleep(0.2)  # 200ミリ秒ごとに進捗確認
                 percent = min(percent + 2, 95)  # 過剰に進まないよう上限を95%に制限
-                update_progress(percent)
+                show_progress(percent)
 
             # 処理完了後、変換結果のファイルパスを取得
             converted_file_path = future.result()
 
         # 進捗を100%に更新（完了時）
-        update_progress(100)
+        show_progress(100)
 
         return converted_file_path
 
@@ -240,7 +232,7 @@ class StreamlitApp:
                     uploaded_file_path,
                     conversion_type_code,
                     conversion_params,
-                    self.update_progress
+                    self.show_progress
                 )
                 
                 st.success("✅ 処理完了！")
@@ -251,7 +243,7 @@ class StreamlitApp:
                 # 変換中にエラーが発生した場合はエラーメッセージを表示
                 st.error(f"処理失敗: {error}")
 
-    def update_progress(self, progress_percent):
+    def show_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
         self.progress_bar.progress(progress_percent)
         self.status_text.text(f"変換進行中... {progress_percent}%")
