@@ -13,15 +13,6 @@ class MediaRenderer:
     
     # 「変換前 → 変換後」の比較画面を2カラムで表示
     def show_before_after(self, original_path, result_path, conversion_type_code):
-        self.show_compare_header()
-        col1, col2 = st.columns(2)
-        with col1:
-            st.video(original_path)
-        with col2:
-            self.show_converted(result_path, conversion_type_code)
-
-    # 比較用のラベル（変換前 → 変換後）を表示
-    def show_compare_header(self):
         st.markdown(
             """
             <div class="before-after">
@@ -32,7 +23,15 @@ class MediaRenderer:
             """,
             unsafe_allow_html=True
         )
+    
+        # 2カラムでメディアを表示
+        col1, col2 = st.columns(2)
+        with col1:
+            st.video(original_path)
+        with col2:
+            self.show_converted(result_path, conversion_type_code)
 
+    
     def show_converted(self, result_path, conversion_type_code):
         # 圧縮・解像度変更・アスペクト比変更
         if conversion_type_code in (1, 2, 3):
