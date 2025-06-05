@@ -44,15 +44,25 @@ class MediaRenderer:
         else:
             st.image(result_path)
 
-        self.download_converted(result_path)
+        self.download_converted(result_path, conversion_type_code)
 
     # 変換後メディアをダウンロードできるボタンを表示
-    def download_converted(self, result_path):
+    def download_converted(self, result_path, conversion_type_code):
+        if conversion_type_code in (1, 2, 3): 
+            label = "変換後の動画をダウンロード"
+            mime = "video/mp4"
+        elif conversion_type_code == 4:  
+            label = "変換後の音声をダウンロード"
+            mime = "audio/mpeg"
+        else: 
+            label = "変換後のGIFをダウンロード"
+            mime = "image/gif"
+    
         st.download_button(
-            label="変換後の動画をダウンロード",
+            label=label,
             data=Path(result_path).read_bytes(),
             file_name=Path(result_path).name,
-            mime="video/mp4"
+            mime=mime
         )
         
 
