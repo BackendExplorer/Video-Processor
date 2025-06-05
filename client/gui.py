@@ -224,7 +224,7 @@ class StreamlitApp:
             self.progress_bar = st.progress(0)
             # ステータス表示用の空要素を作成（後で動的に更新）
             self.status_text = st.empty()
-            
+
             try:
                 # 実際の変換処理を非同期で実行し、変換後ファイルのパスを取得
                 converted_file_path = self.converter.convert(
@@ -234,13 +234,15 @@ class StreamlitApp:
                     self.show_progress
                 )
                 
-                st.success("✅ 処理完了！")
-                # 元のメディアと変換後メディアを並べて表示
-                self.renderer.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
-                
             except Exception as error:
                 # 変換中にエラーが発生した場合はエラーメッセージを表示
                 st.error(f"処理失敗: {error}")
+                return
+
+            st.success("✅ 処理完了！")
+            # 元のメディアと変換後メディアを並べて表示
+            self.renderer.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
+
 
     def show_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
