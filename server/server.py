@@ -162,10 +162,7 @@ class TCPServer:
 
             # 受信したファイルを保存（チャンク単位で受信）
             input_file_path = os.path.join(self.processor.dpath, json_file['file_name'])
-            self.processor.save_file(secure_conn,
-                                     input_file_path,
-                                     request['file_size'],
-                                    )
+            self.processor.save_file(secure_conn, input_file_path, request['file_size'])
 
             # ファイル受信完了のACKを送信
             secure_conn.sendall(bytes([0x00]))
