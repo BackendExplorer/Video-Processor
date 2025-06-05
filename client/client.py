@@ -1,14 +1,11 @@
 import socket
 import os
 import json
-import logging
 from pathlib import Path
 
 from Crypto.PublicKey import RSA
 from Crypto.Cipher    import AES, PKCS1_OAEP
 from Crypto.Random    import get_random_bytes
-
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 
 
@@ -121,14 +118,10 @@ class TCPClient:
         server_pubkey = self.recv_exact(tcp_socket, pubkey_length)
         self.encryption.load_peer_public_key(server_pubkey)
         
-        logging.info("🔑 サーバ公開鍵受信完了")
-
         # 対称鍵（AES + IV）を生成し、サーバ公開鍵で暗号化して送信
         sym_key       = self.encryption.generate_symmetric_key()
         encrypted_key = self.encryption.encrypt_symmetric_key(sym_key)
         tcp_socket.sendall(len(encrypted_key).to_bytes(2, 'big') + encrypted_key)
-        
-        logging.info("🔒 対称鍵共有完了")
 
         # 暗号化されたソケットでラップ
         self.sock = self.encryption.wrap_socket(tcp_socket)
@@ -229,11 +222,9 @@ class TCPClient:
 if __name__ == "__main__":
     
     # 接続先サーバーの IP アドレスとポート番号
-    server_address = '127.0.0.1'
+    server_address = "server"
     server_port    = 9001
 
     # TCP クライアントを初期化してファイルをアップロード・処理
     client = TCPClient(server_address, server_port)
     result = client.upload_and_process('input.mp4', 1, {})
-
-    logging.info("受信ファイル: " + result)

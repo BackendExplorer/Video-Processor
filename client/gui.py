@@ -234,7 +234,7 @@ class StreamlitApp:
 if __name__ == "__main__":
     
     # サーバーの IPアドレス と ポート番号、および受信ディレクトリを設定
-    server_address = "0.0.0.0"
+    server_address = "server"
     server_port = 9001
     receive_dir = "receive"
 
