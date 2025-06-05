@@ -66,34 +66,20 @@ class OperationSelector:
 
 
 class MediaRenderer:
-    # =========  メディア自動再生  =========
-    def autoplay_media(self, media_file_path, media_type):
-        ext = Path(media_file_path).suffix.lower()
-        video_mime = "video/avi" if ext == ".avi" else "video/mp4"
-        mime = video_mime if media_type == "video" else "audio/mpeg"
-
-        media_data = Path(media_file_path).read_bytes()
-        media_b64 = base64.b64encode(media_data).decode()
-
-        tag = "video" if media_type == "video" else "audio"
-        html = f"""
-        <{tag} width="100%" controls autoplay loop playsinline style="width:100%;">
-          <source src="data:{mime};base64,{media_b64}" type="{mime}">
-        </{tag}>
-        """
-        st.markdown(html, unsafe_allow_html=True)
-
-    # =========  比較表示  =========
+    
     def show_before_after(self, original_path, result_path, conversion_type_code):
+        # 「変換前 → 変換後」の比較画面を2カラムで表示
         self.show_compare_header()
         col1, col2 = st.columns(2)
         with col1:
+            # 左カラムに変換前の動画を表示
             self.autoplay_media(original_path, "video")
         with col2:
+            # 右カラムに変換後の結果を表示
             self.show_converted(result_path, conversion_type_code)
 
-    # ---------- 比較画面ヘルパ ----------
     def show_compare_header(self):
+        # 比較用のラベル（変換前 → 変換後）をHTMLで表示
         st.markdown(
             """
             <div class="before-after">
@@ -105,16 +91,43 @@ class MediaRenderer:
             unsafe_allow_html=True
         )
 
+    def autoplay_media(self, media_file_path, media_type):
+        # メディアファイルの拡張子からMIMEタイプを決定（例: .avi → video/avi）
+        ext = Path(media_file_path).suffix.lower()
+        video_mime = "video/avi" if ext == ".avi" else "video/mp4"
+        mime = video_mime if media_type == "video" else "audio/mpeg"
+
+        # メディアファイルをbase64にエンコード
+        media_data = Path(media_file_path).read_bytes()
+        media_b64 = base64.b64encode(media_data).decode()
+
+        # メディアの種類に応じてvideoタグまたはaudioタグを生成
+        tag = "video" if media_type == "video" else "audio"
+        html = f"""
+        <{tag} width="100%" controls autoplay loop playsinline style="width:100%;">
+          <source src="data:{mime};base64,{media_b64}" type="{mime}">
+        </{tag}>
+        """
+
+        # StreamlitでHTMLを表示（動画・音声を再生）
+        st.markdown(html, unsafe_allow_html=True)
+
     def show_converted(self, result_path, conversion_type_code):
+        # 変換タイプに応じて出力メディアの表示方法を切り替え
         if conversion_type_code == 5:
+            # GIF画像の場合は画像として表示
             st.image(result_path)
         else:
+            # 音声または動画として自動再生
             media_type = "audio" if conversion_type_code == 4 else "video"
             self.autoplay_media(result_path, media_type)
+
+            # 動画の場合はダウンロードボタンを表示
             if media_type == "video":
                 self.download_converted(result_path)
 
     def download_converted(self, result_path):
+        # 変換後の動画ファイルをダウンロード可能なボタンを表示
         converted_data = Path(result_path).read_bytes()
         st.download_button(
             label="変換後の動画をダウンロード",
