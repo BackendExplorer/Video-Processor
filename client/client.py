@@ -55,7 +55,6 @@ class Encryption:
         return SecureSocket(sock, cipher)
 
 
-
 class SecureSocket:
 
     # ソケット本体と暗号化用の対称暗号オブジェクトを保存
@@ -89,7 +88,6 @@ class SecureSocket:
     # ソケットを閉じる
     def close(self):
         self.sock.close()
-
 
 
 class TCPClient:
