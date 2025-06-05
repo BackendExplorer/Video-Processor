@@ -18,21 +18,25 @@ class OperationSelector:
         )
 
         if option == "圧縮":
-            details = self.compression_params()
             code = 1
+            details = self.compression_params()
+            
         elif option == "解像度変更":
-            details = self.resolution_params()
             code = 2
+            details = self.resolution_params()
+            
         elif option == "アスペクト比変更":
-            details = self.aspect_ratio_params()
             code = 3
+            details = self.aspect_ratio_params()
+            
         elif option == "音声変換":
-            details = {}
             code = 4
+            details = {}
+            
         else:  # GIF作成
-            details = self.gif_params()
             code = 5
-
+            details = self.gif_params()
+            
         return code, details
 
     def compression_params(self):
