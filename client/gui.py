@@ -16,7 +16,7 @@ class MediaRenderer:
         self.show_compare_header()
         col1, col2 = st.columns(2)
         with col1:
-            self.display_media(original_path, "video")
+            st.video(original_path)
         with col2:
             self.show_converted(result_path, conversion_type_code)
 
@@ -33,21 +33,13 @@ class MediaRenderer:
             unsafe_allow_html=True
         )
 
-    def display_media(self, media_file_path, media_type):
-        if media_type == "video":
-            st.video(media_file_path)
-        else:
-            st.audio(media_file_path)
-
     def show_converted(self, result_path, conversion_type_code):
         # 圧縮・解像度変更・アスペクト比変更
         if conversion_type_code in (1, 2, 3):
-            self.display_media(result_path, "video")
-            
+            st.video(result_path)
         # 音声変換
         elif conversion_type_code == 4:
-            self.display_media(result_path, "audio")
-            
+            st.audio(result_path)
         # GIF作成
         else:
             st.image(result_path)
