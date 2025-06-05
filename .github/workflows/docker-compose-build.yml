@@ -1,43 +1,29 @@
 name: Docker Compose Build Check
 
-# main ブランチへの push／PR のたびに実行
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build:
-    name: Build server/client Docker Images via docker-compose
+    name: Build Docker Images with docker-compose
     runs-on: ubuntu-latest
 
     steps:
-      # リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Docker の Buildx をセットアップ（マルチプラットフォーム対応）
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # docker-compose プラグインをセットアップ
-      - name: Install docker-compose (v2)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
-
-      # docker-compose.yml があるルートでビルドを実行
-      - name: Build with docker-compose
+      - name: Compose Build
         run: docker compose build
-        working-directory: ./
 
-      # （任意）イメージがビルドできたら cleanup しておく
       - name: Prune unused docker objects
         if: always()
         run: |
