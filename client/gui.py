@@ -67,19 +67,19 @@ class OperationSelector:
 
 class MediaRenderer:
     
+    # 「変換前 → 変換後」の比較画面を2カラムで表示
     def show_before_after(self, original_path, result_path, conversion_type_code):
-        # 「変換前 → 変換後」の比較画面を2カラムで表示
         self.show_compare_header()
         col1, col2 = st.columns(2)
         with col1:
             # 左カラムに変換前の動画を表示
-            self.autoplay_media(original_path, "video")
+            self.display_media(original_path, "video")
         with col2:
             # 右カラムに変換後の結果を表示
             self.show_converted(result_path, conversion_type_code)
 
+    # 比較用のラベル（変換前 → 変換後）をHTMLで表示
     def show_compare_header(self):
-        # 比較用のラベル（変換前 → 変換後）をHTMLで表示
         st.markdown(
             """
             <div class="before-after">
@@ -91,7 +91,7 @@ class MediaRenderer:
             unsafe_allow_html=True
         )
 
-    def autoplay_media(self, media_file_path, media_type):
+    def display_media(self, media_file_path, media_type):
         # メディアファイルの拡張子からMIMEタイプを決定（例: .avi → video/avi）
         ext = Path(media_file_path).suffix.lower()
         video_mime = "video/avi" if ext == ".avi" else "video/mp4"
@@ -117,10 +117,11 @@ class MediaRenderer:
         if conversion_type_code == 5:
             # GIF画像の場合は画像として表示
             st.image(result_path)
+            self.download_converted(result_path)  # GIFでもダウンロードボタンを表示
         else:
             # 音声または動画として自動再生
             media_type = "audio" if conversion_type_code == 4 else "video"
-            self.autoplay_media(result_path, media_type)
+            self.display_media(result_path, media_type)
 
             # 動画の場合はダウンロードボタンを表示
             if media_type == "video":
