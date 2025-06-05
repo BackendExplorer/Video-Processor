@@ -9,65 +9,6 @@ import streamlit as st
 from client import TCPClient
 
 
-class OperationSelector:
-    
-    def select_operation(self):
-        option = st.selectbox(
-            "変換オプションを選択",
-            ["圧縮", "解像度変更", "アスペクト比変更", "音声変換", "GIF作成"]
-        )
-
-        if option == "圧縮":
-            code = 1
-            details = self.compression_params()
-            
-        elif option == "解像度変更":
-            code = 2
-            details = self.resolution_params()
-            
-        elif option == "アスペクト比変更":
-            code = 3
-            details = self.aspect_ratio_params()
-            
-        elif option == "音声変換":
-            code = 4
-            details = {}
-            
-        else:  # GIF作成
-            code = 5
-            details = self.gif_params()
-            
-        return code, details
-
-    def compression_params(self):
-        bitrate_options = ["500k", "1M", "2M"]
-        return {
-            "bitrate": st.selectbox("ビットレート", bitrate_options)
-        }
-
-    def resolution_params(self):
-        resolution_options = ["1920:1080", "1280:720", "720:480"]
-        return {
-            "resolution": st.selectbox("解像度", resolution_options)
-        }
-
-    def aspect_ratio_params(self):
-        aspect_ratio_options = ["16/9", "4/3", "1/1"]
-        return {
-            "aspect_ratio": st.selectbox("アスペクト比", aspect_ratio_options)
-        }
-
-    def gif_params(self):
-        return {
-            "start_time": st.text_input(
-                "開始時間 (秒)", ""
-            ),
-            "duration": st.text_input(
-                "継続時間 (秒)", ""
-            )
-        }
-
-
 class MediaRenderer:
     
     # 「変換前 → 変換後」の比較画面を2カラムで表示
@@ -160,9 +101,8 @@ class VideoConverter:
 
 class StreamlitApp:
 
-    def __init__(self, converter, selector, renderer):
+    def __init__(self, converter, renderer):
         self.converter = converter
-        self.selector = selector
         self.renderer = renderer
         self.progress_bar = None
         self.status_text = None
@@ -221,7 +161,7 @@ class StreamlitApp:
     # 動画の変換処理を実行
     def handle_conversion(self, uploaded_file_path):
         # ユーザーが選択した変換オプションとそのパラメータを取得
-        conversion_type_code, conversion_params = self.selector.select_operation()
+        conversion_type_code, conversion_params = self.select_operation()
 
         if st.button("処理開始"):
             # プログレスバーを初期化（0%からスタート）
@@ -246,7 +186,43 @@ class StreamlitApp:
             st.success("✅ 処理完了！")
             # 元のメディアと変換後メディアを並べて表示
             self.renderer.show_before_after(uploaded_file_path, converted_file_path, conversion_type_code)
+            
+    def select_operation(self):
+        option = st.selectbox(
+            "変換オプションを選択",
+            ["圧縮", "解像度変更", "アスペクト比変更", "音声変換", "GIF作成"]
+        )
 
+        if option == "圧縮":
+            code = 1
+            details = {
+                "bitrate": st.selectbox("ビットレート", ["500k", "1M", "2M"])
+            }
+
+        elif option == "解像度変更":
+            code = 2
+            details = {
+                "resolution": st.selectbox("解像度", ["1920:1080", "1280:720", "720:480"])
+            }
+
+        elif option == "アスペクト比変更":
+            code = 3
+            details = {
+                "aspect_ratio": st.selectbox("アスペクト比", ["16/9", "4/3", "1/1"])
+            }
+
+        elif option == "音声変換":
+            code = 4
+            details = {}
+
+        else:  # GIF作成
+            code = 5
+            details = {
+                "start_time": st.text_input("開始時間 (秒)", ""),
+                "duration": st.text_input("継続時間 (秒)", "")
+            }
+
+        return code, details
 
     def show_progress(self, progress_percent):
         # プログレスバーとステータス表示を進捗に応じて更新
@@ -265,11 +241,10 @@ if __name__ == "__main__":
     # TCP クライアントを作成
     tcp_client = TCPClient(server_address, server_port, receive_dir)
 
-    #各コンポーネントを初期化（変換ロジック・操作選択・メディア表示）
+    # 各コンポーネントを初期化（変換ロジック・メディア表示）
     converter = VideoConverter(tcp_client)
-    selector = OperationSelector()
     renderer = MediaRenderer()
 
     # Streamlit アプリを起動
-    streamlit_app = StreamlitApp(converter, selector, renderer)
+    streamlit_app = StreamlitApp(converter, renderer)
     streamlit_app.start_streamlit_app()
