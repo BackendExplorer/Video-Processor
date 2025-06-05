@@ -1,20 +1,17 @@
 import socket
 import os
 import json
-import logging
 from pathlib import Path
 
 from Crypto.PublicKey import RSA
 from Crypto.Cipher    import AES, PKCS1_OAEP
 from Crypto.Random    import get_random_bytes
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
-
 
 
 class AESCipherCFB:
     
-     # 対称鍵と初期化ベクトル（IV）を保存
+    # 対称鍵と初期化ベクトル（IV）を保存
     def __init__(self, key, iv):
         self.key = key
         self.iv  = iv
@@ -23,7 +20,7 @@ class AESCipherCFB:
     def encrypt(self, data):
         return AES.new(self.key, AES.MODE_CFB, iv=self.iv, segment_size=128).encrypt(data)
 
-     # AES CFBモードでデータを復号して返す
+    # AES CFBモードでデータを復号して返す
     def decrypt(self, data):
         return AES.new(self.key, AES.MODE_CFB, iv=self.iv, segment_size=128).decrypt(data)
 
@@ -43,9 +40,7 @@ class Encryption:
     def generate_symmetric_key(self):
         self.aes_key = get_random_bytes(16)
         self.iv      = get_random_bytes(16)
-
-        # AES鍵とIVを結合して返す（RSA暗号化用）
-        return self.aes_key + self.iv
+        return self.aes_key + self.iv  # AES鍵とIVを結合して返す（RSA暗号化用）
 
     # 相手の公開鍵で対称鍵＋IVをRSA暗号化して返す
     def encrypt_symmetric_key(self, sym):
@@ -55,7 +50,6 @@ class Encryption:
     def wrap_socket(self, sock):        
         cipher = AESCipherCFB(self.aes_key, self.iv)
         return SecureSocket(sock, cipher)
-
 
 
 class SecureSocket:
@@ -92,6 +86,7 @@ class SecureSocket:
     def close(self):
         self.sock.close()
 
+
 class TCPClient:
 
     def __init__(self, server_address, server_port, dpath='receive'):
@@ -123,14 +118,10 @@ class TCPClient:
         server_pubkey = self.recv_exact(tcp_socket, pubkey_length)
         self.encryption.load_peer_public_key(server_pubkey)
         
-        logging.info("🔑 サーバ公開鍵受信完了")
-
         # 対称鍵（AES + IV）を生成し、サーバ公開鍵で暗号化して送信
         sym_key       = self.encryption.generate_symmetric_key()
         encrypted_key = self.encryption.encrypt_symmetric_key(sym_key)
         tcp_socket.sendall(len(encrypted_key).to_bytes(2, 'big') + encrypted_key)
-        
-        logging.info("🔒 対称鍵共有完了")
 
         # 暗号化されたソケットでラップ
         self.sock = self.encryption.wrap_socket(tcp_socket)
@@ -138,60 +129,47 @@ class TCPClient:
     def upload_and_process(self, file_path, operation, operation_details={}):
         # 鍵交換と暗号化ソケットの確立
         self.perform_key_exchange()
-    
-        # 拡張子（例: .mp4）をメディアタイプとして抽出
-        media_type = Path(file_path).suffix.encode('utf-8')
-        media_type_size = len(media_type)
-    
+
         with open(file_path, 'rb') as file:
-            # ファイルサイズ取得
-            file.seek(0, os.SEEK_END)
-            file_size = file.tell()
-            file.seek(0)
-    
             # メタ情報ペイロードを構築（JSON形式）
             payload = {
                 'file_name': Path(file.name).name,
                 'operation': operation
             }
-    
             payload.update(operation_details)
-            json_bytes = json.dumps(payload).encode('utf-8')
-            json_size = len(json_bytes)
-    
-            # ヘッダー: JSON長(2B) + メディアタイプ長(1B) + ファイルサイズ(5B)
-            header = (
-                json_size.to_bytes(2, 'big') +
-                media_type_size.to_bytes(1, 'big') +
-                file_size.to_bytes(5, 'big')
-            )
-    
-            # ボディ: JSON + メディアタイプ
-            body = json_bytes + media_type
-    
-            # パケットを結合して送信
-            packet = header + body
+            json_bytes  = json.dumps(payload).encode('utf-8')
+            
+            # 拡張子（例: .mp4）をメディアタイプとして抽出
+            media_type = Path(file_path).suffix.encode('utf-8')
+            media_type_size = len(media_type)
+                
+            # ファイルサイズ取得
+            file.seek(0, os.SEEK_END)
+            file_size = file.tell()
+            file.seek(0)
+
+            # パケットを作成
+            packet = self.build_packet(json_bytes, media_type, file_size)
             self.sock.sendall(packet)
-    
+
             # ファイル本体をチャンク送信
             while True:
                 chunk = file.read(self.chunk_size)
                 if not chunk:
                     break
                 self.sock.sendall(chunk)
-    
+
         # サーバ応答を確認
         if self.sock.recv() != bytes([0x00]):
             raise Exception("サーバーがエラーを返しました")
-    
+
         return self.receive_file()
 
-
     def receive_file(self):
-        # ヘッダーとボディをそれぞれ受信
-        header = self.sock.recv()
-        body   = self.sock.recv()
-
+        packet   = self.sock.recv()           # 復号済み平文をまとめて取得
+        header = packet[:8]                   # 先頭 8 バイト = ヘッダー
+        body   = packet[8:]                   # 残り = JSON + メディアタイプ
+        
         # ヘッダーから各フィールドを抽出
         json_size       = int.from_bytes(header[0:2], 'big')
         media_type_size = int.from_bytes(header[2:3], 'big')
@@ -212,6 +190,17 @@ class TCPClient:
         out_path = self.save_received_file(file_name, self.sock, file_size, self.chunk_size)
         self.sock.close()
         return out_path
+    
+    @staticmethod
+    def build_packet(json_bytes, media_type_bytes, file_size):
+        json_size       = len(json_bytes)
+        media_type_size = len(media_type_bytes)
+        header = (
+            json_size.to_bytes(2, 'big') +
+            media_type_size.to_bytes(1, 'big') +
+            file_size.to_bytes(5, 'big')
+        )
+        return header + json_bytes + media_type_bytes
 
     def save_received_file(self, file_name, connection, file_size, chunk_size=1400):
         # 出力先ファイルパスを構築
@@ -233,11 +222,9 @@ class TCPClient:
 if __name__ == "__main__":
     
     # 接続先サーバーの IP アドレスとポート番号
-    server_address = '127.0.0.1'
+    server_address = "server"
     server_port    = 9001
 
     # TCP クライアントを初期化してファイルをアップロード・処理
     client = TCPClient(server_address, server_port)
     result = client.upload_and_process('input.mp4', 1, {})
-
-    logging.info("受信ファイル: " + result)
