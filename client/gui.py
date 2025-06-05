@@ -73,7 +73,6 @@ class VideoConverter:
         # 進捗を0%で初期化（開始時）
         show_progress(0)
 
-        # スレッドプールを使って非同期に変換処理を実行
         with ThreadPoolExecutor() as executor:
             # アップロードおよび変換処理を別スレッドで開始
             future = executor.submit(
