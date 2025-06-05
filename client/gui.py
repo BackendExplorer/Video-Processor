@@ -1,4 +1,3 @@
-import base64
 import os
 import tempfile
 import time
@@ -60,7 +59,7 @@ class OperationSelector:
                 "開始時間 (秒)", ""
             ),
             "duration": st.text_input(
-                "続續時間 (秒)", ""
+                "継続時間 (秒)", ""
             )
         }
 
@@ -72,13 +71,11 @@ class MediaRenderer:
         self.show_compare_header()
         col1, col2 = st.columns(2)
         with col1:
-            # 左カラムに変換前の動画を表示
             self.display_media(original_path, "video")
         with col2:
-            # 右カラムに変換後の結果を表示
             self.show_converted(result_path, conversion_type_code)
 
-    # 比較用のラベル（変換前 → 変換後）をHTMLで表示
+    # 比較用のラベル（変換前 → 変換後）を表示
     def show_compare_header(self):
         st.markdown(
             """
@@ -92,47 +89,31 @@ class MediaRenderer:
         )
 
     def display_media(self, media_file_path, media_type):
-        # メディアファイルの拡張子からMIMEタイプを決定（例: .avi → video/avi）
-        ext = Path(media_file_path).suffix.lower()
-        video_mime = "video/avi" if ext == ".avi" else "video/mp4"
-        mime = video_mime if media_type == "video" else "audio/mpeg"
-
-        # メディアファイルをbase64にエンコード
-        media_data = Path(media_file_path).read_bytes()
-        media_b64 = base64.b64encode(media_data).decode()
-
-        # メディアの種類に応じてvideoタグまたはaudioタグを生成
-        tag = "video" if media_type == "video" else "audio"
-        html = f"""
-        <{tag} width="100%" controls autoplay loop playsinline style="width:100%;">
-          <source src="data:{mime};base64,{media_b64}" type="{mime}">
-        </{tag}>
-        """
-
-        # StreamlitでHTMLを表示（動画・音声を再生）
-        st.markdown(html, unsafe_allow_html=True)
+        if media_type == "video":
+            st.video(media_file_path)
+        else:
+            st.audio(media_file_path)
 
     def show_converted(self, result_path, conversion_type_code):
-        # 変換タイプに応じて出力メディアの表示方法を切り替え
-        if conversion_type_code == 5:
-            # GIF画像の場合は画像として表示
-            st.image(result_path)
-            self.download_converted(result_path)  # GIFでもダウンロードボタンを表示
+        # 圧縮・解像度変更・アスペクト比変更
+        if conversion_type_code in (1, 2, 3):
+            self.display_media(result_path, "video")
+            
+        # 音声変換
+        elif conversion_type_code == 4:
+            self.display_media(result_path, "audio")
+            
+        # GIF作成
         else:
-            # 音声または動画として自動再生
-            media_type = "audio" if conversion_type_code == 4 else "video"
-            self.display_media(result_path, media_type)
+            st.image(result_path)
 
-            # 動画の場合はダウンロードボタンを表示
-            if media_type == "video":
-                self.download_converted(result_path)
+        self.download_converted(result_path)
 
+    # 変換後メディアをダウンロードできるボタンを表示
     def download_converted(self, result_path):
-        # 変換後の動画ファイルをダウンロード可能なボタンを表示
-        converted_data = Path(result_path).read_bytes()
         st.download_button(
             label="変換後の動画をダウンロード",
-            data=converted_data,
+            data=Path(result_path).read_bytes(),
             file_name=Path(result_path).name,
             mime="video/mp4"
         )
@@ -196,19 +177,23 @@ class StreamlitApp:
 
     # ページの初期設定（タイトルやスタイルの読み込み）
     def setup_page(self):
-        # Streamlit ページの基本設定（タイトル、アイコン、レイアウト）を指定
+        # Streamlit ページの基本設定
         st.set_page_config(
             page_title="Video Processor",
             page_icon="🎥",
             layout="centered"
         )
 
-        # スタイルシート（style.css）を読み込み、ページ全体の見た目を調整
-        css = Path(__file__).parent / "style.css"
-        st.markdown(
-            f"<style>{css.read_text()}</style>\n<div class=\"app-scale\">",
-            unsafe_allow_html=True
+        style_path = Path(__file__).parent / "style.css"
+
+        style_html = (
+            "<style>"
+            f"{style_path.read_text()}"
+            "</style>"
+            '<div class="app-scale">'
         )
+
+        st.markdown(style_html, unsafe_allow_html=True)
 
     # アップロードしたファイルを一時的なパスに保存する
     def get_uploaded_file(self):
