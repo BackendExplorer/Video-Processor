@@ -1,10 +1,10 @@
 # Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
-![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen)
 ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) 
-![TCP](https://img.shields.io/badge/Protocol-TCP-blue)
-![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green)
+![Docker Compose](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white)
+![Build Status](https://img.shields.io/badge/build-success-brightgreen)
 [![License: Custom - Evaluation Only](https://img.shields.io/badge/License-Evaluation--Only-lightgrey.svg)](./LICENSE)
 
 
@@ -136,13 +136,9 @@
 
 以下を事前にインストールしてください
 
-- [Python 3.8以上](https://www.python.org/downloads/)
-
 - [Git](https://git-scm.com/)
 
-- [ffmpeg](https://ffmpeg.org/download.html)
-
-- [Streamlit 1.45.0](https://streamlit.io/)
+- [Docker](https://docs.docker.com/get-docker/)
 
 <br>
 
@@ -167,28 +163,24 @@ cd Video-Processor
 
 <br>
 
-### 1. サーバ起動
+### 1. コンテナ起動
 
-serverフォルダに移動して、以下のコマンドでサーバを起動します。
+Docker Desktopを起動したら、ターミナルを開いて、以下のコマンドでコンテナを起動します。
 
-```bash
-python3 server.py
-```
-
-<br>
-
-### 2. クライアント起動
-
-別のターミナルを開き、clientフォルダに移動して、以下のコマンドでクライアントを起動します。
 
 ```bash
-streamlit run gui.py
+docker-compose up
 ```
 
 <br>
 
 
-### 3. ユーザーの操作手順
+http://localhost:8501 でアクセス可能です。
+
+<br>
+
+
+### 2. ユーザーの操作手順
 
 <br>
 
@@ -228,19 +220,38 @@ flowchart TD
 
 - **`Python`**
   
-  構文がシンプルで標準ライブラリが豊富で、ネットワーク通信やファイル操作を素早く実装できる。
+  豊富な標準ライブラリと高い可読性によって、複雑なシステムを効率的に実装するため
   
 - **`TCPソケット`**
   
   ファイル転送において信頼性と順序保証が必要なため
 
+- **`ハイブリッド暗号方式`**
+
+  安全性を確保しつつ、素早いデータ転送をするため
+
 - **`ffmpegライブラリ`**
   
-  高性能なメディア処理ツール、Pythonから簡単に呼び出せ、動画圧縮・解像度変更・音声抽出・GIF作成などに対応
+  動画圧縮・解像度変更・音声抽出・GIF作成などを行うため
 
 - **`Streamlit`**
 
   Pythonのみで手軽にWeb UIを構築できるため、開発効率を重視して採用
+
+- **`Docker`**
+
+  依存関係をコンテナ内に隔離し、環境差異を排除してどこでも同じ動作を保証するため
+
+- **`Docker-Compose`**
+
+  サーバコンテナとクライアントコンテナを同時に起動し、起動手順を簡素化するため
+
+- **`Github Actions`**
+
+  プッシュやプルリクエスト時に、Docker Buildxによるビルドから起動・動作確認・クリーンアップを
+
+  自動化し、変更によって生じた不具合を素早く検出・修正できるようにするため
+
 
 <br><br>
 
@@ -248,10 +259,12 @@ flowchart TD
 |----------------|------------------------------------------------------------------------------|
 | 開発言語       | ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) <br>標準ライブラリ：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re` |
 | 通信技術       | ![TCP](https://img.shields.io/badge/Protocol-TCP-blue) <br>TCPソケットによるファイル送受信 |
+| 暗号技術       | ![PyCryptodome](https://img.shields.io/badge/Encryption-PyCryptodome-blue) <br>ハイブリッド暗号方式 (RSA＋AES) で通信
 | メディア加工   | ![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen) <br>`ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
 | UIフレームワーク | ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) <br>Webベースのインターフェースを簡易に構築 |
 | 開発環境       | ![macOS](https://img.shields.io/badge/OS-macOS-lightgrey)&nbsp;&nbsp;&nbsp;&nbsp;![VSCode](https://img.shields.io/badge/Editor-VSCode-blue) |
 | バージョン管理 | ![Git](https://img.shields.io/badge/VersionControl-Git-orange)&nbsp;&nbsp;&nbsp;&nbsp;![GitHub](https://img.shields.io/badge/Repo-GitHub-black) |
+| インフラ | ![Docker](https://img.shields.io/badge/Container-Docker-blue) ![Docker Compose](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?logo=docker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white) |
 | 描画ツール     | ![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green)&nbsp;&nbsp;&nbsp;&nbsp;![LaTeX](https://img.shields.io/badge/Doc-LaTeX-9cf) |
 
 <br>
