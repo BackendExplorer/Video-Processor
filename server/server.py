@@ -1,15 +1,15 @@
-import socket
-import os
 import json
+import os
+import socket
+from datetime import datetime
 from pathlib import Path
-from datetime import datetime               # 追加：タイムスタンプ取得用
-import ffmpeg
-from Crypto.PublicKey import RSA
-from Crypto.Cipher    import AES, PKCS1_OAEP
 
-# --- ログ用関数を個別インポート ------------------------
-from sqlite_logger import log_start, log_end  # 修正：log_start / log_end を直接使う
-# ------------------------------------------------------
+import ffmpeg
+from Crypto.Cipher import AES, PKCS1_OAEP
+from Crypto.PublicKey import RSA
+
+from sqlite_logger import log_start, log_end
+
 
 
 class RSAKeyExchange:
@@ -152,7 +152,7 @@ class TCPServer:
             self.handle_client(connection)
 
     def handle_client(self, connection):
-        secure_conn = None  # 追加：例外時に参照できるよう初期化
+        secure_conn = None 
         
         start_time = datetime.utcnow().isoformat()
         client_ip  = connection.getpeername()[0]
@@ -162,7 +162,7 @@ class TCPServer:
             'file_size'   : None,
             'media_type'  : None,
         }
-        log_id = None                # 追加：log_start の戻り値を保持
+        log_id = None               
         
         try:
             # 鍵交換を実行（RSA公開鍵交換 → AES鍵受信）
