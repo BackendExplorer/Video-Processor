@@ -219,7 +219,21 @@ docker-compose.ymlがあるフォルダで、以下のコマンドを実行す�
 ```bash
 docker compose exec db sqlite3 /data/logs.db "SELECT * FROM logs ORDER BY id DESC;"
 ```
+
+| 項目名           | 説明                                              |
+|------------------|---------------------------------------------------|
+| `id`             | ログの通し番号（自動でインクリメント）            |
+| `timestamp_start`| 処理の開始時刻（UTC、ISOフォーマット）            |
+| `timestamp_end`  | 処理の終了時刻（UTC、ISOフォーマット）            |
+| `client_ip`      | クライアントのIPアドレス（Dockerネットワーク上）  |
+| `operation_code` | 実行された処理の種類（例：1=圧縮、3=アスペクト比変更）|
+| `file_name`      | 処理対象のファイル名                              |
+| `file_size`      | 処理対象のファイルサイズ（バイト単位）            |
+| `media_type`     | ファイルの拡張子（例：.mp4、.gif、.mp3など）       |
+
+
 <br>
+
 
 ---
 
