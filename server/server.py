@@ -69,9 +69,6 @@ class SecureSocket:
     def recv(self):
         # 最初の4バイトで受信データの長さを取得
         length_bytes = self.recv_exact(4)
-        if not length_bytes:
-            return b''
-        
         # 指定バイト数のデータを受信し、復号して返す
         encrypted_data = self.recv_exact(int.from_bytes(length_bytes, 'big'))
         return self.cipher.decrypt(encrypted_data)
@@ -201,6 +198,17 @@ class TCPServer:
 
         return secure_socket
 
+    # 指定されたバイト数を受信するまで繰り返す
+    @staticmethod
+    def recvn(conn, n):
+        buf = bytearray()
+        while len(buf) < n:
+            chunk = conn.recv(n - len(buf))
+            if not chunk:
+                break
+            buf.extend(chunk)
+        return bytes(buf)
+
     def parse_request(self, connection):
         packet = connection.recv()          # 復号済みパケット全体
         header = packet[:8]                 # 先頭 8 バイト = ヘッダー
@@ -226,17 +234,6 @@ class TCPServer:
             'json_file'         : json_file,
             'media_type'        : media_type
         }
-
-    # 指定されたバイト数を受信するまで繰り返す
-    @staticmethod
-    def recvn(conn, n):
-        buf = bytearray()
-        while len(buf) < n:
-            chunk = conn.recv(n - len(buf))
-            if not chunk:
-                break
-            buf.extend(chunk)
-        return bytes(buf)
 
     def operation_dispatcher(self, json_file, input_file_path):
         # 操作コードとファイル名を取得
@@ -266,45 +263,41 @@ class TCPServer:
             raise ValueError(f"Invalid operation code: {operation}")
 
     def send_file(self, connection, output_file_path):
-        
-        with open(output_file_path, 'rb') as file:
-            # レスポンス用の情報を辞書形式で作成（ファイル名・エラー情報など）
-            response_info = {
-                'file_name'     : Path(file.name).name,
-                'error'         : False,
-                'error_message' : None
-            }
+        # パス処理とメタ情報の準備
+        path = Path(output_file_path)
+        file_name, media_type = path.name, path.suffix.encode('utf-8')
 
-            # 上記辞書を JSON に変換し、バイト列としてエンコード
-            json_bytes = json.dumps(response_info).encode('utf-8')
-            # 出力ファイルの拡張子を取得し、メディアタイプとしてバイト列化
-            media_type = Path(output_file_path).suffix.encode('utf-8')
-            
-            # ファイルサイズを取得
+        # レスポンス用の情報を辞書として作成
+        json_data = {
+            'file_name': file_name,
+            'error': False,
+            'error_message': None
+        }
+        json_bytes = json.dumps(json_data).encode('utf-8')
+
+        # ファイル読み込みと送信
+        with open(output_file_path, 'rb') as file:
             file.seek(0, os.SEEK_END)
             file_size = file.tell()
             file.seek(0)
-            
-            # パケットを作成して送信
+
             packet = self.build_packet(json_bytes, media_type, file_size)
             connection.sendall(packet)
 
-            # ファイル本体をチャンクで送信
-            while True:
-                chunk = file.read(self.chunk_size)
-                if not chunk:
-                    break
+            while chunk := file.read(self.chunk_size):
                 connection.sendall(chunk)
-                
+
     @staticmethod
     def build_packet(json_bytes, media_type_bytes, file_size):
         json_size       = len(json_bytes)
         media_type_size = len(media_type_bytes)
+        
         header = (
             json_size.to_bytes(2, 'big') +
             media_type_size.to_bytes(1, 'big') +
             file_size.to_bytes(5, 'big')
         )
+        
         return header + json_bytes + media_type_bytes
 
     def send_error_response(self, connection, error_message):
