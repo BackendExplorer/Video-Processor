@@ -3,16 +3,32 @@ version: "3.8"
 services:
   server:
     build: ./server
+    platform: linux/amd64  
     container_name: media_server
     ports:
       - "9001:9001"
     volumes:
-      - ./server/processed:/app/processed  
+      - ./server/processed:/app/processed
+      - ./sqlite:/data  
+    environment:
+      SQLITE_DB_PATH: /data/logs.db
+    depends_on:
+      - db
 
   client:
     build: ./client
+    platform: linux/amd64  
     container_name: media_client
     ports:
-      - "8501:8501"         
+      - "8501:8501"
     depends_on:
       - server
+
+  db:
+    image: nouchka/sqlite3
+    platform: linux/amd64
+    container_name: sqlite_db
+    volumes:
+      - ./sqlite:/data   
+    entrypoint: ["sh", "-c"]
+    command: ["sleep infinity"]
