@@ -208,14 +208,3 @@ class TCPClient:
                 remaining -= len(chunk)
 
         return output_path
-
-
-
-if __name__ == "__main__":
-    
-    # 接続先サーバーの IP アドレスとポート番号
-    server_address = "server"
-    server_port    = 9001
-
-    # TCP クライアントを初期化してファイルをアップロード・処理
-    client = TCPClient(server_address, server_port)
