@@ -415,7 +415,7 @@ sequenceDiagram
     participant ユーザー
     participant クライアント
     participant サーバー
-    participant FFmpeg
+    participant SQLite
 
     %% ユーザー操作→アップロード
     ユーザー ->> クライアント: ファイル選択 ＆ 操作入力
@@ -423,10 +423,12 @@ sequenceDiagram
     クライアント ->> サーバー: ヘッダー＋ファイルデータ送信
 
     %% サーバー側で処理
-    サーバー ->> FFmpeg: メディア処理リクエスト<br>(圧縮／変換／GIF 作成 など)
-    note right of サーバー: 処理要求に応じて FFmpeg 呼び出し
-    FFmpeg -->> サーバー: 処理済みファイル返却
-    note right of サーバー: 加工済みファイルを取得
+    note right of サーバー: 受信したファイルと操作コードに基づき<br>ffmpeg を使ってメディア処理を実行
+    サーバー ->> サーバー: ffmpeg による圧縮／変換／GIF 作成などの処理
+
+    %% SQLiteへのログ記録
+    サーバー ->> SQLite: 処理ログを記録<br>(開始・終了時刻、IP、操作コードなど)
+    note right of サーバー: logs.db に保存
 
     %% ダウンロード→保存
     サーバー ->> クライアント: 処理済みファイル送信
