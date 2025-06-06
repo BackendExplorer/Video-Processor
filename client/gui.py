@@ -104,8 +104,6 @@ class StreamlitApp:
     def __init__(self, converter, renderer):
         self.converter = converter
         self.renderer = renderer
-        self.progress_bar = None
-        self.status_text = None
 
     def start_streamlit_app(self):
         # ページの初期設定（タイトルやスタイルの読み込み）
@@ -119,9 +117,7 @@ class StreamlitApp:
         # ページ下部のスケール用 DIV を閉じる
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ページの初期設定（タイトルやスタイルの読み込み）
     def setup_page(self):
-        # Streamlit ページの基本設定
         st.set_page_config(
             page_title="Video Processor",
             page_icon="🎥",
@@ -164,10 +160,14 @@ class StreamlitApp:
         conversion_type_code, conversion_params = self.select_operation()
 
         if st.button("処理開始"):
-            # プログレスバーを初期化（0%からスタート）
-            self.progress_bar = st.progress(0)
-            # ステータス表示用の空要素を作成（後で動的に更新）
-            self.status_text = st.empty()
+            # プログレスバーとステータス表示をローカル変数として初期化
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+
+            # 進捗表示の更新処理をローカル関数として定義
+            def show_progress(progress_percent):
+                progress_bar.progress(progress_percent)
+                status_text.text(f"変換進行中... {progress_percent}%")
 
             try:
                 # 実際の変換処理を非同期で実行し、変換後ファイルのパスを取得
@@ -175,11 +175,10 @@ class StreamlitApp:
                     uploaded_file_path,
                     conversion_type_code,
                     conversion_params,
-                    self.show_progress
+                    show_progress
                 )
                 
             except Exception as error:
-                # 変換中にエラーが発生した場合はエラーメッセージを表示
                 st.error(f"処理失敗: {error}")
                 return
 
@@ -223,11 +222,6 @@ class StreamlitApp:
             }
 
         return code, details
-
-    def show_progress(self, progress_percent):
-        # プログレスバーとステータス表示を進捗に応じて更新
-        self.progress_bar.progress(progress_percent)
-        self.status_text.text(f"変換進行中... {progress_percent}%")
 
 
 
