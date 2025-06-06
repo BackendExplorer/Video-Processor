@@ -236,6 +236,9 @@ docker compose exec db sqlite3 /data/logs.db "SELECT * FROM logs ORDER BY id DES
 
 <br>
 
+<img width="920" alt="Image" src="https://github.com/user-attachments/assets/caa727f8-e22e-4d4c-b817-37e92fc0fd26" />
+
+<br>
 
 ---
 
