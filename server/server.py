@@ -2,10 +2,14 @@ import socket
 import os
 import json
 from pathlib import Path
-
+from datetime import datetime               # 追加：タイムスタンプ取得用
 import ffmpeg
 from Crypto.PublicKey import RSA
 from Crypto.Cipher    import AES, PKCS1_OAEP
+
+# --- ログ用関数を個別インポート ------------------------
+from sqlite_logger import log_start, log_end  # 修正：log_start / log_end を直接使う
+# ------------------------------------------------------
 
 
 class RSAKeyExchange:
@@ -141,7 +145,7 @@ class TCPServer:
         
         self.processor      = processor
         self.chunk_size     = 1400
-
+        
     def start_server(self):
         while True:
             connection, _ = self.sock.accept()
@@ -149,6 +153,17 @@ class TCPServer:
 
     def handle_client(self, connection):
         secure_conn = None  # 追加：例外時に参照できるよう初期化
+        
+        start_time = datetime.utcnow().isoformat()
+        client_ip  = connection.getpeername()[0]
+        log_vals   = {               
+            'operation'   : None,
+            'file_name'   : None,
+            'file_size'   : None,
+            'media_type'  : None,
+        }
+        log_id = None                # 追加：log_start の戻り値を保持
+        
         try:
             # 鍵交換を実行（RSA公開鍵交換 → AES鍵受信）
             secure_conn = self.perform_key_exchange(connection)
@@ -157,12 +172,23 @@ class TCPServer:
             request   = self.parse_request(secure_conn)
             json_file = request['json_file']
 
+            # ログ用の詳細情報を格納
+            log_vals.update({
+                'operation'  : json_file['operation'],
+                'file_name'  : json_file['file_name'],
+                'file_size'  : request['file_size'],
+                'media_type' : request['media_type'],
+            })
+
             # 受信したファイルを保存（チャンク単位で受信）
             input_file_path = os.path.join(self.processor.dpath, json_file['file_name'])
             self.processor.save_file(secure_conn, input_file_path, request['file_size'])
 
             # ファイル受信完了のACKを送信
             secure_conn.sendall(bytes([0x00]))
+
+            # ログ開始を記録
+            log_id = self.write_log_start(start_time, client_ip, log_vals)
 
             # 指定された操作を実行（圧縮・変換など）
             output_file_path = self.operation_dispatcher(json_file, input_file_path)
@@ -173,8 +199,11 @@ class TCPServer:
         except Exception as e:
             # エラー時も可能であれば暗号化チャネルで応答
             self.send_error_response(secure_conn if secure_conn else connection, str(e))
+            raise   # ログしたいので再送出
+        
         finally:
-            # 接続をクローズ
+            end_time = datetime.utcnow().isoformat()
+            self.write_log_end(log_id, end_time)
             connection.close()
 
     def perform_key_exchange(self, conn):
@@ -312,6 +341,21 @@ class TCPServer:
         packet = self.build_packet(json_bytes, b'', 0)
         # connection が SecureSocket なら暗号化されて送信される
         connection.sendall(packet)
+
+    def write_log_start(self, start_time, client_ip, log_vals):
+        return log_start(
+            start_time,             # timestamp_start
+            client_ip,              # client_ip
+            log_vals['operation'],  # operation_code
+            log_vals['file_name'],  # file_name
+            log_vals['file_size'],  # file_size
+            log_vals['media_type']  # media_type
+        )
+
+    def write_log_end(self, log_id, end_time):
+        # log_id が None でなければ log_end を呼び出す
+        if log_id is not None:
+            log_end(log_id, end_time)
 
 
 
