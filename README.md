@@ -268,6 +268,10 @@ docker compose exec db sqlite3 /data/logs.db "SELECT * FROM logs ORDER BY id DES
 
   Pythonのみで手軽にWeb UIを構築できるため、開発効率を重視して採用
 
+- **`SQLite`**
+
+  ログを1つのファイルにまとめて保存し、SQLで簡単に検索・抽出できるようにするため
+
 - **`Docker`**
 
   依存関係をコンテナ内に隔離し、環境差異を排除してどこでも同じ動作を保証するため
@@ -292,6 +296,7 @@ docker compose exec db sqlite3 /data/logs.db "SELECT * FROM logs ORDER BY id DES
 | 暗号技術       | ![PyCryptodome](https://img.shields.io/badge/Encryption-PyCryptodome-blue) <br>ハイブリッド暗号方式 (RSA＋AES) で通信
 | メディア加工   | ![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen) <br>`ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
 | UIフレームワーク | ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) <br>Webベースのインターフェースを簡易に構築 |
+| データベース | ![SQLite](https://img.shields.io/badge/DB-SQLite-003B57?logo=sqlite&logoColor=white) <br>`logs.db` にログを永続保存  |
 | 開発環境       | ![macOS](https://img.shields.io/badge/OS-macOS-lightgrey)&nbsp;&nbsp;&nbsp;&nbsp;![VSCode](https://img.shields.io/badge/Editor-VSCode-blue) |
 | バージョン管理 | ![Git](https://img.shields.io/badge/VersionControl-Git-orange)&nbsp;&nbsp;&nbsp;&nbsp;![GitHub](https://img.shields.io/badge/Repo-GitHub-black) |
 | インフラ | ![Docker](https://img.shields.io/badge/Container-Docker-blue) ![Docker Compose](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?logo=docker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white) |
