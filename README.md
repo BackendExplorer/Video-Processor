@@ -210,6 +210,17 @@ flowchart TD
 
 <br>
 
+### 3. ログの確認
+
+<br>
+
+docker-compose.ymlがあるフォルダで、以下のコマンドを実行するとログを表示できます
+
+```bash
+docker compose exec db sqlite3 /data/logs.db "SELECT * FROM logs ORDER BY id DESC;"
+```
+<br>
+
 ---
 
 ## <a id="使用技術"></a>🧰 使用技術
