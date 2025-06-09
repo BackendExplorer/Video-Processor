@@ -184,9 +184,6 @@ class TCPServer:
             input_file_path = os.path.join(self.processor.dpath, json_file['file_name'])
             self.processor.save_file(secure_conn, input_file_path, request['file_size'])
 
-            # ファイル受信完了のACKを送信
-            secure_conn.sendall(bytes([0x00]))
-
             # ログ開始を記録
             log_id = self.write_log_start(start_time, client_ip, log_vals)
 
