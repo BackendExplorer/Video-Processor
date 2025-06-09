@@ -126,14 +126,13 @@ class StreamlitApp:
 
         style_path = Path(__file__).parent / "style.css"
 
-        style_html = (
+        st.markdown(
             "<style>"
             f"{style_path.read_text()}"
             "</style>"
-            '<div class="app-scale">'
+            '<div class="app-scale">',
+            unsafe_allow_html=True
         )
-
-        st.markdown(style_html, unsafe_allow_html=True)
 
     # アップロードしたファイルを一時的なパスに保存する
     def get_uploaded_file(self):
