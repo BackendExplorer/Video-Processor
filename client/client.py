@@ -122,10 +122,6 @@ class TCPClient:
             while chunk := file.read(self.chunk_size):
                 self.sock.sendall(chunk)
 
-        # サーバ応答を確認
-        if self.sock.recv() != bytes([0x00]):
-            raise Exception("サーバーがエラーを返しました")
-
         return self.receive_file()
 
     def perform_key_exchange(self):
