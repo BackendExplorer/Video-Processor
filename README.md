@@ -244,6 +244,48 @@ docker compose exec db sqlite3 /data/logs.db "SELECT * FROM logs ORDER BY id DES
 
 ---
 
+
+## <a id="システム全体の構成図"></a>🔄 システム全体の構成図
+
+<br>
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant ユーザー
+    participant クライアント
+    participant サーバー
+    participant SQLite
+
+    %% ユーザー操作→アップロード
+    ユーザー ->> クライアント: ファイル選択 ＆ 操作入力
+    note right of クライアント: 入力内容を検証・アップロード準備
+    クライアント ->> サーバー: ヘッダー＋ファイルデータ送信
+
+    %% サーバー側で処理
+    note right of サーバー: 受信したファイルと操作コードに基づき<br>ffmpeg を使ってメディア処理を実行
+    サーバー ->> サーバー: ffmpeg による圧縮／変換／GIF 作成などの処理
+
+    %% SQLiteへのログ記録
+    サーバー ->> SQLite: 処理ログを記録<br>(開始・終了時刻、IP、操作コードなど)
+    note right of サーバー: logs.db に保存
+
+    %% ダウンロード→保存
+    サーバー ->> クライアント: 処理済みファイル送信
+    クライアント ->> クライアント: ファイル保存
+    note right of クライアント: 保存完了・ダウンロード終了
+    クライアント ->> ユーザー: 完了メッセージ表示
+```
+
+<br>
+
+<img width="712" alt="Image" src="https://github.com/user-attachments/assets/47b5dec3-a394-40f7-b565-0283e782427b" />
+
+<br>
+
+---
+
 ## <a id="クラス図"></a>📌 クラス図
 
 <br>
@@ -346,47 +388,6 @@ TCPServer --> RSAKeyExchange : uses
 
 ### <a id="server.py のクラス図"></a> 
 
-
----
-
-## <a id="システム全体の構成図"></a>🔄 システム全体の構成図
-
-<br>
-
-```mermaid
-sequenceDiagram
-    autonumber
-
-    participant ユーザー
-    participant クライアント
-    participant サーバー
-    participant SQLite
-
-    %% ユーザー操作→アップロード
-    ユーザー ->> クライアント: ファイル選択 ＆ 操作入力
-    note right of クライアント: 入力内容を検証・アップロード準備
-    クライアント ->> サーバー: ヘッダー＋ファイルデータ送信
-
-    %% サーバー側で処理
-    note right of サーバー: 受信したファイルと操作コードに基づき<br>ffmpeg を使ってメディア処理を実行
-    サーバー ->> サーバー: ffmpeg による圧縮／変換／GIF 作成などの処理
-
-    %% SQLiteへのログ記録
-    サーバー ->> SQLite: 処理ログを記録<br>(開始・終了時刻、IP、操作コードなど)
-    note right of サーバー: logs.db に保存
-
-    %% ダウンロード→保存
-    サーバー ->> クライアント: 処理済みファイル送信
-    クライアント ->> クライアント: ファイル保存
-    note right of クライアント: 保存完了・ダウンロード終了
-    クライアント ->> ユーザー: 完了メッセージ表示
-```
-
-<br>
-
-<img width="712" alt="Image" src="https://github.com/user-attachments/assets/47b5dec3-a394-40f7-b565-0283e782427b" />
-
-<br>
 
 ---
 
