@@ -409,6 +409,8 @@ TCPServer --> RSAKeyExchange : uses
 
   クラウド化の際にAWS EC2などから最新イメージを即座に pull＆起動できる仕組みを構築しました。
 
+  自動プッシュされたイメージは、[Docker Hubリポジトリ](https://hub.docker.com/repository/docker/tenshinnoji/video-processor-server/general)で確認できます。
+
 <br>
 
 
