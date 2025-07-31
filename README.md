@@ -399,7 +399,8 @@ TCPServer --> RSAKeyExchange : uses
 
 <img width="829" alt="Image" src="https://github.com/user-attachments/assets/ef81aa00-310d-4b8d-a9b6-8589d1804e17" />
 
-<br>
+<br><br>
+
 
 
   コード変更をトリガーに自動でビルドと起動検証を実行し、
