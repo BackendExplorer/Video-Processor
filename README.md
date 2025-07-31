@@ -463,6 +463,12 @@ TCPServer --> RSAKeyExchange : uses
 
   サーバコンテナとクライアントコンテナを同時に起動し、起動手順を簡素化するため
 
+- **`Docker Hub`**
+
+  AWS EC2 などのクラウドサーバーから Docker イメージをプルして、
+  
+  すぐにコンテナを起動できるようにするため
+
 - **`Github Actions`**
 
   プッシュやプルリクエスト時に、docker compose を用いたビルド・起動・動作確認・クリーンアップを
@@ -482,7 +488,7 @@ TCPServer --> RSAKeyExchange : uses
 | データベース | ![SQLite](https://img.shields.io/badge/DB-SQLite-4DA6FF?logo=sqlite&logoColor=white) <br> logs.db にログを永続保存 |
 | 開発環境       | ![macOS](https://img.shields.io/badge/OS-macOS-lightgrey)&nbsp;&nbsp;&nbsp;&nbsp;![VSCode](https://img.shields.io/badge/Editor-VSCode-blue) |
 | バージョン管理 | ![Git](https://img.shields.io/badge/VersionControl-Git-orange)&nbsp;&nbsp;&nbsp;&nbsp;![GitHub](https://img.shields.io/badge/Repo-GitHub-black) |
-| インフラ | ![Docker](https://img.shields.io/badge/Container-Docker-blue) ![Docker Compose](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?logo=docker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white) |
+| インフラ | ![Docker](https://img.shields.io/badge/Container-Docker-blue) ![Docker Compose](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?logo=docker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white) ![Docker Hub](https://img.shields.io/static/v1?label=Docker%20Hub&message=Registry&color=55C4F2&logo=docker&logoColor=white) |
 | 描画ツール     | ![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green)&nbsp;&nbsp;&nbsp;&nbsp;![LaTeX](https://img.shields.io/badge/Doc-LaTeX-9cf) |
 
 <br>
