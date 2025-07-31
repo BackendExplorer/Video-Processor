@@ -1,11 +1,11 @@
 # Video Processor 
 
 ![Python](https://img.shields.io/badge/Python-3.13.2-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?logo=streamlit&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-DB-07405E?logo=sqlite&logoColor=white)
-![Docker Compose](https://img.shields.io/badge/Docker–Compose-2496ED?logo=docker&logoColor=white)
-![Docker Hub](https://img.shields.io/badge/Docker–Hub-1E5799?logo=docker&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub–Actions-CI-2088FF?logo=githubactions&logoColor=white)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) 
+![SQLite](https://img.shields.io/badge/DB-SQLite-4DA6FF?logo=sqlite&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Docker Hub](https://img.shields.io/badge/Registry-Docker_Hub-2496ED?logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white)
 ![Build Status](https://img.shields.io/badge/build-success-brightgreen)
 
 
