@@ -401,7 +401,7 @@ TCPServer --> RSAKeyExchange : uses
 
 <br>
 
-- **CI/CDパイプラインの概要**
+### CI/CDパイプラインの概要
 
   コード変更をトリガーに自動でビルドと起動検証を実行し、
 
