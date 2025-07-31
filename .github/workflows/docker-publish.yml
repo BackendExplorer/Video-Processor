@@ -1,0 +1,33 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main   # main ブランチへのプッシュでトリガー
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Docker Hub にログイン
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # イメージをビルド＆プッシュ
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./server/Dockerfile        # サーバ用 Dockerfile のパス
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/video-processor-server:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/video-processor-server:${{ github.sha }}
