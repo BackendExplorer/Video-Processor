@@ -48,7 +48,7 @@
 
 - [クラス図](#クラス図)
 
-- [CI/CDの概要](#ci)
+- [CI/CD](#ci)
 
 - [使用技術](#使用技術)
 
@@ -393,15 +393,15 @@ TCPServer --> RSAKeyExchange : uses
 
 ---
 
-## 🔀 CI/CDの概要 <a id="ci"></a>
+## 🔀 CI/CD <a id="ci"></a>
 
 <br>
 
 <img width="829" alt="Image" src="https://github.com/user-attachments/assets/ef81aa00-310d-4b8d-a9b6-8589d1804e17" />
 
-<br><br>
+<br>
 
-
+- **CI/CDパイプラインの概要**
 
   コード変更をトリガーに自動でビルドと起動検証を実行し、
 
