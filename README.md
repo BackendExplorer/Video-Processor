@@ -469,6 +469,7 @@ TCPServer --> RSAKeyExchange : uses
   
   すぐにコンテナを起動できるようにするため
 
+
 - **`Github Actions`**
 
   プッシュやプルリクエスト時に、docker compose を用いたビルド・起動・動作確認・クリーンアップを
@@ -606,10 +607,11 @@ TCPServer --> RSAKeyExchange : uses
 - **解決アプローチ**
 
   公開環境として AWS EC2 を採用し、サーバーを常時起動可能にします。
-  
-  GitHub Actions で Docker イメージを自動ビルド・更新し、
-  
-  EC2 側で自動的に pull・起動する仕組みを構築します。
+
+  GitHub Actions で Docker イメージを自動ビルドして Docker Hub にプッシュ・更新し、
+
+  EC2 側で Docker Hub からイメージを自動的に pull・起動する仕組みを構築します。
+
 
 <br>
 
