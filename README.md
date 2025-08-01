@@ -585,7 +585,7 @@ TCPServer --> RSAKeyExchange : uses
 
 <br>
 
-### クラウド化への方針
+### クラウド化の方針
 
 <br>
 
