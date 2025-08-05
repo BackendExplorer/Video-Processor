@@ -399,19 +399,29 @@ TCPServer --> RSAKeyExchange : uses
 
 <img width="829" alt="Image" src="https://github.com/user-attachments/assets/ef81aa00-310d-4b8d-a9b6-8589d1804e17" />
 
+<br><br>
+
+### GitHub Actions で **ビルド → 配布** を自動化しています
+
 <br>
 
-- **CI/CDパイプラインの概要**
+- **コンテナの起動テスト**
 
-  コード変更をトリガーに自動でビルドと起動検証を実行し、
+  コード変更をトリガーに自動でビルドと起動検証を実行します
 
-  ビルド完了後は生成したイメージをDocker Hubへ自動的にプッシュ。
+<br>
+
+- **Dockerイメージの自動プッシュ**
+
+  ビルドしたイメージをDocker Hubへ自動的にプッシュ。
 
   クラウド化の際にAWS EC2などから最新イメージを即座に pull＆起動できる仕組みを構築しました。
 
   自動プッシュされたイメージは、[Docker Hubリポジトリ](https://hub.docker.com/repository/docker/tenshinnoji/video-processor-server/general)で確認できます。
 
 <br>
+
+
 
 
 ---
