@@ -432,68 +432,68 @@ TCPServer --> RSAKeyExchange : uses
 
 <br>
 
-### 技術選定の理由
+<table>
+  <tr>
+    <th>カテゴリ</th>
+    <th>技術スタック</th>
+  </tr>
+  <tr>
+    <td>開発言語</td>
+    <td>Python 3.13.2</td>
+  </tr>
+  <tr>
+    <td rowspan="2">通信・暗号</td>
+    <td>TCPソケット</td>
+  </tr>
+  <tr>
+    <td>ハイブリッド暗号方式 (RSA + AES-CFB)</td>
+  </tr>
+  <tr>
+    <td rowspan="2">メディア処理</td>
+    <td>FFmpeg (動画圧縮・解像度変更・音声抽出・GIF作成)</td>
+  </tr>
+  <tr>
+    <td>PythonからのFFmpeg操作</td>
+  </tr>
+  <tr>
+    <td>UIフレームワーク</td>
+    <td>Streamlit</td>
+  </tr>
+  <tr>
+    <td>データベース</td>
+    <td>SQLite (logs.db)</td>
+  </tr>
+  <tr>
+    <td rowspan="4">インフラ・コンテナ</td>
+    <td>Docker</td>
+  </tr>
+  <tr>
+    <td>Docker Compose</td>
+  </tr>
+  <tr>
+    <td>Docker Hub</td>
+  </tr>
+  <tr>
+    <td>AWS EC2 (クラウド展開予定)</td>
+  </tr>
+  <tr>
+    <td>CI/CD</td>
+    <td>GitHub Actions (ビルド・起動テスト・Docker Hub自動プッシュ)</td>
+  </tr>
+  <tr>
+    <td>バージョン管理</td>
+    <td>Git / GitHub</td>
+  </tr>
+  <tr>
+    <td>描画・ドキュメント</td>
+    <td>Mermaid / LaTeX</td>
+  </tr>
+  <tr>
+    <td>開発環境</td>
+    <td>macOS / VSCode</td>
+  </tr>
+</table>
 
-- **`Python`**
-  
-  豊富な標準ライブラリと高い可読性によって、複雑なシステムを効率的に実装するため
-  
-- **`TCPソケット`**
-  
-  ファイル転送において信頼性と順序保証が必要なため
-
-- **`ハイブリッド暗号方式`**
-
-  安全性を確保しつつ、素早いデータ転送をするため
-
-- **`ffmpegライブラリ`**
-  
-  動画圧縮・解像度変更・音声抽出・GIF作成などを行うため
-
-- **`Streamlit`**
-
-  Pythonのみで手軽にWeb UIを構築できるため、開発効率を重視して採用
-
-- **`SQLite`**
-
-  ログを1つのファイルにまとめて保存し、SQLで簡単に検索・抽出できるようにするため
-
-- **`Docker`**
-
-  依存関係をコンテナ内に隔離し、環境差異を排除してどこでも同じ動作を保証するため
-
-- **`Docker-Compose`**
-
-  サーバコンテナとクライアントコンテナを同時に起動し、起動手順を簡素化するため
-
-- **`Docker Hub`**
-
-  AWS EC2 などのクラウドサーバーから Docker イメージをプルして、
-  
-  すぐにコンテナを起動できるようにするため
-
-
-- **`Github Actions`**
-
-  プッシュやプルリクエスト時に、docker compose を用いたビルド・起動・動作確認・クリーンアップを
-
-  自動化し、構成変更などによって生じた不具合を素早く検出・修正できるようにするため
-
-
-<br><br>
-
-| カテゴリ       | 技術スタック                                                                 |
-|----------------|------------------------------------------------------------------------------|
-| 開発言語       | ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) <br>標準ライブラリ：`socket`, `os`, `json`, `logging`, `pathlib`, `sys`, `re` |
-| 通信技術       | ![TCP](https://img.shields.io/badge/Protocol-TCP-blue) <br>TCPソケットによるファイル送受信 |
-| 暗号技術       | ![PyCryptodome](https://img.shields.io/badge/Encryption-PyCryptodome-blue) <br>ハイブリッド暗号方式 (RSA＋AES) で通信
-| メディア加工   | ![FFmpeg](https://img.shields.io/badge/Media-FFmpeg-brightgreen) <br>`ffmpeg` ライブラリをPythonから呼び出して動画・音声処理 |
-| UIフレームワーク | ![Streamlit](https://img.shields.io/badge/UI-Streamlit-red) <br>Webベースのインターフェースを簡易に構築 |
-| データベース | ![SQLite](https://img.shields.io/badge/DB-SQLite-4DA6FF?logo=sqlite&logoColor=white) <br> logs.db にログを永続保存 |
-| 開発環境       | ![macOS](https://img.shields.io/badge/OS-macOS-lightgrey)&nbsp;&nbsp;&nbsp;&nbsp;![VSCode](https://img.shields.io/badge/Editor-VSCode-blue) |
-| バージョン管理 | ![Git](https://img.shields.io/badge/VersionControl-Git-orange)&nbsp;&nbsp;&nbsp;&nbsp;![GitHub](https://img.shields.io/badge/Repo-GitHub-black) |
-| インフラ | ![Docker](https://img.shields.io/badge/Container-Docker-blue) ![Docker Compose](https://img.shields.io/badge/Orchestration-Docker_Compose-2496ED?logo=docker&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/CI-GitHub_Actions-black?logo=githubactions&logoColor=white) ![Docker Hub](https://img.shields.io/static/v1?label=Docker%20Hub&message=Registry&color=55C4F2&logo=docker&logoColor=white) |
-| 描画ツール     | ![Mermaid](https://img.shields.io/badge/Diagram-Mermaid-green)&nbsp;&nbsp;&nbsp;&nbsp;![LaTeX](https://img.shields.io/badge/Doc-LaTeX-9cf) |
 
 <br>
 
