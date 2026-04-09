@@ -374,7 +374,7 @@ TCPServer --> RSAKeyExchange : uses
 
   処理ごとにクラスを分離し、通信は `TCPServer`、暗号は `RSAKeyExchange` / `AESCipherCFB`、
   
-  ジョブ状態管理は `JobManager`、ログ永続化は `LogRepository`
+  ジョブ状態管理は `JobManager`、ログの保存は `LogRepository`
   
   動画処理は `MediaProcessor` に責務を明確化しました。
 
